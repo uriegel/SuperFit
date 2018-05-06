@@ -38,7 +38,6 @@ class MapFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         frameLayout = FrameLayout(activity)
-        val rotateView = RotateView(activity)
         mapView = MapView(activity)
         with(mapView){
             isClickable = true
@@ -48,8 +47,13 @@ class MapFragment : Fragment() {
             setZoomLevelMax(20)
             setZoomLevel(16)
         }
-        rotateView.addView(mapView )
-        rotateView.heading = 35F
+
+        val rotateView = RotateView(activity)
+        with (rotateView) {
+            addView(mapView )
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+            heading = 35F
+        }
 
         tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1.0F,
                 mapView.model.frameBufferModel.overdrawFactor)
