@@ -1,0 +1,40 @@
+﻿body {
+    background: var(--display-body);
+}
+
+.label {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.status {
+    display: flex;
+    justify-content: space-between;
+}
+
+.mainDisplay {
+    display: flex;
+    justify-content: center;
+}
+
+.content {
+    font-size: 140px;
+    font-weight: 600;
+}
+
+.contentSmall {
+    font-size: 100px;
+    font-weight: 400;
+}
+
+.display {
+    background: var(--display-background);
+    color: var(--display-color);
+}
+
+.gps-overlay {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    z-index: 1000;
+}
