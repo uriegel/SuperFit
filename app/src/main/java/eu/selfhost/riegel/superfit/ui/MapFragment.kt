@@ -7,9 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import eu.selfhost.riegel.superfit.maps.LocationManager
 import eu.selfhost.riegel.superfit.maps.LocationMarker
+import eu.selfhost.riegel.superfit.maps.TrackLine
 import eu.selfhost.riegel.superfit.utils.TrackGpxParser
 import eu.selfhost.riegel.superfit.utils.getSdCard
+import eu.selfhost.riegel.superfit.utils.serialize
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.mapsforge.core.graphics.Color
@@ -66,83 +69,35 @@ class MapFragment : Fragment() {
             setCenter(center)
         }
 
-        location = LocationMarker(center)
-        mapView.layerManager.layers.add(location)
+        trackLine = TrackLine()
+        mapView.layerManager.layers.add(trackLine)
 
         frameLayout.addView(rotateView)
         //frameLayout.addView(mapView)
 
-        test()
+        LocationManager.listener = {
+            val currentLatLong = LatLong(it.latitude, it.longitude)
+            if (location != null)
+                mapView.layerManager.layers.remove(location)
+            location = LocationMarker(currentLatLong)
+            mapView.layerManager.layers.add(location)
 
+            trackLine.latLongs.add(currentLatLong)
+        }
         return frameLayout
     }
 
     override fun onDestroy() {
+        LocationManager.listener = null
         mapView.destroyAll()
         AndroidGraphicFactory.clearResourceMemoryCache()
         super.onDestroy()
     }
 
-    fun test() {
-
-        val paint = AndroidGraphicFactory.INSTANCE.createPaint()
-        with (paint) {
-            setStyle(Style.STROKE)
-            strokeWidth = 15F
-            color = AndroidGraphicFactory.INSTANCE.createColor(Color.BLUE)
-        }
-
-        val polyline = Polyline(paint, AndroidGraphicFactory.INSTANCE)
-
-        val latLongs = polyline.latLongs
-        var latLong: LatLong
-
-        val sdCard: String = activity.getSdCard()
-        val tracksDir = "$sdCard/Maps/tracks"
-        val gpxFile = "$tracksDir/2018-4-3-16-56.gpx (3).xml"
-
-        mapView.layerManager!!.layers.add(polyline)
-
-        doAsync {
-            try {
-                var points = TrackGpxParser(File(gpxFile)).map { LatLong(it.latitude, it.longitude) }
-                val kaunt2 =points.count()
-                points += points
-                //points = points + points
-
-                val kaunt = points.count()
-
-                for (point in points) {
-                    Thread.sleep(500)
-                    uiThread {
-                        try {
-                            latLongs.add(point)
-                            if (location != null)
-                                mapView.layerManager.layers.remove(location)
-                            location = LocationMarker(point)
-                            mapView.layerManager.layers.add(location)
-                        } catch (_: Exception) {}
-                    }
-                }
-            }
-            catch (e: Exception) {
-                var ee = e
-                var emil = ee.toString()
-            }
-        }
-
-//        var timer: Timer = Timer()
-//        timer.schedule(object: TimerTask() {
-//            override fun run() {
-//        }, 50, 50)
-
-        // add: mapView.getModel().mapViewPosition.setMapPosition(new MapPosition(bb.getCenterPoint(), LatLongUtils.zoomForBounds(dimension, bb, mapView.getModel().displayModel.getTileSize())));
-        // warp to track
-    }
-
     private lateinit var frameLayout: FrameLayout
     private lateinit var mapView: MapView
     private lateinit var tileCache: TileCache
+    private lateinit var trackLine: TrackLine
     private lateinit var tileRendererLayer: TileRendererLayer
     private var location: LocationMarker? = null
 }

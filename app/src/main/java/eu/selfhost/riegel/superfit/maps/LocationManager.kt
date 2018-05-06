@@ -9,11 +9,18 @@ import android.location.LocationListener
 import android.os.Bundle
 
 @SuppressLint("MissingPermission")
-class LocationManager(context: Context) {
+object LocationManager {
+
+    var listener: ((location: Location)->Unit)? = null
+
+    fun start(context: Context) {
+        locationManager = context.getSystemService(LOCATION_SERVICE) as LocationManager
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, locationListener)
+    }
 
     fun stop() {
         locationManager.removeUpdates(locationListener)
-//        gpsActive = false
+        gpsActive = false
     }
 
     //fun getTrackNumber(): Long? = trackPoints?.trackNumber
@@ -26,7 +33,7 @@ class LocationManager(context: Context) {
                 gpsActive = true
                 setGpsActive?.invoke()
             }
-//            setCurrentLocation(location)
+            listener?.invoke(location)
 
 //            if (trackPoints == null)
 //                trackPoints = dataSource.createTrack(location.longitude, location.latitude, location.time)
@@ -43,19 +50,12 @@ class LocationManager(context: Context) {
         override fun onProviderDisabled(p0: String?) {}
     }
 
-    private val locationManager = context.getSystemService(LOCATION_SERVICE) as LocationManager
+    var gpsActive = false
+    var setGpsActive: (()->Unit)? = null
 
-    companion object {
-        var gpsActive = false
-        var setGpsActive: (()->Unit)? = null
-
-        private const val LOCATION_REFRESH_TIME = 500L
-        private const val LOCATION_REFRESH_DISTANCE = 0.0F
-    }
+    private lateinit var locationManager: LocationManager
+    private const val LOCATION_REFRESH_TIME = 500L
+    private const val LOCATION_REFRESH_DISTANCE = 0.0F
 //    private var trackPoints: TrackPointsDataSource? = null
-
-    init {
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, locationListener)
-    }
 }
 

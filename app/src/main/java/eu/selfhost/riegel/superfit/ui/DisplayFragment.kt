@@ -1,6 +1,7 @@
 package eu.selfhost.riegel.superfit.ui
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -19,10 +20,10 @@ import org.jetbrains.anko.uiThread
 import java.util.*
 import kotlin.concurrent.timerTask
 
-//TODO: Dem Display initial immer die Maximalgeschwindigkeit und den GPS-Status übermitteln
 //TODO: Dem Display initial immer alle Wegepunkte übermitteln
 class DisplayFragment : Fragment() {
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         webView = WebView(activity)

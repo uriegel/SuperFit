@@ -50,7 +50,7 @@ class Service : Service() {
 
                     Searcher.start(this)
 
-                    locationManager = LocationManager(this)
+                    LocationManager.start(this)
 
                     state = ServiceState.Started
                     return START_STICKY
@@ -62,7 +62,7 @@ class Service : Service() {
                     return START_NOT_STICKY
                 state = ServiceState.Stopping
 
-                locationManager.stop()
+                LocationManager.stop()
 
                 HeartRate.stop()
                 Bike.stop()
@@ -88,13 +88,12 @@ class Service : Service() {
                 listener?.invoke(state)
             }
 
-            const val ACTION_START = "Start"
+        const val ACTION_START = "Start"
         const val ACTION_STOP = "Stop"
         const val NOTIFICATION_ID = 22
 
         fun setOnStateChangedListener(listener: ((state: ServiceState)->Unit)?) { this.listener = listener}
 
         private var listener: ((state: ServiceState)->Unit)? = null
-        private lateinit var locationManager: LocationManager
     }
 }
