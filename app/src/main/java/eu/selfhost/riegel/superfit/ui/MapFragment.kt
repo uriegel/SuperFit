@@ -43,6 +43,7 @@ class MapFragment : Fragment() {
         with(mapView){
             isClickable = true
             setBuiltInZoomControls(true)
+            model.frameBufferModel.overdrawFactor = 1.0
             setZoomLevelMin(10)
             setZoomLevelMax(20)
             setZoomLevel(16)
