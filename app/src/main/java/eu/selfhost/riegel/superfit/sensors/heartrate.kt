@@ -6,7 +6,7 @@ import com.dsi.ant.plugins.antplus.pcc.defines.RequestAccessResult
 import com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch
 import com.dsi.ant.plugins.antplus.pccbase.PccReleaseHandle
 
-object HeartRate   {
+object HeartRate {
     var isStarted = false
         get() = deviceHandle != null
 
