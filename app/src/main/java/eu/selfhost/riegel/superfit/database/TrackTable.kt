@@ -6,6 +6,7 @@ object TrackTable {
     val Latitude = "Latitude"
     val Longitude = "Longitude"
     val Distance = "Distance"
+    val Time = "Time"
     val Duration = "Duration"
     val AverageSpeed = "AverageSpeed"
 }

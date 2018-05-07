@@ -7,6 +7,8 @@ import android.location.Location
 import android.location.LocationManager
 import android.location.LocationListener
 import android.os.Bundle
+import eu.selfhost.riegel.superfit.database.DataBase
+import eu.selfhost.riegel.superfit.database.DataBaseHelper
 
 @SuppressLint("MissingPermission")
 object LocationManager {
@@ -32,6 +34,8 @@ object LocationManager {
             if (!gpsActive) {
                 gpsActive = true
                 setGpsActive?.invoke()
+
+                val track = DataBase.createTrack(location)
             }
             listener?.invoke(location)
 

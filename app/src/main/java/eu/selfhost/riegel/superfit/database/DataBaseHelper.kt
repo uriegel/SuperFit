@@ -12,6 +12,7 @@ class DataBaseHelper : ManagedSQLiteOpenHelper(Application.instance, DataBaseHel
                 TrackTable.Longitude to REAL,
                 TrackTable.Duration to INTEGER,
                 TrackTable.Distance to REAL,
+                TrackTable.Time to INTEGER,
                 TrackTable.AverageSpeed to REAL)
     }
 
