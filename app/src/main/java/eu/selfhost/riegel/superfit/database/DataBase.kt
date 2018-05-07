@@ -5,6 +5,8 @@ import android.location.Location
 import org.jetbrains.anko.db.insert
 
 object DataBase{
+    // TODO: Beim Beenden Track aktualisieren
+    // TODO: Trackpoints einfügen
     fun createTrack(location: Location): Long {
         var result = 0L
         dataBaseHelper.use {

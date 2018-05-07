@@ -14,10 +14,21 @@ class DataBaseHelper : ManagedSQLiteOpenHelper(Application.instance, DataBaseHel
                 TrackTable.Distance to REAL,
                 TrackTable.Time to INTEGER,
                 TrackTable.AverageSpeed to REAL)
+        db.createTable(TrackPointTable.Name, true,
+                TrackPointTable.ID to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
+                TrackPointTable.TrackNr to INTEGER,
+                TrackPointTable.Latitude to REAL,
+                TrackPointTable.Longitude to REAL,
+                TrackPointTable.Elevation to REAL,
+                TrackPointTable.Time to INTEGER,
+                TrackPointTable.HeartRate to INTEGER,
+                TrackPointTable.Speed to REAL,
+                TrackPointTable.Precision to REAL)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.dropTable(TrackTable.Name,true)
+        db.dropTable(TrackPointTable.Name,true)
         onCreate(db)
     }
 
