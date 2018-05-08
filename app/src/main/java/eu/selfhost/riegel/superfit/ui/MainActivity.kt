@@ -9,9 +9,12 @@ import android.os.Bundle
 import android.view.SoundEffectConstants
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import com.google.gson.Gson
 import eu.selfhost.riegel.superfit.android.Service
 import eu.selfhost.riegel.superfit.database.DataBase
 import eu.selfhost.riegel.superfit.utils.serialize
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
@@ -71,11 +74,13 @@ class MainActivity : AppCompatActivity() {
         fun doHapticFeedback() = doAsync { uiThread { webView.playSoundEffect(SoundEffectConstants.CLICK) }}
 
         @JavascriptInterface
-        fun fillTracks()  { //
-            val affe = DataBase.getTracks()
-            var test = 9
-            var t = test
-
+        fun fillTracks()  {
+            async(UI) {
+                val tracks = DataBase.getTracksAsync().await()
+                val gson = Gson()
+                val json = gson.toJson(tracks)
+                webView.evaluateJavascript("onTracks($json)", null)
+            }
         }
 
         @JavascriptInterface
