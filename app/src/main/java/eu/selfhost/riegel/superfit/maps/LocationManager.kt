@@ -8,6 +8,8 @@ import android.location.LocationManager
 import android.location.LocationListener
 import android.os.Bundle
 import eu.selfhost.riegel.superfit.database.DataBase
+import eu.selfhost.riegel.superfit.sensors.Bike
+import eu.selfhost.riegel.superfit.sensors.HeartRate
 
 @SuppressLint("MissingPermission")
 object LocationManager {
@@ -22,6 +24,10 @@ object LocationManager {
     fun stop() {
         locationManager.removeUpdates(locationListener)
         gpsActive = false
+        if (trackNr != -1L) {
+            DataBase.updateTrack(trackNr, Bike.distance, Bike.averageSpeed)
+            trackNr = -1L
+        }
     }
 
     //fun getTrackNumber(): Long? = trackPoints?.trackNumber
@@ -33,19 +39,15 @@ object LocationManager {
             if (!gpsActive) {
                 gpsActive = true
                 setGpsActive?.invoke()
-
-                val track = DataBase.createTrack(location)
+                trackNr = DataBase.createTrack(location)
             }
             listener?.invoke(location)
 
-//            if (trackPoints == null)
-//                trackPoints = dataSource.createTrack(location.longitude, location.latitude, location.time)
-
-            if (location.hasBearing()) {
-            }
+            //if (location.hasBearing()) {
+            //}
+            DataBase.insertTrackPoint(trackNr, location, Bike.speed, HeartRate.currentHeartRate)
 //            trackPoints!!.add(TrackPoint(location.latitude, location.longitude, location.altitude,
 //                    location.time, location.accuracy, data.speed, data.heartRate))
-            //        mapView.setCenter(LatLong(location.latitude, location.longitude))
         }
 
         override fun onProviderEnabled(p0: String?) {}
@@ -57,6 +59,7 @@ object LocationManager {
     var setGpsActive: (()->Unit)? = null
 
     private lateinit var locationManager: LocationManager
+    private var trackNr = -1L
     private const val LOCATION_REFRESH_TIME = 500L
     private const val LOCATION_REFRESH_DISTANCE = 0.0F
 //    private var trackPoints: TrackPointsDataSource? = null

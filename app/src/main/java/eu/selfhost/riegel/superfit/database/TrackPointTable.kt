@@ -1,15 +1,14 @@
 package eu.selfhost.riegel.superfit.database
 
 object TrackPointTable {
-    val ID = "_id"
-    val Name = "TrackPoints"
-    val TrackNr = "TrackNr"
-    val Latitude = "Latitude"
-    val Longitude = "Longitude"
-    val Elevation = "Elevation"
-    val Distance = "Distance"
-    val HeartRate = "HeartRate"
-    val Time = "Time"
-    val Speed = "Speed"
-    val Precision = "Precision"
+    const val ID = "_id"
+    const val Name = "TrackPoints"
+    const val TrackNr = "TrackNr"
+    const val Latitude = "Latitude"
+    const val Longitude = "Longitude"
+    const val Elevation = "Elevation"
+    const val HeartRate = "HeartRate"
+    const val Time = "Time"
+    const val Speed = "Speed"
+    const val Precision = "Precision"
 }

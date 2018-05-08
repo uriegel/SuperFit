@@ -1,16 +1,11 @@
 package eu.selfhost.riegel.superfit.database
 
-import android.content.ContentValues
 import android.location.Location
 import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.db.*
 
 object DataBase {
-    // TODO: Beim Beenden Track aktualisieren
-    // TODO: Trackpoints einfügen
     fun createTrack(location: Location): Long {
         var result = 0L
         dataBaseHelper.use {
@@ -43,7 +38,29 @@ object DataBase {
                         }
             }
         }
-//          return result.await()
+    }
+
+    fun updateTrack(trackNr: Long, distance: Float, averageSpeed: Float) {
+        dataBaseHelper.use {
+            update(TrackTable.Name,
+                    TrackTable.Distance to distance, TrackTable.AverageSpeed to averageSpeed)
+                    .whereArgs("_id = {trackNr}", "trackNr" to trackNr)
+                    .exec()
+        }
+    }
+
+    fun insertTrackPoint(trackNr: Long, location: Location, speed: Float, heartRate: Int) {
+        dataBaseHelper.use {
+            insert(TrackPointTable.Name,
+                    TrackPointTable.TrackNr to trackNr,
+                    TrackPointTable.Longitude to location.longitude,
+                    TrackPointTable.Latitude to location.latitude,
+                    TrackPointTable.Elevation to location.altitude,
+                    TrackPointTable.Time to location.time,
+                    TrackPointTable.Precision to location.accuracy,
+                    TrackPointTable.Speed to speed,
+                    TrackPointTable.HeartRate to heartRate)
+        }
     }
 
     private val dataBaseHelper: DataBaseHelper = DataBaseHelper.instance

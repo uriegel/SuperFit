@@ -11,15 +11,16 @@ object HeartRate {
         get() = deviceHandle != null
 
     var listener: ((heartRate: Int)->Unit)? = null
+    var currentHeartRate = 0
 
     fun start(context: Context, device: MultiDeviceSearch.MultiDeviceSearchResult) {
         deviceHandle = AntPlusHeartRatePcc.requestAccess(context, device.antDeviceNumber, 0, { heartRateController, resultCode, _ ->
             if (resultCode == RequestAccessResult.SUCCESS) {
-                var lastHeartRate = 0
+                currentHeartRate = 0
                 heartRateController.subscribeHeartRateDataEvent({ _ /*estTimeStamp*/, _, computedHeartRate, _, _, _ ->
-                    if (lastHeartRate != computedHeartRate) {
+                    if (currentHeartRate != computedHeartRate) {
                         listener?.invoke(computedHeartRate)
-                        lastHeartRate = computedHeartRate
+                        currentHeartRate = computedHeartRate
                     }
                 })
             }
