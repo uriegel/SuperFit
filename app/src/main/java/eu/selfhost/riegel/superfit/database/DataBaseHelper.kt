@@ -8,6 +8,7 @@ class DataBaseHelper : ManagedSQLiteOpenHelper(Application.instance, DataBaseHel
     override fun onCreate(db: SQLiteDatabase) {
         db.createTable(TrackTable.Name, true,
                 TrackTable.ID to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
+                TrackTable.TrackName to TEXT,
                 TrackTable.Latitude to REAL,
                 TrackTable.Longitude to REAL,
                 TrackTable.Duration to INTEGER,

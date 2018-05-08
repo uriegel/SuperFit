@@ -20,18 +20,22 @@ object DataBase{
 
     fun getTracks() {
         dataBaseHelper.use {
-            select(TrackTable.Name, TrackTable.Time)
+            select(TrackTable.Name,
+                    TrackTable.ID,
+                    TrackTable.TrackName,
+                    TrackTable.Distance,
+                    TrackTable.AverageSpeed,
+                    TrackTable.Time)
                     .orderBy(TrackTable.Time, SqlOrderDirection.DESC)
                     .exec {
-                        val seq = this.asMapSequence()
-                        val gut = seq.map({
-                            it[TrackTable.Time]
-                        })
-                        val affe = gut.toList().toTypedArray()
-                        for (besser in gut) {
-                            var t = besser
-                            val tt = t
-                        }
+                        val gut = asMapSequence().map{
+                            Track((it[TrackTable.ID] as Long).toInt(),
+                                    it[TrackTable.TrackName] as String? ?: "",
+                                    it[TrackTable.Distance] as Float? ?: 0F,
+                                    it[TrackTable.AverageSpeed] as Float? ?: 0F,
+                                    it[TrackTable.Time] as Long)
+                        }.toList().toTypedArray()
+                        val besser = gut
                     }
 
         }
