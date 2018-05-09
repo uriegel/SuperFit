@@ -30,8 +30,6 @@ object LocationManager {
         }
     }
 
-    //fun getTrackNumber(): Long? = trackPoints?.trackNumber
-
     private val locationListener = object : LocationListener {
 
         override fun onLocationChanged(location: Location) {
@@ -46,8 +44,6 @@ object LocationManager {
             //if (location.hasBearing()) {
             //}
             DataBase.insertTrackPoint(trackNr, location, Bike.speed, HeartRate.currentHeartRate)
-//            trackPoints!!.add(TrackPoint(location.latitude, location.longitude, location.altitude,
-//                    location.time, location.accuracy, data.speed, data.heartRate))
         }
 
         override fun onProviderEnabled(p0: String?) {}
@@ -62,6 +58,5 @@ object LocationManager {
     private var trackNr = -1L
     private const val LOCATION_REFRESH_TIME = 500L
     private const val LOCATION_REFRESH_DISTANCE = 0.0F
-//    private var trackPoints: TrackPointsDataSource? = null
 }
 
