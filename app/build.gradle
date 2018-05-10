@@ -39,3 +39,8 @@ dependencies {
     implementation "org.mapsforge:mapsforge-themes:$mapsforge_version"
     implementation "org.mapsforge:mapsforge-map-android:$mapsforge_version"
 }
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}

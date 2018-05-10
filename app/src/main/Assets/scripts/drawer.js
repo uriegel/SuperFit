@@ -35,6 +35,7 @@ function onTracks(tracks) {
         speed.innerHTML = `${n.averageSpeed.toFixed(1)} km/h`;
         const distance = li.querySelector(".distance");
         distance.innerHTML = `${n.distance.toFixed(0)} km`;
+        li.onclick = () => Native.onTrackSelected(Number.parseInt(li.dataset.nr));
         return li;
     });
     lis.forEach(li => trackList.appendChild(li));

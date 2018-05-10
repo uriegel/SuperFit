@@ -1,4 +1,7 @@
-package eu.selfhost.riegel.superfit.utils;
+package eu.selfhost.riegel.superfit.maps;
+
+import android.annotation.SuppressLint;
+import android.support.annotation.NonNull;
 
 import org.mapsforge.core.model.LatLong;
 import org.xml.sax.Attributes;
@@ -22,8 +25,8 @@ import javax.xml.parsers.SAXParserFactory;
  */
 
 public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
-    public static SAXParserFactory factory = SAXParserFactory.newInstance();
-    public static final String[] formats = new String[]{
+    private static SAXParserFactory factory = SAXParserFactory.newInstance();
+    private static final String[] formats = new String[]{
             "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
             "yyyy-MM-dd'T'HH:mm:ssZ",
             "yyyy-MM-dd'T'HH:mmZ",
@@ -43,7 +46,7 @@ public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
     private static final String LON = "lon";
     private static final String TRKPT = "trkpt";
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
-    private List<TrackPoint> track = new ArrayList<TrackPoint>();
+    private List<TrackPoint> track = new ArrayList<>();
     private String trackname;
     private String description;
 
@@ -52,11 +55,13 @@ public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
         parser.parse(file, new Handler());
     }
 
+    @NonNull
     public Iterator<TrackPoint> iterator() {
         return track.iterator();
     }
 
-    public static Date parseDate(final String str) {
+    private static Date parseDate(final String str) {
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat sdf = new SimpleDateFormat();
         sdf.setTimeZone(UTC);
         for (String format : formats) {
@@ -66,7 +71,6 @@ public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
             }
             catch (ParseException e) {
                 // if (DEBUG) Log.e(TAG, e.toString(), e);
-                ; // ignore parser errors
             }
         }
         return new Date(0);
@@ -86,7 +90,7 @@ public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
         public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
             cdata.delete(0, cdata.length());
             if (localName.equalsIgnoreCase(TRK)) {
-                ;
+
             }
             else if (localName.equalsIgnoreCase(TRKPT)) {
                 trkpt = new TrackPoint(
@@ -100,7 +104,7 @@ public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
         @Override
         public void endElement(String uri, String localName, String name) throws SAXException {
             if (localName.equalsIgnoreCase(TRK)) {
-                ; // done reading
+                // done reading
             }
             else if (localName.equalsIgnoreCase(NAME)) {
                 trackname = cdata.toString().trim(); // trackname

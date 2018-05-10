@@ -2,6 +2,7 @@ package eu.selfhost.riegel.superfit.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
@@ -12,12 +13,16 @@ import android.webkit.WebView
 import com.google.gson.Gson
 import eu.selfhost.riegel.superfit.android.Service
 import eu.selfhost.riegel.superfit.database.DataBase
+import eu.selfhost.riegel.superfit.maps.exportToGpx
+import eu.selfhost.riegel.superfit.utils.createDocument
+import eu.selfhost.riegel.superfit.utils.onCreateDocument
 import eu.selfhost.riegel.superfit.utils.serialize
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -64,6 +69,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when {
+            onCreateDocument(requestCode, resultCode, data) -> return
+        }
+    }
+
     private fun onStateChanged(state: Service.ServiceState) = webView.evaluateJavascript("onStateChanged(${state.serialize()})", null)
 
     private val javaScriptInterface = object {
@@ -80,6 +91,25 @@ class MainActivity : AppCompatActivity() {
                 val gson = Gson()
                 val json = gson.toJson(tracks)
                 webView.evaluateJavascript("onTracks($json)", null)
+            }
+        }
+
+        // TODO: ClickAnimation für Tracks und Track, DoHapticFeedback
+        @Suppress("DEPRECATION")
+        @JavascriptInterface
+        fun onTrackSelected(trackNr: Long) {
+            async(UI) {
+                val track = DataBase.getTrackAsync(trackNr).await()
+                val date = Date(track.time)
+                val name = "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}.gpx"
+
+                val uri = createDocument(name)
+                if (uri != null) {
+                    val stream = contentResolver.openOutputStream(uri)
+                    val trackPoints = DataBase.getTrackPointsAsync(trackNr).await()
+                    exportToGpx(stream, trackPoints)
+                    stream.close()
+                }
             }
         }
 
@@ -133,5 +163,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000
+        private const val CREATE_REQUEST_CODE = 40
     }
 }

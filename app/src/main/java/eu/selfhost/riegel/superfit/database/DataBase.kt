@@ -40,6 +40,56 @@ object DataBase {
         }
     }
 
+    fun getTrackAsync(trackNr: Long): Deferred<Track> {
+        return bg {
+            dataBaseHelper.use {
+                select(TrackTable.Name,
+                        TrackTable.ID,
+                        TrackTable.TrackName,
+                        TrackTable.Distance,
+                        TrackTable.AverageSpeed,
+                        TrackTable.Time)
+                        .whereArgs("_id = {trackNr}", "trackNr" to trackNr)
+                        .exec {
+                            return@exec asMapSequence().map {
+                                Track((it[TrackTable.ID] as Long).toInt(),
+                                        it[TrackTable.TrackName] as String? ?: "",
+                                        (it[TrackTable.Distance] as Double? ?: 0.0).toFloat(),
+                                        (it[TrackTable.AverageSpeed] as Double? ?: 0.0).toFloat(),
+                                        it[TrackTable.Time] as Long)
+                            }.first()
+                        }
+            }
+        }
+    }
+
+    fun getTrackPointsAsync(trackNr: Long): Deferred<Array<TrackPoint>> {
+        return bg {
+            dataBaseHelper.use {
+                select(TrackPointTable.Name,
+                        TrackPointTable.Latitude,
+                        TrackPointTable.Longitude,
+                        TrackPointTable.Elevation,
+                        TrackPointTable.Time,
+                        TrackPointTable.Precision,
+                        TrackPointTable.Speed,
+                        TrackPointTable.HeartRate)
+                        .whereArgs("TrackNr = {trackNr}", "trackNr" to trackNr)
+                        .exec {
+                            return@exec asMapSequence().map {
+                                TrackPoint(it[TrackPointTable.Latitude] as Double,
+                                        it[TrackPointTable.Longitude] as Double,
+                                        (it[TrackPointTable.Elevation] as Double).toFloat(),
+                                        it[TrackTable.Time] as Long,
+                                        (it[TrackPointTable.Precision] as Double).toFloat(),
+                                        (it[TrackPointTable.Speed] as Double).toFloat(),
+                                        (it[TrackPointTable.HeartRate] as Long).toInt())
+                            }.toList().toTypedArray()
+                        }
+            }
+        }
+    }
+
     fun updateTrack(trackNr: Long, distance: Float, averageSpeed: Float) {
         dataBaseHelper.use {
             update(TrackTable.Name,
