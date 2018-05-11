@@ -16,7 +16,6 @@ import eu.selfhost.riegel.superfit.ui.MainActivity
 
 class Service : Service() {
 
-    // TODO: objects beim Start neu initialisieren: Dauer, Distanz usw.
     enum class ServiceState {
         Stopped,
         Starting,

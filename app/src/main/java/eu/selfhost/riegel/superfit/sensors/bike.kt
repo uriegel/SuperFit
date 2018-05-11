@@ -42,6 +42,13 @@ object Bike {
         deviceHandle = null
         cadenceDeviceHandle?.close()
         cadenceDeviceHandle = null
+
+        speed = 0F
+        maxSpeed = Float.NEGATIVE_INFINITY
+        averageSpeed = 0F
+        distance = 0F
+        cadence = 0
+        time = 0L
     }
 
     private fun subScribeToBikeSpeed(context: Context, bikeController: AntPlusBikeSpeedDistancePcc) {

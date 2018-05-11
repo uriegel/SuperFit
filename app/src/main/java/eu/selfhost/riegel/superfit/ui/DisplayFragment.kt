@@ -20,7 +20,7 @@ import org.jetbrains.anko.uiThread
 import java.util.*
 import kotlin.concurrent.timerTask
 
-//TODO: Dem Display initial immer alle Wegepunkte übermitteln
+//TODO: Dem Display initial immer alle Wegepunkte übermitteln, dann erst den Listener des LocationManagers starten
 class DisplayFragment : Fragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
