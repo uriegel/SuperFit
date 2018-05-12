@@ -40,7 +40,7 @@ public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
     private static final String DESC = "desc";
     private static final String ELE = "ele";
     private static final String NAME = "name";
-    private static final String TIME = "time";
+    private static final String TIME = "duration";
     private static final String TRK = "trk";
     private static final String LAT = "lat";
     private static final String LON = "lon";
@@ -119,7 +119,7 @@ public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
                 trkpt.setAltitude((int)Double.parseDouble(cdata.toString().trim())); // altitude
             }
             else if (localName.equalsIgnoreCase(TIME)) {
-                trkpt.setTimestamp(parseDate(cdata.toString().trim())); // time
+                trkpt.setTimestamp(parseDate(cdata.toString().trim())); // duration
             }
             else if (localName.equalsIgnoreCase(TRKPT)) {
                 track.add(trkpt);

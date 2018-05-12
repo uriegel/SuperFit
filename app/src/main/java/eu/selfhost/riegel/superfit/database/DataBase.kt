@@ -32,6 +32,7 @@ object DataBase {
                                 Track((it[TrackTable.ID] as Long).toInt(),
                                         it[TrackTable.TrackName] as String? ?: "",
                                         (it[TrackTable.Distance] as Double? ?: 0.0).toFloat(),
+                                        it[TrackTable.Duration] as Long? ?: 0L,
                                         (it[TrackTable.AverageSpeed] as Double? ?: 0.0).toFloat(),
                                         it[TrackTable.Time] as Long)
                             }.toList().toTypedArray()
@@ -55,6 +56,7 @@ object DataBase {
                                 Track((it[TrackTable.ID] as Long).toInt(),
                                         it[TrackTable.TrackName] as String? ?: "",
                                         (it[TrackTable.Distance] as Double? ?: 0.0).toFloat(),
+                                        it[TrackTable.Duration] as Long? ?: 0L,
                                         (it[TrackTable.AverageSpeed] as Double? ?: 0.0).toFloat(),
                                         it[TrackTable.Time] as Long)
                             }.first()
@@ -90,10 +92,10 @@ object DataBase {
         }
     }
 
-    fun updateTrack(trackNr: Long, distance: Float, averageSpeed: Float) {
+    fun updateTrack(trackNr: Long, duration: Long, distance: Float, averageSpeed: Float) {
         dataBaseHelper.use {
             update(TrackTable.Name,
-                    TrackTable.Distance to distance, TrackTable.AverageSpeed to averageSpeed)
+                    TrackTable.Distance to distance, TrackTable.AverageSpeed to averageSpeed, TrackTable.Duration to duration)
                     .whereArgs("_id = {trackNr}", "trackNr" to trackNr)
                     .exec()
         }

@@ -26,5 +26,5 @@ object StopWatch {
     private var startTime = 0L
     private var previousTimeSpan = 0L
     private val period = 500L
-    lateinit private var timer: Timer
+    private lateinit var timer: Timer
 }

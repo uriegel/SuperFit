@@ -23,3 +23,10 @@ fun XmlSerializer.element(namespace: String?, name: String, content: String) {
     this.endTag(namespace, name)
 }
 
+fun XmlSerializer.cdata(namespace: String?, name: String, cdata: String) {
+    this.startTag(namespace, name)
+    this.cdsect(cdata)
+    this.endTag(namespace, name)
+}
+
+

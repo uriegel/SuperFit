@@ -29,7 +29,8 @@ object LocationManager {
         locationManager.removeUpdates(locationListener)
         gpsActive = false
         if (trackNr != -1L) {
-            DataBase.updateTrack(trackNr, Bike.distance, Bike.averageSpeed)
+            // TODO: Only, when enough track points (> 30) otherwise delete track, getTrackPointsCount
+            DataBase.updateTrack(trackNr, Bike.duration, Bike.distance, Bike.averageSpeed)
             trackNr = -1L
         }
     }

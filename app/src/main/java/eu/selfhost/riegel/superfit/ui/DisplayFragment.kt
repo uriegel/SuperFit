@@ -5,13 +5,10 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
-import android.view.SoundEffectConstants
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
-import android.webkit.WebChromeClient
 import android.webkit.WebView
-import eu.selfhost.riegel.superfit.android.Service
 import eu.selfhost.riegel.superfit.maps.LocationManager
 import eu.selfhost.riegel.superfit.sensors.Bike
 import eu.selfhost.riegel.superfit.sensors.HeartRate
@@ -46,7 +43,7 @@ class DisplayFragment : Fragment() {
                 doAsync {
                     uiThread {
                         webView.evaluateJavascript(
-                        "onBikeDataChanged(${Bike.speed}, ${Bike.maxSpeed}, ${Bike.averageSpeed}, ${Bike.distance}, ${Bike.time}, ${Bike.cadence})", null)
+                        "onBikeDataChanged(${Bike.speed}, ${Bike.maxSpeed}, ${Bike.averageSpeed}, ${Bike.distance}, ${Bike.duration}, ${Bike.cadence})", null)
                     }
                 }
         }, delay , delay )

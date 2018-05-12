@@ -3,7 +3,6 @@ package eu.selfhost.riegel.superfit.sensors
 import android.content.Context
 import com.dsi.ant.plugins.antplus.pcc.AntPlusBikeCadencePcc
 import com.dsi.ant.plugins.antplus.pcc.AntPlusBikeSpeedDistancePcc
-import com.dsi.ant.plugins.antplus.pcc.AntPlusHeartRatePcc
 import com.dsi.ant.plugins.antplus.pcc.defines.EventFlag
 import com.dsi.ant.plugins.antplus.pcc.defines.RequestAccessResult
 import com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch
@@ -22,7 +21,7 @@ object Bike {
     var averageSpeed = 0F
     var distance = 0F
     var cadence = 0
-    var time = 0L
+    var duration = 0L
 
     fun start(context: Context, device: MultiDeviceSearch.MultiDeviceSearchResult) {
         deviceHandle = AntPlusBikeSpeedDistancePcc.requestAccess(context, device.antDeviceNumber, 0, true, { bikeController, resultCode, _ ->
@@ -32,7 +31,7 @@ object Bike {
         })
 
         StopWatch.tick = {
-            time = it
+            duration = it
             averageSpeed = (if (it > 0) distance / it else 0f) * 3600f
         }
     }
@@ -48,7 +47,7 @@ object Bike {
         averageSpeed = 0F
         distance = 0F
         cadence = 0
-        time = 0L
+        duration = 0L
     }
 
     private fun subScribeToBikeSpeed(context: Context, bikeController: AntPlusBikeSpeedDistancePcc) {

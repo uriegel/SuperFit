@@ -101,13 +101,13 @@ class MainActivity : AppCompatActivity() {
             async(UI) {
                 val track = DataBase.getTrackAsync(trackNr).await()
                 val date = Date(track.time)
-                val name = "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}.gpx"
+                val name = if (track.name.isEmpty()) "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}" else track.name
 
-                val uri = createDocument(name)
+                val uri = createDocument("$name.gpx")
                 if (uri != null) {
                     val stream = contentResolver.openOutputStream(uri)
                     val trackPoints = DataBase.getTrackPointsAsync(trackNr).await()
-                    exportToGpx(stream, trackPoints)
+                    exportToGpx(stream, name, track, trackPoints)
                     stream.close()
                 }
             }
