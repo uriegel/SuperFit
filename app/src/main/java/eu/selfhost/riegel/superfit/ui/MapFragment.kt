@@ -10,9 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import eu.selfhost.riegel.superfit.maps.LocationManager
+import eu.selfhost.riegel.superfit.maps.LocationManager.getCurrentTrack
 import eu.selfhost.riegel.superfit.maps.LocationMarker
 import eu.selfhost.riegel.superfit.maps.TrackLine
 import eu.selfhost.riegel.superfit.utils.getSdCard
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.rotation.RotateView
@@ -63,23 +66,30 @@ class MapFragment : Fragment() {
 
         frameLayout.addView(mapView)
 
-        LocationManager.listener = {
-            val currentLatLong = LatLong(it.latitude, it.longitude)
-            if (location != null)
-                mapView.layerManager.layers.remove(location)
-            location = LocationMarker(currentLatLong)
-            mapView.layerManager.layers.add(location)
-            if (followLocation)
-                mapView.setCenter(currentLatLong)
-            trackLine.latLongs.add(currentLatLong)
+        async(UI) {
+            val tracks = getCurrentTrack().await()
+            if (tracks.isNotEmpty())
+                tracks.forEach({(trackLine.latLongs.add(it))})
 
-            if (rotateView != null
-                    && lastLocation != null
-                    && lastLocation!!.accuracy < ACCURACY_BEARING
-                    && it.accuracy < ACCURACY_BEARING)
-                rotateView!!.heading = lastLocation!!.bearingTo(it)
-            lastLocation = it
+            LocationManager.listener = {
+                val currentLatLong = LatLong(it.latitude, it.longitude)
+                if (location != null)
+                    mapView.layerManager.layers.remove(location)
+                location = LocationMarker(currentLatLong)
+                mapView.layerManager.layers.add(location)
+                if (followLocation)
+                    mapView.setCenter(currentLatLong)
+                trackLine.latLongs.add(currentLatLong)
+
+                if (rotateView != null
+                        && lastLocation != null
+                        && lastLocation!!.accuracy < ACCURACY_BEARING
+                        && it.accuracy < ACCURACY_BEARING)
+                    rotateView!!.heading = lastLocation!!.bearingTo(it)
+                lastLocation = it
+            }
         }
+
         return frameLayout
     }
 

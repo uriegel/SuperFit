@@ -4,12 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.location.Location
-import android.location.LocationManager
 import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import eu.selfhost.riegel.superfit.database.DataBase
 import eu.selfhost.riegel.superfit.sensors.Bike
 import eu.selfhost.riegel.superfit.sensors.HeartRate
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import org.mapsforge.core.model.LatLong
 
 @SuppressLint("MissingPermission")
 object LocationManager {
@@ -27,6 +31,15 @@ object LocationManager {
         if (trackNr != -1L) {
             DataBase.updateTrack(trackNr, Bike.distance, Bike.averageSpeed)
             trackNr = -1L
+        }
+    }
+
+    fun getCurrentTrack() : Deferred<Array<LatLong>> {
+        return async(UI) {
+            if (trackNr == -1L)
+                return@async arrayOf<LatLong>()
+            val res = DataBase.getTrackPointsAsync(trackNr).await()
+            return@async res.map { LatLong(it.latitude, it.longitude) }.toTypedArray()
         }
     }
 

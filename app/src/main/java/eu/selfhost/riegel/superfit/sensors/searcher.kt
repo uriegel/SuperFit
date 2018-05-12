@@ -18,9 +18,9 @@ object Searcher {
                     DeviceType.BIKE_SPDCAD -> Bike.start(context, device)
                     else -> {}
                 }
-                // TODO: Alles wird beended!
-       //         if (Bike.isStarted && HeartRate.isStarted)
-       //             stop()
+                // Alles wird beended!
+                // if (Bike.isStarted && HeartRate.isStarted)
+                //     stop()
             }
         })
     }
