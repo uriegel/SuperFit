@@ -92,6 +92,19 @@ object DataBase {
         }
     }
 
+    // TODO: When < 30 then delete all trackpoints and track with trackNR
+    fun getTrackPointsCountAsync(trackNr: Long): Deferred<Int> {
+        return bg {
+            dataBaseHelper.use {
+                select(TrackPointTable.Name)
+                        .whereArgs("TrackNr = {trackNr}", "trackNr" to trackNr)
+                        .exec {
+                            return@exec asSequence().count()
+                        }
+            }
+        }
+    }
+
     fun updateTrack(trackNr: Long, duration: Long, distance: Float, averageSpeed: Float) {
         dataBaseHelper.use {
             update(TrackTable.Name,
