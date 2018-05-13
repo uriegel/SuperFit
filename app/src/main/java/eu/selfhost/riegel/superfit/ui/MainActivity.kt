@@ -94,7 +94,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // TODO: ClickAnimation für Tracks und Track, DoHapticFeedback
         @Suppress("DEPRECATION")
         @JavascriptInterface
         fun onTrackSelected(trackNr: Long) {

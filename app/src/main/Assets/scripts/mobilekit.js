@@ -172,6 +172,10 @@ class Drawer {
          */
         this.drawerLayer = document.createElement("div");
         this.drawer = document.createElement("div");
+        const clickAnimations = Array.from(drawerContent.getElementsByClassName("mobilekit-click-animation"))
+            .map(el => new ClickAnimation(el, false));
+        this.clickAnimations = clickAnimations.concat(Array.from(drawerContent.getElementsByClassName("mobilekit-click-animation-children"))
+            .map(el => new ClickAnimation(el, true)));
         this.drawerLayer.appendChild(this.drawer);
         const shader = document.createElement("div");
         this.drawerLayer.appendChild(shader);
@@ -221,6 +225,10 @@ class Drawer {
     refresh() {
         if (this.scroller)
             this.scroller.refresh();
+    }
+    setClickListener(cls, onClick) {
+        const animation = this.clickAnimations.filter(ca => ca.hasClass(cls))[0];
+        animation.setClickListener(onClick);
     }
     /**
      * Returns true, if a Scroller is included
@@ -346,16 +354,22 @@ class Drawer {
     }
 }
 class ClickAnimation {
-    constructor(clickableElement) {
-        this.clickableElement = clickableElement;
+    constructor(element, isParent) {
+        this.element = element;
+        this.isParent = isParent;
         this.htmlStyles = window.getComputedStyle(document.querySelector("html"));
         this.clickedColor = this.htmlStyles.getPropertyValue('--button-clicked');
-        this.backgroundColor = this.clickableElement.style.backgroundColor;
         this.inClick = false;
-        //private getClicked: (evt: MouseEvent) => HTMLElement,
-        this.onClick = clickableElement.onclick;
-        clickableElement.onclick = evt => this.beginClick(evt);
-        this.getClicked = evt => { return clickableElement; };
+        this.onMouseClick = element.onclick;
+        element.onclick = null;
+        element.addEventListener("click", evt => this.beginClick(evt), true);
+        this.getClicked = evt => { return isParent ? this.findDirectChild(evt.target) : element; };
+    }
+    hasClass(cls) {
+        return (this.element.classList.contains(cls));
+    }
+    setClickListener(onClick) {
+        this.onClick = onClick;
     }
     beginClick(evt) {
         if (this.inClick)
@@ -381,7 +395,10 @@ class ClickAnimation {
         const drawCircle = (index) => {
             const alpha = index / 10;
             if (!actionExecuted && alpha > 0.9) {
-                this.onClick(evt);
+                if (this.onClick)
+                    this.onClick(this.isParent ? this.findDirectChild(evt.target) : evt.target);
+                else
+                    this.onMouseClick(evt);
                 actionExecuted = true;
             }
             if (alpha > 1) {
@@ -418,11 +435,19 @@ class ClickAnimation {
         };
         requestAnimationFrame(animate);
     }
+    findDirectChild(element) {
+        const isDirectChild = (element) => { return element.parentElement == this.element; };
+        if (isDirectChild(element))
+            return element;
+        else
+            return this.findDirectChild(element.parentElement);
+    }
 }
 ///<reference path="drawer.ts" />
 class MobileKitApp {
     constructor() {
         this.scrollers = [];
+        this.onInitialized = [];
         injectStylesheet();
         document.addEventListener("DOMContentLoaded", () => this.initialize());
     }
@@ -451,6 +476,12 @@ class MobileKitApp {
     refreshScroller() {
         this.scrollers.forEach(n => n.refresh());
     }
+    setDrawerClickListener(cls, onClick) {
+        if (this.drawer)
+            this.drawer.setClickListener(cls, onClick);
+        else
+            this.onInitialized.push(() => this.drawer.setClickListener(cls, onClick));
+    }
     initialize() {
         const titleButtonLeft = document.getElementsByClassName("mobilekit-title-button-left")[0];
         if (titleButtonLeft)
@@ -459,7 +490,7 @@ class MobileKitApp {
         if (scrollContent)
             this.scrollers.push(new Scroller(scrollContent));
         const clickAnimations = Array.from(document.getElementsByClassName("mobilekit-click-animation"));
-        clickAnimations.forEach(clickAnimation => new ClickAnimation(clickAnimation));
+        clickAnimations.forEach(clickAnimation => new ClickAnimation(clickAnimation, false));
         const drawerContent = document.getElementById("mobilekit-drawer-content");
         if (drawerContent) {
             this.drawer = new Drawer(drawerContent.content.querySelector('div'));
@@ -469,6 +500,7 @@ class MobileKitApp {
                     this.drawer.open();
                 };
         }
+        this.onInitialized.forEach(action => action());
     }
 }
 const mobileKitApp = new MobileKitApp();

@@ -6,33 +6,36 @@
     time: Date
 }
 
-(function () {
+const tracks = document.getElementById("tracks")
 
+;(function () {
     mobileKitApp.setOnDrawerOpened(() => {
-        const OPENED = "opened"
         trackFactory = (document.getElementById('trackTemplate') as HTMLTemplateElement).content.querySelector('li')
         const tracksMarker = document.getElementById("tracksMarker")
-        const tracks = document.getElementById("tracks")
         const trackList = document.getElementById("trackList")
-        tracks.onclick = () => {
-            Native.doHapticFeedback()
-            trackList.innerHTML = ""
-            mobileKitApp.drawer.refresh()
-            if (tracksMarker.classList.contains(OPENED))
-                tracksMarker.classList.remove(OPENED);
-            else {
-                tracksMarker.classList.add(OPENED);
-                Native.fillTracks();
-            }
-        }
     })
 })()
 
+const OPENED = "opened"
 var trackFactory: HTMLLIElement
 
-function onTracks(tracks: TrackData[]) {
+mobileKitApp.setDrawerClickListener("tracks", element => {
     const trackList = document.getElementById("trackList")
+    trackList.innerHTML = ""
+    const tracksMarker = document.getElementById("tracksMarker")
+    mobileKitApp.drawer.refresh()
+    if (tracksMarker.classList.contains(OPENED))
+        tracksMarker.classList.remove(OPENED);
+    else {
+        tracksMarker.classList.add(OPENED);
+        Native.fillTracks();
+    }
+})
 
+mobileKitApp.setDrawerClickListener("trackList", 
+    element => Native.onTrackSelected(Number.parseInt(element.dataset.nr)))
+
+function onTracks(tracks: TrackData[]) {
     const lis = tracks.map(n => {
         const li = trackFactory.cloneNode(true) as HTMLLIElement
         li.dataset.nr = n.trackNr.toString()
@@ -46,11 +49,9 @@ function onTracks(tracks: TrackData[]) {
         speed.innerHTML = `${n.averageSpeed.toFixed(1)} km/h`
         const distance = li.querySelector(".distance")
         distance.innerHTML = `${n.distance.toFixed(0)} km`
-
-        li.onclick = () => Native.onTrackSelected(Number.parseInt(li.dataset.nr))        
-
         return li
     })
+    const trackList = document.getElementById("trackList")
     lis.forEach(li => trackList.appendChild(li))
     
     const drawerHeader = document.getElementsByClassName("drawerHeader")[0] as HTMLElement
@@ -75,7 +76,7 @@ function onTracks(tracks: TrackData[]) {
         }
         drawer.addEventListener("transitionend", transitionend)
     }
-   
+
     //function fillNext(lisToFill: HTMLLIElement[]) {
     //    const lis = lisToFill.slice(0, 5)
     //    lis.forEach(li => trackList.appendChild(li))

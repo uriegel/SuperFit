@@ -1,27 +1,28 @@
 "use strict";
+const tracks = document.getElementById("tracks");
 (function () {
     mobileKitApp.setOnDrawerOpened(() => {
-        const OPENED = "opened";
         trackFactory = document.getElementById('trackTemplate').content.querySelector('li');
         const tracksMarker = document.getElementById("tracksMarker");
-        const tracks = document.getElementById("tracks");
         const trackList = document.getElementById("trackList");
-        tracks.onclick = () => {
-            Native.doHapticFeedback();
-            trackList.innerHTML = "";
-            mobileKitApp.drawer.refresh();
-            if (tracksMarker.classList.contains(OPENED))
-                tracksMarker.classList.remove(OPENED);
-            else {
-                tracksMarker.classList.add(OPENED);
-                Native.fillTracks();
-            }
-        };
     });
 })();
+const OPENED = "opened";
 var trackFactory;
-function onTracks(tracks) {
+mobileKitApp.setDrawerClickListener("tracks", element => {
     const trackList = document.getElementById("trackList");
+    trackList.innerHTML = "";
+    const tracksMarker = document.getElementById("tracksMarker");
+    mobileKitApp.drawer.refresh();
+    if (tracksMarker.classList.contains(OPENED))
+        tracksMarker.classList.remove(OPENED);
+    else {
+        tracksMarker.classList.add(OPENED);
+        Native.fillTracks();
+    }
+});
+mobileKitApp.setDrawerClickListener("trackList", element => Native.onTrackSelected(Number.parseInt(element.dataset.nr)));
+function onTracks(tracks) {
     const lis = tracks.map(n => {
         const li = trackFactory.cloneNode(true);
         li.dataset.nr = n.trackNr.toString();
@@ -35,9 +36,9 @@ function onTracks(tracks) {
         speed.innerHTML = `${n.averageSpeed.toFixed(1)} km/h`;
         const distance = li.querySelector(".distance");
         distance.innerHTML = `${n.distance.toFixed(0)} km`;
-        li.onclick = () => Native.onTrackSelected(Number.parseInt(li.dataset.nr));
         return li;
     });
+    const trackList = document.getElementById("trackList");
     lis.forEach(li => trackList.appendChild(li));
     const drawerHeader = document.getElementsByClassName("drawerHeader")[0];
     const drawer = drawerHeader.parentElement;

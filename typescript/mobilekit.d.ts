@@ -33,6 +33,7 @@ declare class Drawer {
     open(): void;
     close(withoutTransition?: boolean): void;
     refresh(): void;
+    setClickListener(cls: string, onClick: (element: HTMLElement) => void): void;
     /**
      * Returns true, if a Scroller is included
      * */
@@ -46,17 +47,22 @@ declare class Drawer {
     private drawer;
     private scroller;
     private readonly shader;
+    private readonly clickAnimations;
 }
 declare class ClickAnimation {
-    private clickableElement;
-    constructor(clickableElement: HTMLElement);
+    private element;
+    private isParent;
+    constructor(element: HTMLElement, isParent: boolean);
+    hasClass(cls: string): boolean;
+    setClickListener(onClick: (element: HTMLElement) => void): void;
     private beginClick(evt);
     private animateClick(clickedElement, evt);
+    private findDirectChild(element);
     private readonly htmlStyles;
     private readonly clickedColor;
-    private readonly backgroundColor;
     private inClick;
     private getClicked;
+    private onMouseClick;
     private onClick;
 }
 declare class MobileKitApp {
@@ -68,10 +74,12 @@ declare class MobileKitApp {
     setOnHapticFeedback(callback: () => void): void;
     setOnDrawerOpened(callback: () => void): void;
     refreshScroller(): void;
+    setDrawerClickListener(cls: string, onClick: (element: HTMLElement) => void): void;
     private initialize();
     private titleButtonLeftClicked;
     private onHapticFeedbackFunction;
     private onDrawerOpenedFunction;
     private scrollers;
+    private onInitialized;
 }
 declare const mobileKitApp: MobileKitApp;
