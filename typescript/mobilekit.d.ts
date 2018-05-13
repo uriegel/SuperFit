@@ -34,7 +34,7 @@ declare class Drawer {
     close(withoutTransition?: boolean): void;
     refresh(): void;
     /**
-     * Gibt true zurück, wenn ein Scroller eingebaut wurde
+     * Returns true, if a Scroller is included
      * */
     private createDrawer();
     private destroyDrawer();

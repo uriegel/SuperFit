@@ -16,8 +16,8 @@ body {
     padding: 0px;
     margin: 0px;
     overflow: hidden;
-    display: flex;
     height: 100vh;
+    display: flex;
     flex-direction: column;
 }
 
@@ -163,6 +163,7 @@ class SuperKitShader {
             this.shader.classList.remove('isActive');
     }
 }
+///<reference path="shader.ts" />
 //const SUPERKIT_DRAWER_TOUCH_MARGIN = 20
 class Drawer {
     constructor(drawerContent) {
@@ -222,7 +223,7 @@ class Drawer {
             this.scroller.refresh();
     }
     /**
-     * Gibt true zurück, wenn ein Scroller eingebaut wurde
+     * Returns true, if a Scroller is included
      * */
     createDrawer() {
         let result = false;
@@ -418,6 +419,7 @@ class ClickAnimation {
         requestAnimationFrame(animate);
     }
 }
+///<reference path="drawer.ts" />
 class MobileKitApp {
     constructor() {
         this.scrollers = [];
