@@ -6,7 +6,9 @@
     stop(): void
     display(): void
     fillTracks(): void
+    fillMaps(): void
     onTrackSelected(number: Number): void
+    onMapSelected(map: string): void
 }
 
 declare var Native: INative

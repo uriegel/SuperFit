@@ -6,18 +6,35 @@
     time: Date
 }
 
+const maps = document.getElementById("maps")
 const tracks = document.getElementById("tracks")
 
 ;(function () {
     mobileKitApp.setOnDrawerOpened(() => {
         trackFactory = (document.getElementById('trackTemplate') as HTMLTemplateElement).content.querySelector('li')
+        mapsFactory = (document.getElementById('mapTemplate') as HTMLTemplateElement).content.querySelector('li')
         const tracksMarker = document.getElementById("tracksMarker")
+        const mapsMarker = document.getElementById("mapsMarker")
         const trackList = document.getElementById("trackList")
     })
 })()
 
 const OPENED = "opened"
 var trackFactory: HTMLLIElement
+var mapsFactory: HTMLLIElement
+
+mobileKitApp.setDrawerClickListener("maps", element => {
+    const mapList = document.getElementById("mapList")
+    mapList.innerHTML = ""
+    const mapsMarker = document.getElementById("mapsMarker")
+    mobileKitApp.drawer.refresh()
+    if (mapsMarker.classList.contains(OPENED))
+        mapsMarker.classList.remove(OPENED);
+    else {
+        mapsMarker.classList.add(OPENED);
+        Native.fillMaps();
+    }
+})
 
 mobileKitApp.setDrawerClickListener("tracks", element => {
     const trackList = document.getElementById("trackList")
@@ -34,6 +51,21 @@ mobileKitApp.setDrawerClickListener("tracks", element => {
 
 mobileKitApp.setDrawerClickListener("trackList", 
     element => Native.onTrackSelected(Number.parseInt(element.dataset.nr)))
+
+mobileKitApp.setDrawerClickListener("mapList", 
+    element => Native.onMapSelected(element.dataset.title))
+
+function onMaps(maps: string[]) {
+    const lis = maps.map(n => {
+        const li = mapsFactory.cloneNode(true) as HTMLLIElement
+        li.dataset.title = n
+        const row = li.querySelector("div")
+        row.innerText = n
+        return li
+    })
+    const mapList = document.getElementById("mapList")
+    lis.forEach(li => mapList.appendChild(li))
+}
 
 function onTracks(tracks: TrackData[]) {
     const lis = tracks.map(n => {

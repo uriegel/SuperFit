@@ -2,7 +2,6 @@ package eu.selfhost.riegel.superfit.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
@@ -15,6 +14,7 @@ import eu.selfhost.riegel.superfit.android.Service
 import eu.selfhost.riegel.superfit.database.DataBase
 import eu.selfhost.riegel.superfit.maps.exportToGpx
 import eu.selfhost.riegel.superfit.utils.createDocument
+import eu.selfhost.riegel.superfit.utils.getSdCard
 import eu.selfhost.riegel.superfit.utils.onCreateDocument
 import eu.selfhost.riegel.superfit.utils.serialize
 import kotlinx.coroutines.experimental.android.UI
@@ -23,6 +23,8 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 import java.util.*
+import java.io.File
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -94,6 +96,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        @JavascriptInterface
+        fun fillMaps()  {
+            async(UI) {
+                val sdCard: String = getSdCard()
+                val mapsDir = "$sdCard/Maps"
+                val directory = File(mapsDir)
+                val files = directory.listFiles().filter { it.extension == "map" }.map { it.name }
+                val gson = Gson()
+                val json = gson.toJson(files)
+                webView.evaluateJavascript("onMaps($json)", null)
+            }
+        }
+
         @Suppress("DEPRECATION")
         @JavascriptInterface
         fun onTrackSelected(trackNr: Long) {
@@ -110,6 +125,14 @@ class MainActivity : AppCompatActivity() {
                     stream.close()
                 }
             }
+        }
+
+        @JavascriptInterface
+        fun onMapSelected(map: String) {
+            val prefs = getSharedPreferences(PREFS, 0)
+            val editor = prefs.edit()
+            editor.putString(PREF_MAP, map)
+            editor.apply()
         }
 
         @JavascriptInterface
@@ -162,6 +185,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000
+        const val PREFS = "PREFS"
+        const val PREF_MAP = "PREF_MAP"
         private const val CREATE_REQUEST_CODE = 40
     }
 }

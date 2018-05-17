@@ -45,9 +45,11 @@ class MapFragment : Fragment() {
         tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1.0F,
                 mapView.model.frameBufferModel.overdrawFactor)
 
+        val prefs = activity?.getSharedPreferences(MainActivity.PREFS, 0)
+        val map = prefs?.getString(MainActivity.PREF_MAP, "germany.map") ?: "germany.map"
         val sdCard: String = activity.getSdCard()
         val mapsDir = "$sdCard/Maps"
-        val mapDataStore = MapFile(File(mapsDir, "germany.map"))
+        val mapDataStore = MapFile(File(mapsDir, map))
 
         tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
                 InternalRenderTheme.OSMARENDER, false, true, false)

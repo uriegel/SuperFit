@@ -24,12 +24,33 @@
                 <img class="drawericon" src="images/ic_bike.png" />
                 <h1>Super Fit</h1>
             </div>
+            <div id="maps" class="drawerButton mobilekit-click-animation maps">
+                <span id="mapsMarker" class="marker">◢</span>
+                <span class="tracksTitle">Karten</span>
+            </div>
+            <ul id=mapList class="mobilekit-click-animation-children listbox mapList"></ul>
             <div id="tracks" class="drawerButton mobilekit-click-animation tracks">
                 <span id="tracksMarker" class="marker">◢</span>
                 <span class="tracksTitle">Tracks</span>
             </div>
-            <ul id=trackList class="mobilekit-click-animation-children trackList"></ul>
+            <ul id=trackList class="mobilekit-click-animation-children listbox trackList"></ul>
         </div>
+    </template>
+
+    <template id="mapTemplate">
+        <li>
+            <div class="map title">
+                <!-- <img src="images/track.svg" class="trackIcon">
+                <div>
+                    <div class="title">
+                    </div>
+                    <div>
+                        <span class="distance"></span>
+                        <span class="speed"></span>
+                    </div>
+                </div> -->
+            </div>
+        </li>
     </template>
 
     <template id="trackTemplate">
