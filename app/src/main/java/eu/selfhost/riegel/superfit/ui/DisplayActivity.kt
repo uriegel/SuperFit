@@ -15,7 +15,7 @@ class DisplayActivity : AppCompatActivity() {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        viewPager = ViewPager(this)
+        viewPager = ExtendedViewPager(this)
         val pagerId = 1
         with (viewPager) {
             adapter = PagerAdapter(pagerId, supportFragmentManager)
@@ -25,6 +25,10 @@ class DisplayActivity : AppCompatActivity() {
 
         setContentView(viewPager)
     }
+
+    var pagingEnabled
+        get() = viewPager.pagingEnabled
+        set(value) { viewPager.pagingEnabled = value }
 
     private inner class PagerAdapter(private val pagerId: Int, fm: FragmentManager?)
         : FragmentPagerAdapter(fm) {
@@ -58,5 +62,5 @@ class DisplayActivity : AppCompatActivity() {
         }
     }
 
-    private lateinit var viewPager: ViewPager
+    private lateinit var viewPager: ExtendedViewPager
 }

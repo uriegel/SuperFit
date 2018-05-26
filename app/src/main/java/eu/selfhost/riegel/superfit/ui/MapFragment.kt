@@ -26,6 +26,7 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer
 import org.mapsforge.map.reader.MapFile
 import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.File
+import android.view.GestureDetector
 
 class MapFragment : Fragment() {
 
@@ -125,34 +126,22 @@ class MapFragment : Fragment() {
             frameLayout.addView(mapView)
             rotateViewChangeState = RotateViewChangeState.Disabled
         }
-        followLocation = true
+        followLocation = enable
     }
 
-    private val onTouchListener = object : View.OnTouchListener {
-        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-            when (event?.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    pressed = true
-                    x = event.x
-                    y = event.y
-                }
-                MotionEvent.ACTION_UP -> pressed = false
-                else -> {
-                    if (event != null && event.pointerCount > 1)
-                        pressed = false
-                    if (pressed && (Math.abs(x - event!!.x) > PAN_OFFSET || Math.abs(y - event.y) > PAN_OFFSET)) {
-                        enableBearing(false)
-                        followLocation = false
-                        pressed = false
-                    }
-                }
-            }
-            return false
-        }
 
-        private var pressed = false
-        private var x = 0F
-        private var y = 0F
+    private val onTouchListener = object : View.OnTouchListener {
+        val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onLongPress(e: MotionEvent) {
+                followLocation = !followLocation
+                enableBearing(followLocation)
+                (activity as DisplayActivity).pagingEnabled = followLocation
+            }
+        })
+
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+            return gestureDetector.onTouchEvent(event)
+        }
     }
 
     private enum class RotateViewChangeState {
@@ -163,7 +152,6 @@ class MapFragment : Fragment() {
 
     companion object {
         private const val ACCURACY_BEARING = 10F
-        private const val PAN_OFFSET = 50
     }
 
     private var rotateViewChangeState = RotateViewChangeState.Disabled

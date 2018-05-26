@@ -3,8 +3,8 @@ package eu.selfhost.riegel.superfit.maps
 import android.util.Xml
 import eu.selfhost.riegel.superfit.database.Track
 import eu.selfhost.riegel.superfit.database.TrackPoint
-import eu.selfhost.riegel.superfit.ui.document
-import eu.selfhost.riegel.superfit.ui.element
+import eu.selfhost.riegel.superfit.utils.document
+import eu.selfhost.riegel.superfit.utils.element
 import eu.selfhost.riegel.superfit.utils.formatRfc3339
 import java.io.OutputStream
 import java.util.*

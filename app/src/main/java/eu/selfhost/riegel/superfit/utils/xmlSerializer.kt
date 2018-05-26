@@ -1,4 +1,4 @@
-package eu.selfhost.riegel.superfit.ui
+package eu.selfhost.riegel.superfit.utils
 
 import org.xmlpull.v1.XmlSerializer
 
