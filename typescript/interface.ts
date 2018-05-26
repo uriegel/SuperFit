@@ -4,6 +4,7 @@
     finish(): void
     start(): void
     stop(): void
+    reset(): void
     display(): void
     fillTracks(): void
     fillMaps(): void

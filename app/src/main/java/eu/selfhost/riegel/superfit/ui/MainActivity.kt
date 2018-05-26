@@ -13,6 +13,9 @@ import com.google.gson.Gson
 import eu.selfhost.riegel.superfit.android.Service
 import eu.selfhost.riegel.superfit.database.DataBase
 import eu.selfhost.riegel.superfit.maps.exportToGpx
+import eu.selfhost.riegel.superfit.sensors.Bike
+import eu.selfhost.riegel.superfit.sensors.HeartRate
+import eu.selfhost.riegel.superfit.sensors.Searcher
 import eu.selfhost.riegel.superfit.utils.createDocument
 import eu.selfhost.riegel.superfit.utils.getSdCard
 import eu.selfhost.riegel.superfit.utils.onCreateDocument
@@ -150,6 +153,14 @@ class MainActivity : AppCompatActivity() {
             startService(startIntent)
             finish()
         }}
+
+        @JavascriptInterface
+        fun reset() {
+            Searcher.stop()
+            HeartRate.stop()
+            Bike.stop()
+            Searcher.start(this@MainActivity)
+        }
 
         @JavascriptInterface
         fun display()  = doAsync { uiThread { startActivity(Intent(this@MainActivity, DisplayActivity::class.java)) }}
