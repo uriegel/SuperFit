@@ -115,19 +115,30 @@ class MainActivity : AppCompatActivity() {
         @Suppress("DEPRECATION")
         @JavascriptInterface
         fun onTrackSelected(trackNr: Long) {
-            async(UI) {
-                val track = DataBase.getTrackAsync(trackNr).await()
-                val date = Date(track.time)
-                val name = if (track.name.isEmpty()) "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}" else track.name
-
-                val uri = createDocument("$name.gpx")
-                if (uri != null) {
-                    val stream = contentResolver.openOutputStream(uri)
-                    val trackPoints = DataBase.getTrackPointsAsync(trackNr).await()
-                    exportToGpx(stream, name, track, trackPoints)
-                    stream.close()
+            doAsync {
+                uiThread {
+                    val intent = Intent(this@MainActivity, MapActivity::class.java)
+                    intent.putExtra(TRACK_NR, trackNr)
+                    startActivity(intent)
                 }
             }
+//            async(UI) {
+//
+//
+//                val intent = Intent(context, MapActivity::class.java)
+//
+//                val track = DataBase.getTrackAsync(trackNr).await()
+//                val date = Date(track.time)
+//                val name = if (track.name.isEmpty()) "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}" else track.name
+//
+//                val uri = createDocument("$name.gpx")
+//                if (uri != null) {
+//                    val stream = contentResolver.openOutputStream(uri)
+//                    val trackPoints = DataBase.getTrackPointsAsync(trackNr).await()
+//                    exportToGpx(stream, name, track, trackPoints)
+//                    stream.close()
+//                }
+//            }
         }
 
         @JavascriptInterface
@@ -198,6 +209,7 @@ class MainActivity : AppCompatActivity() {
         const val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000
         const val PREFS = "PREFS"
         const val PREF_MAP = "PREF_MAP"
+        const val TRACK_NR = "TRACK_NR"
         private const val CREATE_REQUEST_CODE = 40
     }
 }

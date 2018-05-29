@@ -22,15 +22,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.DisplayActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".ui.MapActivity" />
 
         <service
             android:name=".android.Service"
             android:enabled="true"
             android:exported="false" />
-
-        <activity android:name=".ui.DisplayActivity"
-            android:screenOrientation="portrait">
-        </activity>
     </application>
 
 </manifest>

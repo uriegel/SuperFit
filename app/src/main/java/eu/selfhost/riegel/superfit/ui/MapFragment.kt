@@ -27,6 +27,9 @@ import org.mapsforge.map.reader.MapFile
 import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.File
 import android.view.GestureDetector
+import eu.selfhost.riegel.superfit.database.Track
+import eu.selfhost.riegel.superfit.database.TrackPoint
+import org.mapsforge.core.model.BoundingBox
 
 class MapFragment : Fragment() {
 
@@ -103,6 +106,11 @@ class MapFragment : Fragment() {
         super.onDestroy()
     }
 
+    fun loadGpxTrack(track: Array<TrackPoint>) {
+        track.forEach({(trackLine.latLongs.add(LatLong(it.latitude, it.longitude)))})
+        zoomAndPan()
+    }
+
     fun enableBearing(enable: Boolean) {
         if (rotateViewChangeState == RotateViewChangeState.Changing)
             return
@@ -129,6 +137,30 @@ class MapFragment : Fragment() {
         followLocation = enable
     }
 
+    private fun zoomAndPan() {
+        val boundingBox = BoundingBox(trackLine.latLongs)
+        val width = mapView.width
+        val height = mapView.height
+        if (width <= 0|| height <= 0)
+            return
+        val centerPoint = LatLong((boundingBox.maxLatitude + boundingBox.minLatitude) / 2, (boundingBox.maxLongitude + boundingBox.minLongitude) / 2)
+        mapView.setCenter(centerPoint)
+
+//        val pointSouthWest = LatLong(boundingBox.minLatitude, boundingBox.minLongitude)
+//        val pointNorthEast = LatLong(boundingBox.maxLatitude, boundingBox.maxLongitude)
+//        val maxLevel = mapView!!.model.mapViewPosition.zoomLevelMax
+//
+//        val projection = mapView!!.mapViewProjection
+//        for (zoomlevel in 1..maxLevel) {
+//            mapView!!.setZoomLevel(zoomlevel.toByte())
+//            val sw = projection.toPixels(pointSouthWest)
+//            val ne = projection.toPixels(pointNorthEast)
+//            if (ne.x - sw.x > width || sw.y -ne.y > height) {
+//                mapView!!.setZoomLevel((zoomlevel - 1).toByte())
+//                break
+//            }
+//        }
+    }
 
     private val onTouchListener = object : View.OnTouchListener {
         val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
@@ -159,6 +191,7 @@ class MapFragment : Fragment() {
     private lateinit var mapView: MapView
     private lateinit var tileCache: TileCache
     private lateinit var trackLine: TrackLine
+    private lateinit var gpxTrackLine: TrackLine
     private lateinit var tileRendererLayer: TileRendererLayer
     private var rotateView: RotateView? = null
     private var location: LocationMarker? = null
