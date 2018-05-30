@@ -29,6 +29,8 @@ import java.io.File
 import android.view.GestureDetector
 import eu.selfhost.riegel.superfit.database.Track
 import eu.selfhost.riegel.superfit.database.TrackPoint
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import org.mapsforge.core.model.BoundingBox
 
 class MapFragment : Fragment() {
@@ -101,13 +103,15 @@ class MapFragment : Fragment() {
 
     override fun onDestroy() {
         LocationManager.listener = null
-        mapView.destroyAll()
-        AndroidGraphicFactory.clearResourceMemoryCache()
         super.onDestroy()
+        doAsync {
+            mapView.destroyAll()
+            AndroidGraphicFactory.clearResourceMemoryCache()
+        }
     }
 
     fun loadGpxTrack(track: Array<TrackPoint>) {
-        track.forEach({(trackLine.latLongs.add(LatLong(it.latitude, it.longitude)))})
+        track.forEach({ (trackLine.latLongs.add(LatLong(it.latitude, it.longitude))) })
         zoomAndPan()
     }
 

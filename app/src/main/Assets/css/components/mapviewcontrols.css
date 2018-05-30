@@ -1,0 +1,23 @@
+#switcher {
+    opacity: 0.5;
+    background-color: white;
+    width: 30px;
+}
+
+.hidden {
+    display: none;
+}
+
+button {
+    margin: 30px;
+    font-size: x-large;
+}
+
+.dialog.hidden {
+    opacity: 0;
+}
+.dialog {
+    opacity: 0.9;
+    transition: opacity 0.5s;
+    background-color: white;
+}
