@@ -74,12 +74,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when {
-            onCreateDocument(requestCode, resultCode, data) -> return
-        }
-    }
-
     private fun onStateChanged(state: Service.ServiceState) = webView.evaluateJavascript("onStateChanged(${state.serialize()})", null)
 
     private val javaScriptInterface = object {
@@ -122,23 +116,6 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
             }
-//            async(UI) {
-//
-//
-//                val intent = Intent(context, MapActivity::class.java)
-//
-//                val track = DataBase.getTrackAsync(trackNr).await()
-//                val date = Date(track.time)
-//                val name = if (track.name.isEmpty()) "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}" else track.name
-//
-//                val uri = createDocument("$name.gpx")
-//                if (uri != null) {
-//                    val stream = contentResolver.openOutputStream(uri)
-//                    val trackPoints = DataBase.getTrackPointsAsync(trackNr).await()
-//                    exportToGpx(stream, name, track, trackPoints)
-//                    stream.close()
-//                }
-//            }
         }
 
         @JavascriptInterface

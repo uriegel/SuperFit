@@ -9,3 +9,4 @@ switcher.onclick = () => {
     else
         dialog.classList.add("hidden");
 };
+saveBtn.onclick = () => NativeMapControls.saveTrack();

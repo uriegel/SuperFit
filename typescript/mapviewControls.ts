@@ -1,4 +1,10 @@
 
+interface INativeMapControls {
+    saveTrack(): void
+}
+
+declare var NativeMapControls: INativeMapControls
+
 const switcher = document.getElementById("switcher")
 const deleteBtn = document.getElementById("delete")
 const dialog = document.getElementsByClassName("dialog")[0]
@@ -9,3 +15,5 @@ switcher.onclick = () => {
     else 
         dialog.classList.add("hidden")
 }
+
+saveBtn.onclick = () => NativeMapControls.saveTrack()

@@ -1,13 +1,21 @@
 package eu.selfhost.riegel.superfit.ui
 
+import android.content.Intent
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.database.DataBase
+import eu.selfhost.riegel.superfit.maps.exportToGpx
+import eu.selfhost.riegel.superfit.utils.createDocument
+import eu.selfhost.riegel.superfit.utils.onCreateDocument
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
+import java.util.*
 
 class MapActivity : AppCompatActivity() {
 
@@ -25,15 +33,44 @@ class MapActivity : AppCompatActivity() {
             allowFileAccessFromFileURLs = true
             allowUniversalAccessFromFileURLs = true
         }
+        webView.addJavascriptInterface(javaScriptInterface, "NativeMapControls")
 
         webView.loadUrl("file:///android_asset/mapViewControls.html")
 
         val bundle = intent.extras
-        val trackNr = bundle.getLong(MainActivity.TRACK_NR)
+        trackNr = bundle.getLong(MainActivity.TRACK_NR)
         async(UI) {
             val trackPoints = DataBase.getTrackPointsAsync(trackNr).await()
             val fragment = supportFragmentManager.findFragmentById(R.id.fragment) as MapFragment
             fragment.loadGpxTrack(trackPoints)
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when {
+            onCreateDocument(requestCode, resultCode, data) -> return
+        }
+    }
+
+    private val javaScriptInterface = object {
+        @Suppress("DEPRECATION")
+        @JavascriptInterface
+        fun saveTrack() {
+            async(UI) {
+                val track = DataBase.getTrackAsync(trackNr).await()
+                val date = Date(track.time)
+                val name = if (track.name.isEmpty()) "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}" else track.name
+
+                val uri = createDocument("$name.gpx")
+                if (uri != null) {
+                    val stream = contentResolver.openOutputStream(uri)
+                    val trackPoints = DataBase.getTrackPointsAsync(trackNr).await()
+                    exportToGpx(stream, name, track, trackPoints)
+                    stream.close()
+                }
+            }
+        }
+    }
+
+    private var trackNr = 0L
 }
