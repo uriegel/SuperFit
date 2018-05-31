@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.SoundEffectConstants
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import eu.selfhost.riegel.superfit.R
@@ -13,8 +14,7 @@ import eu.selfhost.riegel.superfit.utils.createDocument
 import eu.selfhost.riegel.superfit.utils.onCreateDocument
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import org.jetbrains.anko.*
 import java.util.*
 
 class MapActivity : AppCompatActivity() {
@@ -23,7 +23,7 @@ class MapActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
-        var webView = findViewById<WebView>(R.id.mapViewControls)
+        webView = findViewById<WebView>(R.id.mapViewControls)
         webView.setBackgroundColor(Color.TRANSPARENT)
         webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
 
@@ -53,9 +53,13 @@ class MapActivity : AppCompatActivity() {
     }
 
     private val javaScriptInterface = object {
+        @JavascriptInterface
+        fun doHapticFeedback() = doAsync { uiThread { webView.playSoundEffect(SoundEffectConstants.CLICK) }}
+
         @Suppress("DEPRECATION")
         @JavascriptInterface
         fun saveTrack() {
+            doHapticFeedback()
             async(UI) {
                 val track = DataBase.getTrackAsync(trackNr).await()
                 val date = Date(track.time)
@@ -67,10 +71,29 @@ class MapActivity : AppCompatActivity() {
                     val trackPoints = DataBase.getTrackPointsAsync(trackNr).await()
                     exportToGpx(stream, name, track, trackPoints)
                     stream.close()
+                    this@MapActivity.finish()
                 }
+            }
+        }
+
+        @JavascriptInterface
+        fun deleteTrack() {
+            doHapticFeedback()
+            async(UI) {
+                alert("Möchtest Du diesen Track löschen?", "Track löschen") {
+                    yesButton {
+                        async(UI) {
+                            DataBase.deleteTrackAsync(trackNr).await()
+                        }
+                        // TODO: StartActivityForResult, then return deletedTrack then update drawer list
+                        this@MapActivity.finish()
+                    }
+                    noButton {}
+                }.show()
             }
         }
     }
 
+    private lateinit var webView: WebView
     private var trackNr = 0L
 }

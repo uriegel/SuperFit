@@ -65,6 +65,16 @@ object DataBase {
         }
     }
 
+    fun deleteTrackAsync(trackNr: Long): Deferred<Boolean> {
+        return bg {
+            dataBaseHelper.use {
+                delete(TrackTable.Name, "_id = {trackNr}", "trackNr" to trackNr)
+                delete(TrackPointTable.Name, "TrackNr = {trackNr}", "trackNr" to trackNr)
+                true
+            }
+        }
+    }
+
     fun getTrackPointsAsync(trackNr: Long): Deferred<Array<TrackPoint>> {
         return bg {
             dataBaseHelper.use {

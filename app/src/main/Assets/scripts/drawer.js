@@ -1,7 +1,6 @@
 "use strict";
 // TODO: Show which map is selected
 // TODO: If map is selected, close drawer
-// TODO: Multiselect maps
 const maps = document.getElementById("maps");
 const tracks = document.getElementById("tracks");
 (function () {

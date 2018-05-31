@@ -4,11 +4,9 @@ package eu.selfhost.riegel.superfit.ui
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.FrameLayout
+import eu.selfhost.riegel.superfit.database.TrackPoint
 import eu.selfhost.riegel.superfit.maps.LocationManager
 import eu.selfhost.riegel.superfit.maps.LocationManager.getCurrentTrack
 import eu.selfhost.riegel.superfit.maps.LocationMarker
@@ -16,6 +14,8 @@ import eu.selfhost.riegel.superfit.maps.TrackLine
 import eu.selfhost.riegel.superfit.utils.getSdCard
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.doAsync
+import org.mapsforge.core.model.BoundingBox
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.rotation.RotateView
@@ -26,12 +26,6 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer
 import org.mapsforge.map.reader.MapFile
 import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.File
-import android.view.GestureDetector
-import eu.selfhost.riegel.superfit.database.Track
-import eu.selfhost.riegel.superfit.database.TrackPoint
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
-import org.mapsforge.core.model.BoundingBox
 
 class MapFragment : Fragment() {
 
