@@ -2,9 +2,9 @@ package eu.selfhost.riegel.superfit.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.SoundEffectConstants
 import android.webkit.JavascriptInterface
@@ -12,24 +12,19 @@ import android.webkit.WebView
 import com.google.gson.Gson
 import eu.selfhost.riegel.superfit.android.Service
 import eu.selfhost.riegel.superfit.database.DataBase
-import eu.selfhost.riegel.superfit.maps.exportToGpx
 import eu.selfhost.riegel.superfit.sensors.Bike
 import eu.selfhost.riegel.superfit.sensors.HeartRate
 import eu.selfhost.riegel.superfit.sensors.Searcher
-import eu.selfhost.riegel.superfit.utils.createDocument
 import eu.selfhost.riegel.superfit.utils.getSdCard
-import eu.selfhost.riegel.superfit.utils.onCreateDocument
 import eu.selfhost.riegel.superfit.utils.serialize
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
-import java.util.*
 import java.io.File
 
-
-class MainActivity : AppCompatActivity() {
+class MainActivity : ActivityEx() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,11 +104,14 @@ class MainActivity : AppCompatActivity() {
         @Suppress("DEPRECATION")
         @JavascriptInterface
         fun onTrackSelected(trackNr: Long) {
-            doAsync {
-                uiThread {
-                    val intent = Intent(this@MainActivity, MapActivity::class.java)
-                    intent.putExtra(TRACK_NR, trackNr)
-                    startActivity(intent)
+            async(UI) {
+                val intent = Intent(this@MainActivity, MapActivity::class.java)
+                intent.putExtra(TRACK_NR, trackNr)
+                val result = activityRequest(intent)
+                if (result?.resultCode == Activity.RESULT_OK) {
+                    if (result.data?.getStringExtra(MapActivity.RESULT_TYPE) == MapActivity.RESULT_TYPE_DELETE) {
+                        // TODO: update Drawer
+                    }
                 }
             }
         }
