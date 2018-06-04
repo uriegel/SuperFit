@@ -100,3 +100,9 @@ function onTracks(tracks) {
     //}
     //fillNext(lis)
 }
+function deleteTrack(trackNr) {
+    const trackList = document.getElementById("trackList");
+    const lis = Array.from(trackList.children);
+    const li = lis.find(li => li.dataset.nr == trackNr.toString());
+    trackList.removeChild(li);
+}

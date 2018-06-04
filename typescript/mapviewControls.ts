@@ -21,3 +21,4 @@ switcher.onclick = () => {
 
 saveBtn.onclick = () => NativeMapControls.saveTrack()
 deleteBtn.onclick = () => NativeMapControls.deleteTrack()
+

@@ -109,9 +109,8 @@ class MainActivity : ActivityEx() {
                 intent.putExtra(TRACK_NR, trackNr)
                 val result = activityRequest(intent)
                 if (result?.resultCode == Activity.RESULT_OK) {
-                    if (result.data?.getStringExtra(MapActivity.RESULT_TYPE) == MapActivity.RESULT_TYPE_DELETE) {
-                        // TODO: update Drawer
-                    }
+                    if (result.data?.getStringExtra(MapActivity.RESULT_TYPE) == MapActivity.RESULT_TYPE_DELETE)
+                        webView.evaluateJavascript("deleteTrack($trackNr)", null)
                 }
             }
         }

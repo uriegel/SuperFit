@@ -122,3 +122,9 @@ function onTracks(tracks: TrackData[]) {
     //fillNext(lis)
 }
 
+function deleteTrack(trackNr: Number) {
+    const trackList = document.getElementById("trackList")
+    const lis = Array.from(trackList.children) as HTMLElement[]
+    const li = lis.find(li => li.dataset.nr == trackNr.toString())
+    trackList.removeChild(li)
+}
