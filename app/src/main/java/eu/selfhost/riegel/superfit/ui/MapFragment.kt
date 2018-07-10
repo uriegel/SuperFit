@@ -1,17 +1,22 @@
 package eu.selfhost.riegel.superfit.ui
 
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
+import android.webkit.WebView
 import android.widget.FrameLayout
+import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.database.TrackPoint
 import eu.selfhost.riegel.superfit.maps.LocationManager
 import eu.selfhost.riegel.superfit.maps.LocationManager.getCurrentTrack
 import eu.selfhost.riegel.superfit.maps.LocationMarker
 import eu.selfhost.riegel.superfit.maps.TrackLine
 import eu.selfhost.riegel.superfit.utils.getSdCard
+import kotlinx.android.synthetic.main.fragment_tracking.view.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.doAsync
@@ -29,8 +34,11 @@ import java.io.File
 
 class MapFragment : Fragment() {
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
-        frameLayout = FrameLayout(activity)
+
+        val root = inflater.inflate(R.layout.fragment_tracking, container, false)
+        frameLayout = root.findViewById(R.id.mapContainer)
         mapView = MapView(activity)
         with(mapView){
             isClickable = true
@@ -71,7 +79,7 @@ class MapFragment : Fragment() {
         async(UI) {
             val tracks = getCurrentTrack().await()
             if (tracks.isNotEmpty())
-                tracks.forEach({(trackLine.latLongs.add(it))})
+                tracks.forEach {(trackLine.latLongs.add(it))}
 
             LocationManager.listener = {
                 val currentLatLong = LatLong(it.latitude, it.longitude)
@@ -92,7 +100,21 @@ class MapFragment : Fragment() {
             }
         }
 
-        return frameLayout
+        val webView = root.findViewById<WebView>(R.id.mapControls)
+        webView.setBackgroundColor(Color.TRANSPARENT)
+        webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
+
+        with(webView.settings) {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            allowFileAccessFromFileURLs = true
+            allowUniversalAccessFromFileURLs = true
+        }
+        //webView.addJavascriptInterface(javaScriptInterface, "NativeMapControls")
+
+        webView.loadUrl("file:///android_asset/mapViewControls.html")
+
+        return root
     }
 
     override fun onDestroy() {

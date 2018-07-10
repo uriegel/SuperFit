@@ -1,5 +1,6 @@
 package eu.selfhost.riegel.superfit.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
@@ -16,6 +17,7 @@ import org.jetbrains.anko.*
 import java.util.*
 
 class MapActivity : ActivityEx() {
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
