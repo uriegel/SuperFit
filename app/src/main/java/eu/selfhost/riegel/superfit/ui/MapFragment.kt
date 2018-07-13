@@ -7,6 +7,7 @@ import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.FrameLayout
 import eu.selfhost.riegel.superfit.R
@@ -20,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_tracking.view.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import org.mapsforge.core.model.BoundingBox
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
@@ -47,7 +49,6 @@ class MapFragment : Fragment() {
             setZoomLevelMin(10)
             setZoomLevelMax(20)
             setZoomLevel(16)
-            setOnTouchListener(onTouchListener)
         }
 
         tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1.0F,
@@ -100,7 +101,7 @@ class MapFragment : Fragment() {
             }
         }
 
-        val webView = root.findViewById<WebView>(R.id.mapControls)
+        webView = root.findViewById<WebView>(R.id.mapControls)
         webView.setBackgroundColor(Color.TRANSPARENT)
         webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
 
@@ -110,9 +111,9 @@ class MapFragment : Fragment() {
             allowFileAccessFromFileURLs = true
             allowUniversalAccessFromFileURLs = true
         }
-        //webView.addJavascriptInterface(javaScriptInterface, "NativeMapControls")
+        webView.addJavascriptInterface(javaScriptInterface, "NativeTrackingControls")
 
-        webView.loadUrl("file:///android_asset/mapViewControls.html")
+        webView.loadUrl("file:///android_asset/trackingControls.html")
 
         return root
     }
@@ -182,17 +183,19 @@ class MapFragment : Fragment() {
 //        }
     }
 
-    private val onTouchListener = object : View.OnTouchListener {
-        val gestureDetector = GestureDetector(activity, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onLongPress(e: MotionEvent) {
+    private val javaScriptInterface = object {
+        @JavascriptInterface
+        fun doHapticFeedback() = doAsync { uiThread { webView.playSoundEffect(SoundEffectConstants.CLICK) } }
+
+        @Suppress("DEPRECATION")
+        @JavascriptInterface
+        fun toggleMode() {
+            doHapticFeedback()
+            async(UI) {
                 followLocation = !followLocation
                 enableBearing(followLocation)
                 (activity as DisplayActivity).pagingEnabled = followLocation
             }
-        })
-
-        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-            return gestureDetector.onTouchEvent(event)
         }
     }
 
@@ -209,6 +212,7 @@ class MapFragment : Fragment() {
     private var rotateViewChangeState = RotateViewChangeState.Disabled
     private lateinit var frameLayout: FrameLayout
     private lateinit var mapView: MapView
+    private lateinit var webView: WebView
     private lateinit var tileCache: TileCache
     private lateinit var trackLine: TrackLine
     private lateinit var gpxTrackLine: TrackLine
