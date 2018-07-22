@@ -30,6 +30,8 @@ class MainActivity : ActivityEx() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
         webView = WebView(this)
         setContentView(webView)
 
