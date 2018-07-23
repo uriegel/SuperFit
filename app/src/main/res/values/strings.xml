@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SuperFit</string>
+    <string name="action_settings">Einstellungen</string>
 </resources>

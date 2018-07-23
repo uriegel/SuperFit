@@ -28,7 +28,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
 
-        <activity android:name=".ui.MapActivity" />
+        <activity android:name=".ui.MapActivity"
+            android:theme="@style/AppTheme" />
+
+        <activity android:name=".ui.AppPreferenceActivity"
+            android:theme="@style/AppMainTheme" />
 
         <service
             android:name=".android.Service"
