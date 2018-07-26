@@ -6,9 +6,12 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.view.GravityCompat
+import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.SoundEffectConstants
+import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import com.google.gson.Gson
@@ -20,6 +23,9 @@ import eu.selfhost.riegel.superfit.sensors.HeartRate
 import eu.selfhost.riegel.superfit.sensors.Searcher
 import eu.selfhost.riegel.superfit.utils.getSdCard
 import eu.selfhost.riegel.superfit.utils.serialize
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.doAsync
@@ -29,14 +35,25 @@ import java.io.File
 
 class MainActivity : ActivityEx() {
 
+    // TODO: Drawer-WebView in Drawer
+    // TODO: Then remove HTML-Titlebar
+    // TODO: Then Implement menu for map-choice
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
+        setSupportActionBar(toolbar)
 
+        val toggle = object : ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            override fun onDrawerOpened(drawerView: View) {
+                super.onDrawerOpened(drawerView)
+            }
+        }
 
-        webView = WebView(this)
-        setContentView(webView)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
 
         with (webView) {
             with (settings) {
@@ -56,8 +73,8 @@ class MainActivity : ActivityEx() {
     }
 
     override fun onBackPressed() {
-        if (isInitialized)
-            webView.evaluateJavascript("onBackPressed()", null)
+        if (drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START)
         else
             super.onBackPressed()
     }
@@ -200,7 +217,6 @@ class MainActivity : ActivityEx() {
             startActivity(Intent(this@MainActivity, DisplayActivity::class.java))
     }
 
-    private lateinit var webView: WebView
     private var isInitialized = false
 
     companion object {
