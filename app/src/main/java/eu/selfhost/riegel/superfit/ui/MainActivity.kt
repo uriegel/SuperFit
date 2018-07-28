@@ -36,8 +36,7 @@ import java.io.File
 
 class MainActivity : ActivityEx() {
 
-    // TODO: use new pref_map instead old value
-    // TODO: Settings-icon (as font or svg)
+    // TODO: Navigationheader
     // TODO: in drawer, choose controls or track view
     // TODO: Track view activity
     // TODO: Then remove HTML-Titlebar
@@ -154,14 +153,6 @@ class MainActivity : ActivityEx() {
         }
 
         @JavascriptInterface
-        fun onMapSelected(map: String) {
-            val prefs = getSharedPreferences(PREFS, 0)
-            val editor = prefs.edit()
-            editor.putString(PREF_MAP, map)
-            editor.apply()
-        }
-
-        @JavascriptInterface
         fun start() = doAsync { uiThread {
             val startIntent = Intent(this@MainActivity, Service::class.java)
             startIntent.action = Service.ACTION_START
@@ -243,8 +234,6 @@ class MainActivity : ActivityEx() {
 
     companion object {
         const val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000
-        const val PREFS = "PREFS"
-        const val PREF_MAP = "PREF_MAP"
         const val TRACK_NR = "TRACK_NR"
         private const val CREATE_REQUEST_CODE = 40
     }

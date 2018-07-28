@@ -56,11 +56,7 @@ class MapFragment : Fragment() {
                 mapView.model.frameBufferModel.overdrawFactor)
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
-        val mappe = preferences.getString(PreferenceActivity.PREF_MAP, null)
-
-
-        val prefs = activity?.getSharedPreferences(MainActivity.PREFS, 0)
-        val map = prefs?.getString(MainActivity.PREF_MAP, "germany.map") ?: "germany.map"
+        val map = preferences.getString(PreferenceActivity.PREF_MAP, null)
         val sdCard: String = activity.getSdCard()
         val mapsDir = "$sdCard/Maps"
         val mapDataStore = MapFile(File(mapsDir, map))
