@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.view.*
 import android.webkit.JavascriptInterface
@@ -53,6 +54,10 @@ class MapFragment : Fragment() {
 
         tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1.0F,
                 mapView.model.frameBufferModel.overdrawFactor)
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
+        val mappe = preferences.getString(PreferenceActivity.PREF_MAP, null)
+
 
         val prefs = activity?.getSharedPreferences(MainActivity.PREFS, 0)
         val map = prefs?.getString(MainActivity.PREF_MAP, "germany.map") ?: "germany.map"

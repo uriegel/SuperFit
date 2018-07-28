@@ -35,9 +35,14 @@ import java.io.File
 
 class MainActivity : ActivityEx() {
 
-    // TODO: Drawer-WebView in Drawer
+    // TODO: Start not enabled
+    // TODO: When pref_map is not selected, then show preferences
+    // TODO: hint choose map
+    // TODO: use new pref_map instead old value
+    // TODO: Settings-icon (as font or svg)
+    // TODO: in drawer, choose controls or track view
+    // TODO: Track view activity
     // TODO: Then remove HTML-Titlebar
-    // TODO: Then Implement menu for map-choice
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,28 +1,11 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:title="Category 1">
+    <PreferenceCategory android:title="Navigation">
 
-        <SwitchPreference
-            android:key="key1"
-            android:title="Switch Preference"
-            android:summary="Switch Summary"
-            android:defaultValue="true" />
-        <EditTextPreference
-            android:key="key2"
-            android:title="EditText Preference"
-            android:summary="EditText Summary"
-            android:dialogMessage="Dialog Message"
-            android:defaultValue="Default value" />
-        <CheckBoxPreference
-            android:key="key3"
-            android:title="CheckBox Preference"
-            android:summary="CheckBox Summary"
-            android:defaultValue="true"/>
         <eu.selfhost.riegel.superfit.ui.DynamicListPreference
             android:defaultValue="-1"
-            android:key="damn"
+            android:key="PREF_MAP"
             android:title="@string/maps" />
     </PreferenceCategory>
 
