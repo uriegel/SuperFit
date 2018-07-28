@@ -1,4 +1,10 @@
-﻿.marker {
+﻿.drawer-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: red;
+}
+.marker {
     margin-top: 4px;
     opacity: .6;
     position: absolute;

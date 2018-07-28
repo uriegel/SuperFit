@@ -64,6 +64,19 @@ class MainActivity : ActivityEx() {
             }
             addJavascriptInterface(javaScriptInterface, "Native")
         }
+        val navigationHeader = navigationView.getHeaderView(0)
+        navView = navigationHeader.findViewById(R.id.navView) as WebView
+        with (navView) {
+            with (settings) {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                allowFileAccessFromFileURLs = true
+                allowUniversalAccessFromFileURLs = true
+            }
+            addJavascriptInterface(javaScriptInterface, "Native")
+        }
+        navView.loadUrl("file:///android_asset/drawer.html")
+
         WebView.setWebContentsDebuggingEnabled(true)
 
         Service.setOnStateChangedListener { onStateChanged(it) }
@@ -187,7 +200,7 @@ class MainActivity : ActivityEx() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         if (item.itemId == R.id.action_settings) {
-            val i = Intent(this, AppPreferenceActivity::class.java)
+            val i = Intent(this, PreferenceActivity::class.java)
             startActivity(i)
             return true
         }
@@ -218,6 +231,7 @@ class MainActivity : ActivityEx() {
     }
 
     private var isInitialized = false
+    private lateinit var navView: WebView
 
     companion object {
         const val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000
