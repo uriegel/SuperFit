@@ -18,6 +18,13 @@ class PreferenceActivity : AppCompatActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.preference)
+
+            val listPreference = findPreference("damn") as DynamicListPreference
+            listPreference.setLoadingListener {
+                it.entries = arrayOf("doge", "wow")
+                it.entryValues = arrayOf("1", "2")
+                it.setDefaultValue("1")
+            }
         }
     }
 

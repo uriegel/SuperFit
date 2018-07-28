@@ -9,7 +9,6 @@
             android:title="Switch Preference"
             android:summary="Switch Summary"
             android:defaultValue="true" />
-
         <EditTextPreference
             android:key="key2"
             android:title="EditText Preference"
@@ -21,6 +20,10 @@
             android:title="CheckBox Preference"
             android:summary="CheckBox Summary"
             android:defaultValue="true"/>
+        <eu.selfhost.riegel.superfit.ui.DynamicListPreference
+            android:defaultValue="-1"
+            android:key="damn"
+            android:title="@string/maps" />
     </PreferenceCategory>
 
 </PreferenceScreen>
