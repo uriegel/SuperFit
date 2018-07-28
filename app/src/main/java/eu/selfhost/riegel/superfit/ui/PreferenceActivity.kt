@@ -40,5 +40,6 @@ class PreferenceActivity : AppCompatActivity() {
 
     companion object {
         const val PREF_MAP = "PREF_MAP"
+        const val PREF_WHEEL = "PREF_WHEEL"
     }
 }

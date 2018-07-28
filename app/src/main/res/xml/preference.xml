@@ -1,8 +1,18 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="Navigation">
+    <PreferenceCategory android:title="Bike-Einstellungen">
 
+        <EditTextPreference
+            android:key="PREF_WHEEL"
+            android:title="Radumfang"
+            android:inputType="number"
+            android:summary="Gib bitte Deinen Rad-Umfang in mm ein"
+            android:dialogMessage="Dialog Message"
+            android:defaultValue="2096" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Navigation">
         <eu.selfhost.riegel.superfit.ui.DynamicListPreference
             android:key="PREF_MAP"
             android:title="@string/maps" />

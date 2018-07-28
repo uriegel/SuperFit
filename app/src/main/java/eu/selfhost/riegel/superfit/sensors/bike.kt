@@ -1,12 +1,14 @@
 package eu.selfhost.riegel.superfit.sensors
 
 import android.content.Context
+import android.preference.PreferenceManager
 import com.dsi.ant.plugins.antplus.pcc.AntPlusBikeCadencePcc
 import com.dsi.ant.plugins.antplus.pcc.AntPlusBikeSpeedDistancePcc
 import com.dsi.ant.plugins.antplus.pcc.defines.EventFlag
 import com.dsi.ant.plugins.antplus.pcc.defines.RequestAccessResult
 import com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch
 import com.dsi.ant.plugins.antplus.pccbase.PccReleaseHandle
+import eu.selfhost.riegel.superfit.ui.PreferenceActivity
 import eu.selfhost.riegel.superfit.utils.MaxValue
 import eu.selfhost.riegel.superfit.utils.StopWatch
 import java.math.BigDecimal
@@ -53,6 +55,9 @@ object Bike {
     private fun subScribeToBikeSpeed(context: Context, bikeController: AntPlusBikeSpeedDistancePcc) {
         var speedIsNull = true
 
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val wheelCircumference = BigDecimal(preferences.getString(PreferenceActivity.PREF_WHEEL, "2096"))
+
         bikeController.subscribeCalculatedSpeedEvent(object : AntPlusBikeSpeedDistancePcc.CalculatedSpeedReceiver(wheelCircumference) {
             override fun onNewCalculatedSpeed(estTimestamp: Long, flags: EnumSet<EventFlag>?, calculatedSpeedInMs: BigDecimal?) {
                 if (calculatedSpeedInMs != null) {
@@ -89,7 +94,6 @@ object Bike {
 
     private var deviceHandle: PccReleaseHandle<AntPlusBikeSpeedDistancePcc>? = null
     private var cadenceDeviceHandle: PccReleaseHandle<AntPlusBikeCadencePcc>? = null
-    private val wheelCircumference = BigDecimal(2.096)
 }
 
 

@@ -36,8 +36,6 @@ import java.io.File
 
 class MainActivity : ActivityEx() {
 
-    // TODO wheelCircumference = BigDecimal(2.096) Über Einstellungen einstellbar
-    // TODO: hint choose map
     // TODO: use new pref_map instead old value
     // TODO: Settings-icon (as font or svg)
     // TODO: in drawer, choose controls or track view
