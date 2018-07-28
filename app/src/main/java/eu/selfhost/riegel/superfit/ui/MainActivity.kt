@@ -36,7 +36,6 @@ import java.io.File
 
 class MainActivity : ActivityEx() {
 
-    // TODO: Navigationheader
     // TODO: in drawer, choose controls or track view
     // TODO: Track view activity
     // TODO: Then remove HTML-Titlebar
@@ -66,19 +65,6 @@ class MainActivity : ActivityEx() {
             }
             addJavascriptInterface(javaScriptInterface, "Native")
         }
-        val navigationHeader = navigationView.getHeaderView(0)
-        navView = navigationHeader.findViewById(R.id.navView) as WebView
-        with (navView) {
-            with (settings) {
-                javaScriptEnabled = true
-                domStorageEnabled = true
-                allowFileAccessFromFileURLs = true
-                allowUniversalAccessFromFileURLs = true
-            }
-            addJavascriptInterface(javaScriptInterface, "Native")
-        }
-        navView.loadUrl("file:///android_asset/drawer.html")
-
         WebView.setWebContentsDebuggingEnabled(true)
 
         Service.setOnStateChangedListener { onStateChanged(it) }
