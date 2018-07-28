@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
@@ -35,8 +36,7 @@ import java.io.File
 
 class MainActivity : ActivityEx() {
 
-    // TODO: Start not enabled
-    // TODO: When pref_map is not selected, then show preferences
+    // TODO wheelCircumference = BigDecimal(2.096) Über Einstellungen einstellbar
     // TODO: hint choose map
     // TODO: use new pref_map instead old value
     // TODO: Settings-icon (as font or svg)
@@ -233,6 +233,11 @@ class MainActivity : ActivityEx() {
 
         if (Service.state == Service.ServiceState.Started)
             startActivity(Intent(this@MainActivity, DisplayActivity::class.java))
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val map = preferences.getString(PreferenceActivity.PREF_MAP, null)
+        if (map == null)
+            startActivity(Intent(this, PreferenceActivity::class.java))
     }
 
     private var isInitialized = false

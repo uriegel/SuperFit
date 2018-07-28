@@ -4,7 +4,6 @@
     <PreferenceCategory android:title="Navigation">
 
         <eu.selfhost.riegel.superfit.ui.DynamicListPreference
-            android:defaultValue="-1"
             android:key="PREF_MAP"
             android:title="@string/maps" />
     </PreferenceCategory>

@@ -89,7 +89,7 @@ object Bike {
 
     private var deviceHandle: PccReleaseHandle<AntPlusBikeSpeedDistancePcc>? = null
     private var cadenceDeviceHandle: PccReleaseHandle<AntPlusBikeCadencePcc>? = null
-    private val wheelCircumference = BigDecimal(2.096) // TODO: Über Einstellungen einstellbar
+    private val wheelCircumference = BigDecimal(2.096)
 }
 
 
