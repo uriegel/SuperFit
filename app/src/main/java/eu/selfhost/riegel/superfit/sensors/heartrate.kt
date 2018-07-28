@@ -17,12 +17,12 @@ object HeartRate {
         deviceHandle = AntPlusHeartRatePcc.requestAccess(context, device.antDeviceNumber, 0, { heartRateController, resultCode, _ ->
             if (resultCode == RequestAccessResult.SUCCESS) {
                 currentHeartRate = 0
-                heartRateController.subscribeHeartRateDataEvent({ _ /*estTimeStamp*/, _, computedHeartRate, _, _, _ ->
+                heartRateController.subscribeHeartRateDataEvent { _ /*estTimeStamp*/, _, computedHeartRate, _, _, _ ->
                     if (currentHeartRate != computedHeartRate) {
                         listener?.invoke(computedHeartRate)
                         currentHeartRate = computedHeartRate
                     }
-                })
+                }
             }
         }, {})
     }
