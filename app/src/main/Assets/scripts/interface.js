@@ -13,4 +13,13 @@ function onBackPressed() {
 function onStateChanged(state) {
     mainApp.onStateChanged(state);
 }
+
+function showControls() {
+    mainApp.showControls()
+}
+
+function showTracks() {
+    mainApp.showTracks()
+}
+
 mobileKitApp.setOnHapticFeedback(() => Native.doHapticFeedback());

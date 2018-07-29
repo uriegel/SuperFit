@@ -1,4 +1,14 @@
-﻿.button {
+﻿.hidden {
+    display: none;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.button {
     outline: none;
     border-style: none;
     border-width: 0px;

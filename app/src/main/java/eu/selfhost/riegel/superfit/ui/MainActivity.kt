@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
@@ -34,7 +35,7 @@ import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 import java.io.File
 
-class MainActivity : ActivityEx() {
+class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListener {
 
     // TODO: in drawer, choose controls or track view
     // TODO: Track view activity
@@ -69,6 +70,8 @@ class MainActivity : ActivityEx() {
 
         Service.setOnStateChangedListener { onStateChanged(it) }
 
+        navigationView.setNavigationItemSelectedListener(this)
+
         if (checkPermissions())
             initilize()
     }
@@ -90,6 +93,17 @@ class MainActivity : ActivityEx() {
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Handle navigation view item clicks here.
+        when (item.itemId) {
+            R.id.nav_controls -> webView.evaluateJavascript("showControls()", null)
+            R.id.nav_tracks -> webView.evaluateJavascript("showTracks()", null)
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
     }
 
     private fun onStateChanged(state: Service.ServiceState) = webView.evaluateJavascript("onStateChanged(${state.serialize()})", null)

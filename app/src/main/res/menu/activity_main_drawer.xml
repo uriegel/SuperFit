@@ -5,11 +5,11 @@
     <item android:title="@string/main_menu">
         <menu>
             <item
-                android:id="@+id/ic_menu_share"
+                android:id="@+id/nav_controls"
                 android:icon="@drawable/controls"
                 android:title="@string/nav_menu_controls" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_tracks"
                 android:icon="@drawable/track"
                 android:title="@string/nav_menu_tracks" />
         </menu>

@@ -8,51 +8,17 @@
     <script src="scripts/mobilekit.js"></script>
 </head>
 <body>
-    <header>
-        <img class="mobilekit-title-button-left" src="images/list.png" />
-        <span>Super Fit</span>
-    </header>
+    <div class="controls">
+        <button class="starter button mobilekit-click-animation" disabled>Start</button>
+        <button class="display button mobilekit-click-animation" disabled>Display</button>
+        <div class="filler"></div>
+        <button class="resetter button mobilekit-click-animation" disabled>Reset</button>
+        <button class="stopper button mobilekit-click-animation" disabled>Stop</button>
+    </div>
 
-    <button class="starter button mobilekit-click-animation" disabled>Start</button>
-    <button class="display button mobilekit-click-animation" disabled>Display</button>
-    <div class="filler"></div>
-    <button class="resetter button mobilekit-click-animation" disabled>Reset</button>
-    <button class="stopper button mobilekit-click-animation" disabled>Stop</button>
-
-    <template id="mobilekit-drawer-content">
-        <div class="mobilekit-scroll">
-            <div class="drawerHeader">
-                <img class="drawericon" src="images/ic_bike.png" />
-                <h1>Super Fit</h1>
-            </div>
-            <div id="maps" class="drawerButton mobilekit-click-animation maps">
-                <span id="mapsMarker" class="marker">◢</span>
-                <span class="tracksTitle">Karten</span>
-            </div>
-            <ul id=mapList class="mobilekit-click-animation-children listbox mapList"></ul>
-            <div id="tracks" class="drawerButton mobilekit-click-animation tracks">
-                <span id="tracksMarker" class="marker">◢</span>
-                <span class="tracksTitle">Tracks</span>
-            </div>
-            <ul id=trackList class="mobilekit-click-animation-children listbox trackList"></ul>
-        </div>
-    </template>
-
-    <template id="mapTemplate">
-        <li>
-            <div class="map title">
-                <!-- <img src="images/track.xml" class="trackIcon">
-                <div>
-                    <div class="title">
-                    </div>
-                    <div>
-                        <span class="distance"></span>
-                        <span class="speed"></span>
-                    </div>
-                </div> -->
-            </div>
-        </li>
-    </template>
+    <div class="tracks">
+        <ul id=trackList class="mobilekit-click-animation-children listbox trackList"></ul>
+    </div>
 
     <template id="trackTemplate">
         <li>
@@ -73,6 +39,6 @@
     <script src="scripts/iscroll.js"></script>
     <script src="scripts/interface.js"></script>
     <script src="scripts/mainApp.js"></script>
-    <script src="scripts/drawer.js"></script>
+
 </body>
 </html> 
