@@ -56,7 +56,9 @@ object Bike {
         var speedIsNull = true
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val wheelCircumference = BigDecimal(preferences.getString(PreferenceActivity.PREF_WHEEL, "2096"))
+        var value = BigDecimal(preferences.getString(PreferenceActivity.PREF_WHEEL, "2096"))
+        val wheelCircumference = value.divide(BigDecimal(1000.0))
+
 
         bikeController.subscribeCalculatedSpeedEvent(object : AntPlusBikeSpeedDistancePcc.CalculatedSpeedReceiver(wheelCircumference) {
             override fun onNewCalculatedSpeed(estTimestamp: Long, flags: EnumSet<EventFlag>?, calculatedSpeedInMs: BigDecimal?) {
