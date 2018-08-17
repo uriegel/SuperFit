@@ -95,11 +95,13 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
         }
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+    override fun onNavigationItemSelected(item: MenuItem): Boolean
+    {
         // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_controls -> webView.evaluateJavascript("showControls()", null)
-            R.id.nav_tracks -> webView.evaluateJavascript("showTracks()", null)
+        when (item.itemId)
+        {
+            R.id.nav_controls -> webView.loadUrl("file:///android_asset/index.html#main")
+            R.id.nav_tracks -> webView.loadUrl("file:///android_asset/index.html#tracks")
         }
 
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -216,7 +218,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
     }
 
     private fun initilize() {
-        webView.loadUrl("file:///android_asset/main.html")
+        webView.loadUrl("file:///android_asset/index.html#main")
 
         isInitialized = true
 

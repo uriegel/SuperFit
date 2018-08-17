@@ -1,0 +1,1 @@
+function onStateChanged(n){mainApp.onStateChanged(n)}var mainApp;
