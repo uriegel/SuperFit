@@ -105,8 +105,8 @@ class MapActivity : ActivityEx()
 
 	companion object
 	{
-		val RESULT_TYPE = "RESULT_TYPE"
-		val RESULT_TYPE_DELETE = "RESULT_TYPE_DELETE"
+		const val RESULT_TYPE = "RESULT_TYPE"
+		const val RESULT_TYPE_DELETE = "RESULT_TYPE_DELETE"
 	}
 
 	private lateinit var webView: WebView

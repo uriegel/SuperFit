@@ -37,15 +37,14 @@ import java.io.File
 
 class MapFragment : Fragment()
 {
-
 	@SuppressLint("SetJavaScriptEnabled")
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 	{
-
 		val root = inflater.inflate(R.layout.fragment_tracking, container, false)
 		frameLayout = root.findViewById(R.id.mapContainer)
 		mapView = MapView(activity)
-		with(mapView) {
+		with(mapView)
+		{
 			isClickable = true
 			setBuiltInZoomControls(true)
 			model.frameBufferModel.overdrawFactor = 1.0
@@ -105,18 +104,21 @@ class MapFragment : Fragment()
 		}
 
 		webView = root.findViewById<WebView>(R.id.mapControls)
-		webView.setBackgroundColor(Color.TRANSPARENT)
-		webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
-
-		with(webView.settings)
+		if (arguments?.getBoolean(SHOW_TRACKING_CONTROL, false) ?: false)
 		{
-			javaScriptEnabled = true
-			domStorageEnabled = true
-			allowFileAccessFromFileURLs = true
-			allowUniversalAccessFromFileURLs = true
+			webView.setBackgroundColor(Color.TRANSPARENT)
+			webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
+
+			with(webView.settings)
+			{
+				javaScriptEnabled = true
+				domStorageEnabled = true
+				allowFileAccessFromFileURLs = true
+				allowUniversalAccessFromFileURLs = true
+			}
+			webView.addJavascriptInterface(javaScriptInterface, "NativeTrackingControls")
+			webView.loadUrl("file:///android_asset/index.html#tracking-control")
 		}
-		webView.addJavascriptInterface(javaScriptInterface, "NativeTrackingControls")
-		webView.loadUrl("file:///android_asset/index.html#tracking-control")
 
 		return root
 	}
@@ -219,6 +221,7 @@ class MapFragment : Fragment()
 
 	companion object
 	{
+		const val SHOW_TRACKING_CONTROL = "ShowTrackingControl"
 		private const val ACCURACY_BEARING = 10F
 	}
 
