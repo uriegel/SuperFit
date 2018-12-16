@@ -15,12 +15,16 @@ import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.database.TrackPoint
 import eu.selfhost.riegel.superfit.maps.LocationManager
 import eu.selfhost.riegel.superfit.maps.LocationManager.getCurrentTrack
+//import eu.selfhost.riegel.superfit.maps.LocationManager.getCurrentTrack
 import eu.selfhost.riegel.superfit.maps.LocationMarker
 import eu.selfhost.riegel.superfit.maps.TrackLine
 import eu.selfhost.riegel.superfit.utils.getSdCard
 import kotlinx.android.synthetic.main.fragment_tracking.view.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.mapsforge.core.model.BoundingBox
@@ -38,89 +42,84 @@ import java.io.File
 class MapFragment : Fragment()
 {
 	@SuppressLint("SetJavaScriptEnabled")
-	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-	{
-		val root = inflater.inflate(R.layout.fragment_tracking, container, false)
-		frameLayout = root.findViewById(R.id.mapContainer)
-		mapView = MapView(activity)
-		with(mapView)
-		{
-			isClickable = true
-			setBuiltInZoomControls(true)
-			model.frameBufferModel.overdrawFactor = 1.0
-			setZoomLevelMin(10)
-			setZoomLevelMax(20)
-			setZoomLevel(16)
-		}
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val root = inflater.inflate(R.layout.fragment_tracking, container, false)
+        frameLayout = root.findViewById(R.id.mapContainer)
+        mapView = MapView(activity)
+        with(mapView)
+        {
+            isClickable = true
+            setBuiltInZoomControls(true)
+            model.frameBufferModel.overdrawFactor = 1.0
+            setZoomLevelMin(10)
+            setZoomLevelMax(20)
+            setZoomLevel(16)
+        }
 
-		tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1.0F,
-				mapView.model.frameBufferModel.overdrawFactor)
+        tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1.0F,
+                mapView.model.frameBufferModel.overdrawFactor)
 
-		val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
-		val map = preferences.getString(PreferenceActivity.PREF_MAP, null)
-		val sdCard: String = activity.getSdCard()
-		val mapsDir = "$sdCard/Maps"
-		val mapDataStore = MapFile(File(mapsDir, map))
+        val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
+        val map = preferences.getString(PreferenceActivity.PREF_MAP, null)
+        val sdCard: String = activity.getSdCard()
+        val mapsDir = "$sdCard/Maps"
+        val mapDataStore = MapFile(File(mapsDir, map))
 
-		tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
-				InternalRenderTheme.OSMARENDER, false, true, false)
+        tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
+                InternalRenderTheme.OSMARENDER, false, true, false)
 
-		val center = LatLong(50.90042250198412, 6.715496743031949)
-		with(mapView) {
-			layerManager.layers.add(tileRendererLayer)
-			model.frameBufferModel.overdrawFactor = 1.0
-			mapScaleBar.isVisible = true
+        val center = LatLong(50.90042250198412, 6.715496743031949)
+        with(mapView) {
+            layerManager.layers.add(tileRendererLayer)
+            model.frameBufferModel.overdrawFactor = 1.0
+            mapScaleBar.isVisible = true
 
-			setCenter(center)
-		}
+            setCenter(center)
+        }
 
-		trackLine = TrackLine()
-		mapView.layerManager.layers.add(trackLine)
+        trackLine = TrackLine()
+        mapView.layerManager.layers.add(trackLine)
 
-		frameLayout.addView(mapView)
+        frameLayout.addView(mapView)
 
-		async(UI) {
-			val tracks = getCurrentTrack().await()
-			if (tracks.isNotEmpty())
-				tracks.forEach { (trackLine.latLongs.add(it)) }
+        val tracks = getCurrentTrack()
+        if (tracks.isNotEmpty())
+            tracks.forEach { (trackLine.latLongs.add(it)) }
+        LocationManager.listener = {
+            val currentLatLong = LatLong(it.latitude, it.longitude)
+            if (location != null)
+                mapView.layerManager.layers.remove(location)
+            location = LocationMarker(currentLatLong)
+            mapView.layerManager.layers.add(location)
+            if (followLocation)
+                mapView.setCenter(currentLatLong)
+            trackLine.latLongs.add(currentLatLong)
 
-			LocationManager.listener = {
-				val currentLatLong = LatLong(it.latitude, it.longitude)
-				if (location != null)
-					mapView.layerManager.layers.remove(location)
-				location = LocationMarker(currentLatLong)
-				mapView.layerManager.layers.add(location)
-				if (followLocation)
-					mapView.setCenter(currentLatLong)
-				trackLine.latLongs.add(currentLatLong)
+            if (rotateView != null
+                    && lastLocation != null
+                    && lastLocation!!.accuracy < ACCURACY_BEARING
+                    && it.accuracy < ACCURACY_BEARING)
+                rotateView!!.heading = lastLocation!!.bearingTo(it)
+            lastLocation = it
+        }
 
-				if (rotateView != null
-				    && lastLocation != null
-				    && lastLocation!!.accuracy < ACCURACY_BEARING
-				    && it.accuracy < ACCURACY_BEARING)
-					rotateView!!.heading = lastLocation!!.bearingTo(it)
-				lastLocation = it
-			}
-		}
+        webView = root.findViewById<WebView>(R.id.mapControls)
+        if (arguments?.getBoolean(SHOW_TRACKING_CONTROL, false) ?: false) {
+            webView.setBackgroundColor(Color.TRANSPARENT)
+            webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
 
-		webView = root.findViewById<WebView>(R.id.mapControls)
-		if (arguments?.getBoolean(SHOW_TRACKING_CONTROL, false) ?: false)
-		{
-			webView.setBackgroundColor(Color.TRANSPARENT)
-			webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
+            with(webView.settings)
+            {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                allowFileAccessFromFileURLs = true
+                allowUniversalAccessFromFileURLs = true
+            }
+            webView.addJavascriptInterface(javaScriptInterface, "NativeTrackingControls")
+            webView.loadUrl("file:///android_asset/index.html#tracking-control")
+        }
 
-			with(webView.settings)
-			{
-				javaScriptEnabled = true
-				domStorageEnabled = true
-				allowFileAccessFromFileURLs = true
-				allowUniversalAccessFromFileURLs = true
-			}
-			webView.addJavascriptInterface(javaScriptInterface, "NativeTrackingControls")
-			webView.loadUrl("file:///android_asset/index.html#tracking-control")
-		}
-
-		return root
+        return root
 	}
 
 	override fun onDestroy()
@@ -204,11 +203,11 @@ class MapFragment : Fragment()
 		fun toggleMode()
 		{
 			doHapticFeedback()
-			async(UI) {
-				followLocation = !followLocation
-				enableBearing(followLocation)
-				(activity as DisplayActivity).pagingEnabled = followLocation
-			}
+//			async(UI) {
+//				followLocation = !followLocation
+//				enableBearing(followLocation)
+//				(activity as DisplayActivity).pagingEnabled = followLocation
+//			}
 		}
 	}
 

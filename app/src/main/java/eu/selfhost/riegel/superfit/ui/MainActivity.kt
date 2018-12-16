@@ -28,8 +28,7 @@ import eu.selfhost.riegel.superfit.utils.serialize
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.async
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
@@ -118,41 +117,41 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
 
         @JavascriptInterface
         fun fillTracks() {
-            async(UI)
-            {
-                val tracks = DataBase.getTracksAsync().await()
-                val gson = Gson()
-                val json = gson.toJson(tracks)
-                webView.evaluateJavascript("onTracks($json)", null)
-            }
+//            async(UI)
+//            {
+//                val tracks = DataBase.getTracksAsync().await()
+//                val gson = Gson()
+//                val json = gson.toJson(tracks)
+//                webView.evaluateJavascript("onTracks($json)", null)
+//            }
         }
 
         @JavascriptInterface
         fun fillMaps() {
-            async(UI)
-            {
-                val sdCard: String = getSdCard()
-                val mapsDir = "$sdCard/Maps"
-                val directory = File(mapsDir)
-                val files = directory.listFiles().filter { it.extension == "map" }.map { it.name }
-                val gson = Gson()
-                val json = gson.toJson(files)
-                webView.evaluateJavascript("onMaps($json)", null)
-            }
+//            async(UI)
+//            {
+//                val sdCard: String = getSdCard()
+//                val mapsDir = "$sdCard/Maps"
+//                val directory = File(mapsDir)
+//                val files = directory.listFiles().filter { it.extension == "map" }.map { it.name }
+//                val gson = Gson()
+//                val json = gson.toJson(files)
+//                webView.evaluateJavascript("onMaps($json)", null)
+//            }
         }
 
         @Suppress("DEPRECATION")
         @JavascriptInterface
         fun onTrackSelected(trackNr: Long) {
-            async(UI) {
-                val intent = Intent(this@MainActivity, MapActivity::class.java)
-                intent.putExtra(TRACK_NR, trackNr)
-                val result = activityRequest(intent)
-                if (result?.resultCode == Activity.RESULT_OK) {
-                    if (result.data?.getStringExtra(MapActivity.RESULT_TYPE) == MapActivity.RESULT_TYPE_DELETE)
-                        webView.evaluateJavascript("deleteTrack($trackNr)", null)
-                }
-            }
+//            async(UI) {
+//                val intent = Intent(this@MainActivity, MapActivity::class.java)
+//                intent.putExtra(TRACK_NR, trackNr)
+//                val result = activityRequest(intent)
+//                if (result?.resultCode == Activity.RESULT_OK) {
+//                    if (result.data?.getStringExtra(MapActivity.RESULT_TYPE) == MapActivity.RESULT_TYPE_DELETE)
+//                        webView.evaluateJavascript("deleteTrack($trackNr)", null)
+//                }
+//            }
         }
 
         @JavascriptInterface
