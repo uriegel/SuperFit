@@ -18,9 +18,6 @@ object DataBase {
 
     suspend fun getTracksAsync(): Array<Track> {
         return database.use {
-
-            val t = Thread.currentThread().id
-
             select(TrackTable.Name,
                 TrackTable.ID,
                 TrackTable.TrackName,

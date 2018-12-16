@@ -29,6 +29,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.async
@@ -122,7 +123,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
         @JavascriptInterface
         fun fillTracks() {
             launch {
-                val tracks = async { DataBase.getTracksAsync() }.await()
+                val tracks = async(Dispatchers.Default) { DataBase.getTracksAsync() }.await()
                 val gson = Gson()
                 val json = gson.toJson(tracks)
                 webView.evaluateJavascript("onTracks($json)", null)

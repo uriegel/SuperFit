@@ -80,7 +80,7 @@ class MapFragment : Fragment(), CoroutineScope {
         frameLayout.addView(mapView)
 
         launch {
-            val tracks = async {getCurrentTrackAsync() }.await()
+            val tracks = async(Dispatchers.Default) {getCurrentTrackAsync() }.await()
             if (tracks.isNotEmpty())
                 tracks.forEach { (trackLine.latLongs.add(it)) }
             LocationManager.listener = {
