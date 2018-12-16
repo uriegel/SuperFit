@@ -28,16 +28,20 @@ import eu.selfhost.riegel.superfit.utils.serialize
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.async
-import org.jetbrains.anko.doAsync
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
-import org.jetbrains.anko.uiThread
 import java.io.File
 
-class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListener, CoroutineScope {
     // TODO: in drawer, choose controls or track view
     // TODO: Track view activity
     // TODO: Then remove HTML-Titlebar
+
+    override val coroutineContext = Main
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,68 +114,60 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
 
     private val javaScriptInterface = object {
         @JavascriptInterface
-        fun getState() = doAsync { uiThread { onStateChanged(Service.state) } }
+        fun getState() = launch { onStateChanged(Service.state) }
 
         @JavascriptInterface
-        fun doHapticFeedback() = doAsync { uiThread { webView.playSoundEffect(SoundEffectConstants.CLICK) } }
+        fun doHapticFeedback() = launch { webView.playSoundEffect(SoundEffectConstants.CLICK) }
 
         @JavascriptInterface
         fun fillTracks() {
-//            async(UI)
-//            {
-//                val tracks = DataBase.getTracksAsync().await()
-//                val gson = Gson()
-//                val json = gson.toJson(tracks)
-//                webView.evaluateJavascript("onTracks($json)", null)
-//            }
+            launch {
+                val tracks = async { DataBase.getTracksAsync() }.await()
+                val gson = Gson()
+                val json = gson.toJson(tracks)
+                webView.evaluateJavascript("onTracks($json)", null)
+            }
         }
 
         @JavascriptInterface
         fun fillMaps() {
-//            async(UI)
-//            {
-//                val sdCard: String = getSdCard()
-//                val mapsDir = "$sdCard/Maps"
-//                val directory = File(mapsDir)
-//                val files = directory.listFiles().filter { it.extension == "map" }.map { it.name }
-//                val gson = Gson()
-//                val json = gson.toJson(files)
-//                webView.evaluateJavascript("onMaps($json)", null)
-//            }
+            launch {
+                val sdCard: String = getSdCard()
+                val mapsDir = "$sdCard/Maps"
+                val directory = File(mapsDir)
+                val files = directory.listFiles().filter { it.extension == "map" }.map { it.name }
+                val gson = Gson()
+                val json = gson.toJson(files)
+                webView.evaluateJavascript("onMaps($json)", null)
+            }
         }
 
         @Suppress("DEPRECATION")
         @JavascriptInterface
-        fun onTrackSelected(trackNr: Long) {
-//            async(UI) {
-//                val intent = Intent(this@MainActivity, MapActivity::class.java)
-//                intent.putExtra(TRACK_NR, trackNr)
-//                val result = activityRequest(intent)
-//                if (result?.resultCode == Activity.RESULT_OK) {
-//                    if (result.data?.getStringExtra(MapActivity.RESULT_TYPE) == MapActivity.RESULT_TYPE_DELETE)
-//                        webView.evaluateJavascript("deleteTrack($trackNr)", null)
-//                }
-//            }
-        }
-
-        @JavascriptInterface
-        fun start() = doAsync {
-            uiThread {
-                val startIntent = Intent(this@MainActivity, Service::class.java)
-                startIntent.action = Service.ACTION_START
-                startService(startIntent)
-                startActivity(Intent(this@MainActivity, DisplayActivity::class.java))
+        fun onTrackSelected(trackNr: Long) = launch {
+            val intent = Intent(this@MainActivity, MapActivity::class.java)
+            intent.putExtra(TRACK_NR, trackNr)
+            val result = activityRequest(intent)
+            if (result?.resultCode == Activity.RESULT_OK) {
+                if (result.data?.getStringExtra(MapActivity.RESULT_TYPE) == MapActivity.RESULT_TYPE_DELETE)
+                    webView.evaluateJavascript("deleteTrack($trackNr)", null)
             }
         }
 
         @JavascriptInterface
-        fun stop() = doAsync {
-            uiThread {
-                val startIntent = Intent(this@MainActivity, Service::class.java)
-                startIntent.action = Service.ACTION_STOP
-                startService(startIntent)
-                finish()
-            }
+        fun start() = launch {
+            val startIntent = Intent(this@MainActivity, Service::class.java)
+            startIntent.action = Service.ACTION_START
+            startService(startIntent)
+            startActivity(Intent(this@MainActivity, DisplayActivity::class.java))
+        }
+
+        @JavascriptInterface
+        fun stop() = launch {
+            val startIntent = Intent(this@MainActivity, Service::class.java)
+            startIntent.action = Service.ACTION_STOP
+            startService(startIntent)
+            finish()
         }
 
         @JavascriptInterface
@@ -183,10 +179,10 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
         }
 
         @JavascriptInterface
-        fun display() = doAsync { uiThread { startActivity(Intent(this@MainActivity, DisplayActivity::class.java)) } }
+        fun display() = launch { startActivity(Intent(this@MainActivity, DisplayActivity::class.java)) }
 
         @JavascriptInterface
-        fun finish() = doAsync { uiThread { forceOnBackPressed() } }
+        fun finish() = launch { forceOnBackPressed() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -35,7 +35,7 @@ dependencies {
     implementation "org.jetbrains.anko:anko-common:$anko_version"
     implementation "org.jetbrains.anko:anko-sqlite:$anko_version"
     implementation "org.jetbrains.anko:anko-coroutines:$anko_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.0.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_core_version"
     implementation "com.google.code.gson:gson:$gson_version"
     implementation 'com.android.support:support-v4:27.1.1'
     implementation "org.mapsforge:mapsforge-core:$mapsforge_version"

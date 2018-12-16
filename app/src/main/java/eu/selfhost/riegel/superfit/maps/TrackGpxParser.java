@@ -106,21 +106,16 @@ public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
             if (localName.equalsIgnoreCase(TRK)) {
                 // done reading
             }
-            else if (localName.equalsIgnoreCase(NAME)) {
+            else if (localName.equalsIgnoreCase(NAME))
                 trackname = cdata.toString().trim(); // trackname
-            }
-            else if (localName.equalsIgnoreCase(CMT)) {
+            else if (localName.equalsIgnoreCase(CMT))
                 cdata.toString().trim(); //
-            }
-            else if (localName.equalsIgnoreCase(DESC)) {
+            else if (localName.equalsIgnoreCase(DESC))
                 description = cdata.toString().trim(); // trackdescription
-            }
-            else if (localName.equalsIgnoreCase(ELE)) {
+            else if (localName.equalsIgnoreCase(ELE))
                 trkpt.setAltitude((int)Double.parseDouble(cdata.toString().trim())); // altitude
-            }
-            else if (localName.equalsIgnoreCase(TIME)) {
+            else if (localName.equalsIgnoreCase(TIME))
                 trkpt.setTimestamp(parseDate(cdata.toString().trim())); // duration
-            }
             else if (localName.equalsIgnoreCase(TRKPT)) {
                 track.add(trkpt);
                 trkpt = null;
@@ -141,11 +136,11 @@ public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
             return timestamp;
         }
 
-        public void setTimestamp(Date timestamp) {
+        void setTimestamp(Date timestamp) {
             this.timestamp = timestamp;
         }
 
-        public void setAltitude(int altitude) {
+        void setAltitude(int altitude) {
             this.altitude = altitude;
         }
 

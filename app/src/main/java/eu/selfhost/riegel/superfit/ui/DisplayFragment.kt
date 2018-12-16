@@ -1,6 +1,5 @@
 package eu.selfhost.riegel.superfit.ui
 
-
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -12,12 +11,15 @@ import android.webkit.WebView
 import eu.selfhost.riegel.superfit.maps.LocationManager
 import eu.selfhost.riegel.superfit.sensors.Bike
 import eu.selfhost.riegel.superfit.sensors.HeartRate
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.timerTask
 
-class DisplayFragment : Fragment() {
+class DisplayFragment : Fragment(), CoroutineScope {
+
+    override val coroutineContext = Dispatchers.Main
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -36,19 +38,17 @@ class DisplayFragment : Fragment() {
         WebView.setWebContentsDebuggingEnabled(true)
         webView.loadUrl("file:///android_asset/display.html")
 
-        HeartRate.listener = { heartRate -> doAsync { uiThread { webView.evaluateJavascript("onHeartRateChanged($heartRate)", null) } } }
+        HeartRate.listener = { heartRate -> launch { webView.evaluateJavascript("onHeartRateChanged($heartRate)", null) } }
         timer = Timer()
         timer.schedule(timerTask {
             if (Bike.isStarted)
-                doAsync {
-                    uiThread {
-                        webView.evaluateJavascript(
-                        "onBikeDataChanged(${Bike.speed}, ${Bike.maxSpeed}, ${Bike.averageSpeed}, ${Bike.distance}, ${Bike.duration}, ${Bike.cadence})", null)
-                    }
+                launch {
+                    webView.evaluateJavascript(
+                    "onBikeDataChanged(${Bike.speed}, ${Bike.maxSpeed}, ${Bike.averageSpeed}, ${Bike.distance}, ${Bike.duration}, ${Bike.cadence})", null)
                 }
         }, delay , delay )
 
-        LocationManager.setGpsActive = { doAsync { uiThread { webView.evaluateJavascript("setGpsActive()", null) } } }
+        LocationManager.setGpsActive = { launch { webView.evaluateJavascript("setGpsActive()", null) } }
 
         return webView
     }
@@ -64,7 +64,7 @@ class DisplayFragment : Fragment() {
         @JavascriptInterface
         fun onReady() {
             if (LocationManager.gpsActive)
-                doAsync { uiThread { webView.evaluateJavascript("setGpsActive()", null) } }
+                launch { webView.evaluateJavascript("setGpsActive()", null) }
         }
     }
 

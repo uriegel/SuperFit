@@ -10,10 +10,6 @@ import android.os.Bundle
 import eu.selfhost.riegel.superfit.database.DataBase
 import eu.selfhost.riegel.superfit.sensors.Bike
 import eu.selfhost.riegel.superfit.sensors.HeartRate
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import org.jetbrains.anko.custom.async
 import org.mapsforge.core.model.LatLong
 
 @SuppressLint("MissingPermission")
@@ -36,12 +32,11 @@ object LocationManager {
         }
     }
 
-    fun getCurrentTrack() : Array<LatLong> {
-  //      if (trackNr == -1L)
+    suspend fun getCurrentTrackAsync() : Array<LatLong> {
+        if (trackNr == -1L)
             return arrayOf<LatLong>()
-//        val res = DataBase.getTrackPointsAsync(trackNr).await()
-//            return@async res.map { LatLong(it.latitude, it.longitude) }.toTypedArray()
-//        }
+        val res = DataBase.getTrackPointsAsync(trackNr)
+        return res.map { LatLong(it.latitude, it.longitude) }.toTypedArray()
     }
 
     private val locationListener = object : LocationListener {

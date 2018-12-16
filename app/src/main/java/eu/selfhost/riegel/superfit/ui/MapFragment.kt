@@ -14,19 +14,14 @@ import android.widget.FrameLayout
 import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.database.TrackPoint
 import eu.selfhost.riegel.superfit.maps.LocationManager
-import eu.selfhost.riegel.superfit.maps.LocationManager.getCurrentTrack
-//import eu.selfhost.riegel.superfit.maps.LocationManager.getCurrentTrack
+import eu.selfhost.riegel.superfit.maps.LocationManager.getCurrentTrackAsync
 import eu.selfhost.riegel.superfit.maps.LocationMarker
 import eu.selfhost.riegel.superfit.maps.TrackLine
 import eu.selfhost.riegel.superfit.utils.getSdCard
-import kotlinx.android.synthetic.main.fragment_tracking.view.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import org.mapsforge.core.model.BoundingBox
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
@@ -39,8 +34,10 @@ import org.mapsforge.map.reader.MapFile
 import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.File
 
-class MapFragment : Fragment()
-{
+class MapFragment : Fragment(), CoroutineScope {
+
+	override val coroutineContext = Dispatchers.Main
+
 	@SuppressLint("SetJavaScriptEnabled")
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_tracking, container, false)
@@ -82,25 +79,27 @@ class MapFragment : Fragment()
 
         frameLayout.addView(mapView)
 
-        val tracks = getCurrentTrack()
-        if (tracks.isNotEmpty())
-            tracks.forEach { (trackLine.latLongs.add(it)) }
-        LocationManager.listener = {
-            val currentLatLong = LatLong(it.latitude, it.longitude)
-            if (location != null)
-                mapView.layerManager.layers.remove(location)
-            location = LocationMarker(currentLatLong)
-            mapView.layerManager.layers.add(location)
-            if (followLocation)
-                mapView.setCenter(currentLatLong)
-            trackLine.latLongs.add(currentLatLong)
+        launch {
+            val tracks = async {getCurrentTrackAsync() }.await()
+            if (tracks.isNotEmpty())
+                tracks.forEach { (trackLine.latLongs.add(it)) }
+            LocationManager.listener = {
+                val currentLatLong = LatLong(it.latitude, it.longitude)
+                if (location != null)
+                    mapView.layerManager.layers.remove(location)
+                location = LocationMarker(currentLatLong)
+                mapView.layerManager.layers.add(location)
+                if (followLocation)
+                    mapView.setCenter(currentLatLong)
+                trackLine.latLongs.add(currentLatLong)
 
-            if (rotateView != null
-                    && lastLocation != null
-                    && lastLocation!!.accuracy < ACCURACY_BEARING
-                    && it.accuracy < ACCURACY_BEARING)
-                rotateView!!.heading = lastLocation!!.bearingTo(it)
-            lastLocation = it
+                if (rotateView != null
+                        && lastLocation != null
+                        && lastLocation!!.accuracy < ACCURACY_BEARING
+                        && it.accuracy < ACCURACY_BEARING)
+                    rotateView!!.heading = lastLocation!!.bearingTo(it)
+                lastLocation = it
+            }
         }
 
         webView = root.findViewById<WebView>(R.id.mapControls)
@@ -122,29 +121,25 @@ class MapFragment : Fragment()
         return root
 	}
 
-	override fun onDestroy()
-	{
+	override fun onDestroy() {
 		LocationManager.listener = null
 		super.onDestroy()
-		doAsync {
+		launch {
 			mapView.destroyAll()
 			AndroidGraphicFactory.clearResourceMemoryCache()
 		}
 	}
 
-	fun loadGpxTrack(track: Array<TrackPoint>)
-	{
+	fun loadGpxTrack(track: Array<TrackPoint>) {
 		track.forEach({ (trackLine.latLongs.add(LatLong(it.latitude, it.longitude))) })
 		zoomAndPan()
 	}
 
-	fun enableBearing(enable: Boolean)
-	{
+	fun enableBearing(enable: Boolean) {
 		if (rotateViewChangeState == RotateViewChangeState.Changing)
 			return
 
-		if (enable && rotateView == null && rotateViewChangeState == RotateViewChangeState.Disabled)
-		{
+		if (enable && rotateView == null && rotateViewChangeState == RotateViewChangeState.Disabled) {
 			rotateViewChangeState = RotateViewChangeState.Changing
 			frameLayout.removeAllViews()
 			rotateView = RotateView(activity)
@@ -155,8 +150,7 @@ class MapFragment : Fragment()
 			frameLayout.addView(rotateView)
 			rotateViewChangeState = RotateViewChangeState.Enabled
 		}
-		else if (!enable && rotateView != null && rotateViewChangeState == RotateViewChangeState.Enabled)
-		{
+		else if (!enable && rotateView != null && rotateViewChangeState == RotateViewChangeState.Enabled) {
 			rotateViewChangeState = RotateViewChangeState.Changing
 			frameLayout.removeAllViews()
 			rotateView!!.removeAllViews()
@@ -167,8 +161,7 @@ class MapFragment : Fragment()
 		followLocation = enable
 	}
 
-	private fun zoomAndPan()
-	{
+	private fun zoomAndPan() {
 		val boundingBox = BoundingBox(trackLine.latLongs)
 		val width = mapView.width
 		val height = mapView.height
@@ -193,15 +186,13 @@ class MapFragment : Fragment()
 		//        }
 	}
 
-	private val javaScriptInterface = object
-	{
+	private val javaScriptInterface = object {
 		@JavascriptInterface
-		fun doHapticFeedback() = doAsync { uiThread { webView.playSoundEffect(SoundEffectConstants.CLICK) } }
+		fun doHapticFeedback() = launch { webView.playSoundEffect(SoundEffectConstants.CLICK) }
 
 		@Suppress("DEPRECATION")
 		@JavascriptInterface
-		fun toggleMode()
-		{
+		fun toggleMode() {
 			doHapticFeedback()
 //			async(UI) {
 //				followLocation = !followLocation
@@ -211,15 +202,13 @@ class MapFragment : Fragment()
 		}
 	}
 
-	private enum class RotateViewChangeState
-	{
+	private enum class RotateViewChangeState {
 		Disabled,
 		Enabled,
 		Changing
 	}
 
-	companion object
-	{
+	companion object {
 		const val SHOW_TRACKING_CONTROL = "ShowTrackingControl"
 		private const val ACCURACY_BEARING = 10F
 	}
