@@ -194,11 +194,11 @@ class MapFragment : Fragment(), CoroutineScope {
 		@JavascriptInterface
 		fun toggleMode() {
 			doHapticFeedback()
-//			async(UI) {
-//				followLocation = !followLocation
-//				enableBearing(followLocation)
-//				(activity as DisplayActivity).pagingEnabled = followLocation
-//			}
+			launch {
+				followLocation = !followLocation
+				enableBearing(followLocation)
+				(activity as DisplayActivity).pagingEnabled = followLocation
+			}
 		}
 	}
 
