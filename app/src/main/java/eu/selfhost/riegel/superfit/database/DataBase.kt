@@ -16,7 +16,7 @@ object DataBase {
         return result
     }
 
-    suspend fun getTracksAsync(): Array<Track> {
+    suspend fun getTracks(): Array<Track> {
         return database.use {
             select(TrackTable.Name,
                 TrackTable.ID,
@@ -38,7 +38,7 @@ object DataBase {
         }
     }
 
-    fun getTrackAsync(trackNr: Long): Track {
+    fun getTrack(trackNr: Long): Track {
         return database.use {
             select(TrackTable.Name,
                     TrackTable.ID,
@@ -60,7 +60,7 @@ object DataBase {
         }
     }
 
-    fun deleteTrackAsync(trackNr: Long): Boolean {
+    fun deleteTrack(trackNr: Long): Boolean {
         database.use {
             delete(TrackTable.Name, "_id = {trackNr}", "trackNr" to trackNr)
             delete(TrackPointTable.Name, "TrackNr = {trackNr}", "trackNr" to trackNr)
@@ -68,7 +68,7 @@ object DataBase {
         return true
     }
 
-    fun getTrackPointsAsync(trackNr: Long): Array<TrackPoint> {
+    fun getTrackPoints(trackNr: Long): Array<TrackPoint> {
         return database.use {
             select(TrackPointTable.Name,
                     TrackPointTable.Latitude,

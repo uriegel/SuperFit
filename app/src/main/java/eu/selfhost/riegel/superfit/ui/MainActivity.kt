@@ -123,7 +123,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
         @JavascriptInterface
         fun fillTracks() {
             launch {
-                val tracks = async(Dispatchers.Default) { DataBase.getTracksAsync() }.await()
+                val tracks = DataBase.getTracks()
                 val gson = Gson()
                 val json = gson.toJson(tracks)
                 webView.evaluateJavascript("onTracks($json)", null)

@@ -35,7 +35,7 @@ object LocationManager {
     suspend fun getCurrentTrackAsync() : Array<LatLong> {
         if (trackNr == -1L)
             return arrayOf<LatLong>()
-        val res = DataBase.getTrackPointsAsync(trackNr)
+        val res = DataBase.getTrackPoints(trackNr)
         return res.map { LatLong(it.latitude, it.longitude) }.toTypedArray()
     }
 

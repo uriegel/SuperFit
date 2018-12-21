@@ -45,7 +45,7 @@ class MapActivity : ActivityEx(), CoroutineScope {
 		val bundle = intent.extras
 		trackNr = bundle.getLong(MainActivity.TRACK_NR)
 		launch {
-			val trackPoints = async(Dispatchers.Default) { DataBase.getTrackPointsAsync(trackNr)}.await()
+			val trackPoints = DataBase.getTrackPoints(trackNr)
 			val fragment = supportFragmentManager.findFragmentById(R.id.fragment) as MapFragment
 			fragment.loadGpxTrack(trackPoints)
 		}
@@ -61,7 +61,7 @@ class MapActivity : ActivityEx(), CoroutineScope {
 		{
 			doHapticFeedback()
 			launch {
-				val track = async(Dispatchers.Default) { DataBase.getTrackAsync(trackNr) }.await()
+				val track = DataBase.getTrack(trackNr)
 				val date = Date(track.time)
 				val name = if (track.name.isEmpty()) "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}" else track.name
 
@@ -73,7 +73,7 @@ class MapActivity : ActivityEx(), CoroutineScope {
 				if (result?.resultCode == Activity.RESULT_OK) {
 					val uri = result.data?.data!!
 					val stream = contentResolver.openOutputStream(uri)
-					val trackPoints = async(Dispatchers.Default) { DataBase.getTrackPointsAsync(trackNr) }.await()
+					val trackPoints = DataBase.getTrackPoints(trackNr)
 					exportToGpx(stream, name, track, trackPoints)
 					stream.close()
 					this@MapActivity.finish()
@@ -87,13 +87,11 @@ class MapActivity : ActivityEx(), CoroutineScope {
 			launch {
 				alert("Möchtest Du diesen Track löschen?", "Track löschen") {
 					yesButton {
-						launch {
-							async(Dispatchers.Default) { DataBase.deleteTrackAsync(trackNr)}.await()
-							val intent = Intent()
-							intent.putExtra(RESULT_TYPE, RESULT_TYPE_DELETE)
-							setResult(Activity.RESULT_OK, intent)
-							this@MapActivity.finish()
-						}
+						DataBase.deleteTrack(trackNr)
+						val intent = Intent()
+						intent.putExtra(RESULT_TYPE, RESULT_TYPE_DELETE)
+						setResult(Activity.RESULT_OK, intent)
+						this@MapActivity.finish()
 					}
 					noButton {}
 				}.show()
