@@ -40,8 +40,7 @@ class MapActivity : ActivityEx(), CoroutineScope {
 			allowUniversalAccessFromFileURLs = true
 		}
 		webView.addJavascriptInterface(javaScriptInterface, "NativeMapControls")
-
-		webView.loadUrl("file:///android_asset/mapViewControls.html")
+		webView.loadUrl("file:///android_asset/index.html#map-view-controls")
 
 		val bundle = intent.extras
 		trackNr = bundle.getLong(MainActivity.TRACK_NR)
