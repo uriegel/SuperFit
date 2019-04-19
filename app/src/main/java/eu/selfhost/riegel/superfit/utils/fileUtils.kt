@@ -6,11 +6,17 @@ import java.io.File
 fun Context?.getSdCard() =
     if (this == null)
         ""
-    else
-        this.getExternalFilesDirs(null)
-                .map { getRootOfExternalStorage(it) }
-                .first { !it.contains("emulated") }
-
+    else {
+        try {
+            this.getExternalFilesDirs(null)
+                    .map { getRootOfExternalStorage(it) }
+                    .first { !it.contains("emulated") }
+        } catch (e: Exception) {
+            this.getExternalFilesDirs(null)
+                    .map { getRootOfExternalStorage(it) }
+                    .first { it.contains("emulated") }
+        }
+    }
 
 private fun Context.getRootOfExternalStorage(file: File) =
         file.absolutePath.replace("/Android/data/${this.packageName}/files".toRegex(), "")
