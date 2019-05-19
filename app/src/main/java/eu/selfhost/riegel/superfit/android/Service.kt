@@ -1,11 +1,13 @@
 package eu.selfhost.riegel.superfit.android
 
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.IBinder
+import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.maps.LocationManager
@@ -31,13 +33,21 @@ class Service : Service() {
                 if (state == ServiceState.Stopped) {
                     state = ServiceState.Starting
 
+                    val channelId =
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                                createNotificationChannel("my_service", "My Background Service")
+                            else
+                                // If earlier version channel ID is not used
+                                // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
+                                ""
+
                     val notificationIntent = Intent(this, MainActivity::class.java)
                     notificationIntent.action = ACTION_START
                     notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
 
                     @Suppress("DEPRECATION")
-                    val notification = NotificationCompat.Builder(this)
+                    val notification = NotificationCompat.Builder(this, channelId)
                             .setContentTitle("Super Fit")
                             .setContentText("Erfasst Fitness-Daten")
                             .setContentIntent(pendingIntent)
@@ -80,6 +90,17 @@ class Service : Service() {
     }
 
     override fun onBind(intent: Intent): IBinder? = null
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(channelId: String, channelName: String): String{
+        val chan = NotificationChannel(channelId,
+                channelName, NotificationManager.IMPORTANCE_NONE)
+        chan.lightColor = Color.BLUE
+        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        service.createNotificationChannel(chan)
+        return channelId
+    }
 
     companion object {
         var state: ServiceState = ServiceState.Stopped
