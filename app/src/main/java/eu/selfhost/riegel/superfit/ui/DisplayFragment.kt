@@ -36,7 +36,7 @@ class DisplayFragment : Fragment(), CoroutineScope {
             addJavascriptInterface(javaScriptInterface, "DisplayNative")
         }
         WebView.setWebContentsDebuggingEnabled(true)
-        webView.loadUrl("file:///android_asset/index.html#display")
+        webView.loadUrl("file:///android_asset/display.html")
 
         HeartRate.listener = { heartRate -> launch { webView.evaluateJavascript("onHeartRateChanged($heartRate)", null) } }
         timer = Timer()
