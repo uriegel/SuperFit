@@ -63,11 +63,11 @@ class MapActivity : ActivityEx(), CoroutineScope {
 			launch {
 				val track = DataBase.getTrack(trackNr)
 				val date = Date(track.time)
-				val name = if (track.name.isEmpty()) "${date.year + 1900}-${date.month + 1}-${date.date}-${date.hours}-${date.minutes}" else track.name
+				val name = if (track.name.isEmpty()) "${date.year + 1900}-${(date.month + 1).toString().padStart(2, '0')}-${date.date.toString().padStart(2, '0')}-${date.hours.toString().padStart(2, '0')}-${date.minutes.toString().padStart(2, '0')}" else track.name
 
 				val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
 				intent.addCategory(Intent.CATEGORY_OPENABLE)
-				intent.type = "text/xml"
+				intent.type = "application/gpx+xml"
 				intent.putExtra(Intent.EXTRA_TITLE, "$name.gpx")
 				val result = activityRequest(intent)
 				if (result?.resultCode == Activity.RESULT_OK) {
