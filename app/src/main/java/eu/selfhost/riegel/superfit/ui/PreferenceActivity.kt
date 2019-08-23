@@ -1,11 +1,14 @@
 package eu.selfhost.riegel.superfit.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceFragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.utils.getSdCard
 import java.io.File
+import java.lang.Exception
 
 class PreferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,6 +17,24 @@ class PreferenceActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val sdCard: String = getSdCard()
+        val mapsDir = "$sdCard/Maps"
+        val directory = File(mapsDir)
+        try {
+            val maps = directory.listFiles().filter { it.extension == "map" }.map { it.name }
+            if (maps.count() == 0)
+                throw Exception("Keine Einträge")
+        } catch (e: Exception) {
+            val builder = AlertDialog.Builder(this)
+
+            with(builder)
+            {
+                setTitle("Kartenauswahl")
+                setMessage("Auf der SD-Karte im Verzeichnis '/Maps' müssen sich Karten befinden!")
+                show()
+            }
+        }
     }
 
     class AppPreferenceFragment : PreferenceFragment() {

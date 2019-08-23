@@ -9,6 +9,10 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
@@ -38,9 +42,6 @@ import org.jetbrains.anko.toast
 import java.io.File
 
 class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListener, CoroutineScope {
-    // TODO: in drawer, choose controls or track view
-    // TODO: Track view activity
-    // TODO: Then remove HTML-Titlebar
 
     override val coroutineContext = Main
 
@@ -60,25 +61,36 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        with(webView)
-        {
-            with(settings)
-            {
-                javaScriptEnabled = true
-                domStorageEnabled = true
-                allowFileAccessFromFileURLs = true
-                allowUniversalAccessFromFileURLs = true
-            }
-            addJavascriptInterface(javaScriptInterface, "Native")
+        val pagerId = 1
+        with(layoutContainer) {
+            adapter = PagerAdapter(pagerId, supportFragmentManager)
+            id = pagerId
         }
-        WebView.setWebContentsDebuggingEnabled(true)
-
-        Service.setOnStateChangedListener { onStateChanged(it) }
 
         navigationView.setNavigationItemSelectedListener(this)
 
         if (checkPermissions())
             initilize()
+    }
+
+    private inner class PagerAdapter(private val pagerId: Int, fm: FragmentManager?)
+        : FragmentPagerAdapter(fm)
+    {
+        override fun getCount() = 2
+
+        override fun getItem(position: Int): Fragment {
+            return when (position) {
+                0    -> ControlsFragment()
+                else -> TracksFragment()
+            }
+        }
+
+        fun getFragmentForPosition(position: Int): Fragment {
+            val tag = makeFragmentName(pagerId, getItemId(position))
+            return supportFragmentManager.findFragmentByTag(tag)
+        }
+
+        private fun makeFragmentName(containerViewId: Int, id: Long) = "android:switcher:$containerViewId:$id"
     }
 
     override fun onBackPressed() {
@@ -103,87 +115,12 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_controls -> webView.loadUrl("file:///android_asset/index.html#main")
-            R.id.nav_tracks -> webView.loadUrl("file:///android_asset/index.html#tracks")
+            R.id.nav_controls -> layoutContainer.setCurrentItem(0, true)
+            R.id.nav_tracks -> layoutContainer.setCurrentItem(1, true)
         }
 
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
-    }
-
-    private fun onStateChanged(state: Service.ServiceState) = webView.evaluateJavascript("onStateChanged(${state.serialize()})", null)
-
-    private val javaScriptInterface = object {
-        @JavascriptInterface
-        fun getState() = launch { onStateChanged(Service.state) }
-
-        @JavascriptInterface
-        fun doHapticFeedback() = launch { webView.playSoundEffect(SoundEffectConstants.CLICK) }
-
-        @JavascriptInterface
-        fun fillTracks() {
-            launch {
-                val tracks = DataBase.getTracks()
-                val gson = Gson()
-                val json = gson.toJson(tracks)
-                webView.evaluateJavascript("onTracks($json)", null)
-            }
-        }
-
-        @JavascriptInterface
-        fun fillMaps() {
-            launch {
-                val sdCard: String = getSdCard()
-                val mapsDir = "$sdCard/Maps"
-                val directory = File(mapsDir)
-                val files = directory.listFiles().filter { it.extension == "map" }.map { it.name }
-                val gson = Gson()
-                val json = gson.toJson(files)
-                webView.evaluateJavascript("onMaps($json)", null)
-            }
-        }
-
-        @Suppress("DEPRECATION")
-        @JavascriptInterface
-        fun onTrackSelected(trackNr: Long) = launch {
-            val intent = Intent(this@MainActivity, MapActivity::class.java)
-            intent.putExtra(TRACK_NR, trackNr)
-            val result = activityRequest(intent)
-            if (result?.resultCode == Activity.RESULT_OK) {
-                if (result.data?.getStringExtra(MapActivity.RESULT_TYPE) == MapActivity.RESULT_TYPE_DELETE)
-                    webView.evaluateJavascript("deleteTrack($trackNr)", null)
-            }
-        }
-
-        @JavascriptInterface
-        fun start() = launch {
-            val startIntent = Intent(this@MainActivity, Service::class.java)
-            startIntent.action = Service.ACTION_START
-            startService(startIntent)
-            startActivity(Intent(this@MainActivity, DisplayActivity::class.java))
-        }
-
-        @JavascriptInterface
-        fun stop() = launch {
-            val startIntent = Intent(this@MainActivity, Service::class.java)
-            startIntent.action = Service.ACTION_STOP
-            startService(startIntent)
-            finish()
-        }
-
-        @JavascriptInterface
-        fun reset() {
-            Searcher.stop()
-            HeartRate.stop()
-            Bike.stop()
-            Searcher.start(this@MainActivity)
-        }
-
-        @JavascriptInterface
-        fun display() = launch { startActivity(Intent(this@MainActivity, DisplayActivity::class.java)) }
-
-        @JavascriptInterface
-        fun finish() = launch { forceOnBackPressed() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -205,8 +142,6 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
         return super.onOptionsItemSelected(item)
     }
 
-    private fun forceOnBackPressed() = super.onBackPressed()
-
     private fun checkPermissions(): Boolean {
         val permissions = listOf<String>(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .filter { checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }
@@ -218,8 +153,6 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
     }
 
     private fun initilize() {
-        webView.loadUrl("file:///android_asset/index.html#main")
-
         isInitialized = true
 
         if (Service.state == Service.ServiceState.Started)
@@ -232,11 +165,9 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
     }
 
     private var isInitialized = false
-    private lateinit var navView: WebView
 
     companion object {
         const val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000
-        const val TRACK_NR = "TRACK_NR"
         private const val CREATE_REQUEST_CODE = 40
     }
 }

@@ -9,10 +9,11 @@
     tools:context=".ui.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <WebView
-        android:id="@+id/webView"
+    <eu.selfhost.riegel.superfit.ui.ExtendedViewPager
+        android:id="@+id/layoutContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 
 </LinearLayout>
 

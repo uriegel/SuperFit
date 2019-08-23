@@ -43,7 +43,7 @@ class MapActivity : ActivityEx(), CoroutineScope {
 		webView.loadUrl("file:///android_asset/index.html#map-view-controls")
 
 		val bundle = intent.extras
-		trackNr = bundle.getLong(MainActivity.TRACK_NR)
+		trackNr = bundle.getLong(TracksFragment.TRACK_NR)
 		launch {
 			val trackPoints = DataBase.getTrackPoints(trackNr)
 			val fragment = supportFragmentManager.findFragmentById(R.id.fragment) as MapFragment
