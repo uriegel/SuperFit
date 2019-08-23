@@ -18,6 +18,7 @@ import eu.selfhost.riegel.superfit.maps.LocationManager.getCurrentTrackAsync
 import eu.selfhost.riegel.superfit.maps.LocationMarker
 import eu.selfhost.riegel.superfit.maps.TrackLine
 import eu.selfhost.riegel.superfit.utils.getSdCard
+import kotlinx.android.synthetic.main.fragment_tracking.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -38,7 +39,6 @@ class MapFragment : Fragment(), CoroutineScope {
 
 	override val coroutineContext = Dispatchers.Main
 
-	@SuppressLint("SetJavaScriptEnabled")
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_tracking, container, false)
         frameLayout = root.findViewById(R.id.mapContainer)
@@ -60,7 +60,7 @@ class MapFragment : Fragment(), CoroutineScope {
         val map = preferences.getString(PreferenceActivity.PREF_MAP, null)
         val sdCard: String = activity.getSdCard()
         val mapsDir = "$sdCard/Maps"
-        val mapDataStore = MapFile(File(mapsDir, map))
+        val mapDataStore = MapFile(File(mapsDir, map!!))
 
         tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
                 InternalRenderTheme.OSMARENDER, false, true, false)
@@ -102,23 +102,16 @@ class MapFragment : Fragment(), CoroutineScope {
             }
         }
 
-        webView = root.findViewById<WebView>(R.id.mapControls)
-        if (arguments?.getBoolean(SHOW_TRACKING_CONTROL, false) ?: false) {
-            webView.setBackgroundColor(Color.TRANSPARENT)
-            webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
-
-            with(webView.settings)
-            {
-                javaScriptEnabled = true
-                domStorageEnabled = true
-                allowFileAccessFromFileURLs = true
-                allowUniversalAccessFromFileURLs = true
-            }
-            webView.addJavascriptInterface(javaScriptInterface, "NativeTrackingControls")
-            webView.loadUrl("file:///android_asset/index.html#tracking-control")
-        }
-
         return root
+	}
+
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+		switcher.setOnClickListener {
+			followLocation = !followLocation
+			enableBearing(followLocation)
+			(activity as DisplayActivity).pagingEnabled = followLocation
+		}
 	}
 
 	override fun onDestroy() {
@@ -131,7 +124,7 @@ class MapFragment : Fragment(), CoroutineScope {
 	}
 
 	fun loadGpxTrack(track: Array<TrackPoint>) {
-		track.forEach({ (trackLine.latLongs.add(LatLong(it.latitude, it.longitude))) })
+		track.forEach { (trackLine.latLongs.add(LatLong(it.latitude, it.longitude))) }
 		zoomAndPan()
 	}
 
@@ -184,22 +177,6 @@ class MapFragment : Fragment(), CoroutineScope {
 		//                break
 		//            }
 		//        }
-	}
-
-	private val javaScriptInterface = object {
-		@JavascriptInterface
-		fun doHapticFeedback() = launch { webView.playSoundEffect(SoundEffectConstants.CLICK) }
-
-		@Suppress("DEPRECATION")
-		@JavascriptInterface
-		fun toggleMode() {
-			doHapticFeedback()
-			launch {
-				followLocation = !followLocation
-				enableBearing(followLocation)
-				(activity as DisplayActivity).pagingEnabled = followLocation
-			}
-		}
 	}
 
 	private enum class RotateViewChangeState {
