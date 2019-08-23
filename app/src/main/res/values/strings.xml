@@ -10,4 +10,8 @@
     <string name="main_menu">Ansicht</string>
     <string name="nav_menu_controls">Bedienelemente</string>
     <string name="nav_menu_tracks">Tracks</string>
+    <string name="display">Display</string>
+    <string name="stop">Stop</string>
+    <string name="reset">Reset</string>
+    <string name="start">Start</string>
 </resources>

@@ -113,7 +113,10 @@ class Service : Service() {
         const val ACTION_STOP = "Stop"
         const val NOTIFICATION_ID = 22
 
-        fun setOnStateChangedListener(listener: ((state: ServiceState)->Unit)?) { this.listener = listener}
+        fun setOnStateChangedListener(listener: ((state: ServiceState)->Unit)?) {
+            this.listener = listener
+            listener?.invoke(state)
+        }
 
         private var listener: ((state: ServiceState)->Unit)? = null
     }
