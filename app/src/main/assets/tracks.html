@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" lang="de">
+    <title>Super Fit</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="scripts/vue.js"></script>
+    <script src="scripts/iscroll.js"></script>
+<link rel="stylesheet" href="styles/main.css"></head>
+<body>  
+    <div id="app">
+        <tracks></tracks>
+    </div>
+
+    <template id="tracks">
+        <scroller :showscrollbar="true">
+            <template v-slot=content>
+                <div class="track" v-for="track in tracks">{{track}}</div>
+            </template>
+        </scroller>
+    </template>
+
+    <template id="scroller">
+        <div class="scroller">
+            <div class="scrollcontent">
+                <slot></slot>
+            </div>
+        </div>
+    </template>
+
+    <script src="scripts/scroller.js"></script>
+    <script src="scripts/tracks.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>

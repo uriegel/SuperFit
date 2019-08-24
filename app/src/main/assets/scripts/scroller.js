@@ -1,11 +1,11 @@
 var Srcoller = Vue.extend({
     template: "#scroller",
+    props: [ 'showscrollbar'],
     mounted() {
         scrollers = scrollers.concat([this])
-
         this.iscroll = new IScroll(this.$el, {
-            scrollbars: false,
-            interactiveScrollbars: false,
+            scrollbars: this.showscrollbar,
+            interactiveScrollbars: this.showscrollbar,
             click: true,
             //disablePointer: true,
             disableTouch: false,
