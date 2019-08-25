@@ -24,7 +24,7 @@ import javax.xml.parsers.SAXParserFactory;
  * Created by urieg on 01.01.2018.
  */
 
-public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
+class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
     private static SAXParserFactory factory = SAXParserFactory.newInstance();
     private static final String[] formats = new String[]{
             "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
@@ -47,8 +47,6 @@ public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
     private static final String TRKPT = "trkpt";
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
     private List<TrackPoint> track = new ArrayList<>();
-    private String trackname;
-    private String description;
 
     public TrackGpxParser(File file) throws Exception {
         SAXParser parser = factory.newSAXParser();
@@ -103,6 +101,8 @@ public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
 
         @Override
         public void endElement(String uri, String localName, String name) throws SAXException {
+            String trackname;
+            String description;
             if (localName.equalsIgnoreCase(TRK)) {
                 // done reading
             }
@@ -124,7 +124,7 @@ public class TrackGpxParser implements Iterable<TrackGpxParser.TrackPoint> {
         }
     }
 
-    static public class TrackPoint extends LatLong {
+    static class TrackPoint extends LatLong {
         private Date timestamp;
         private int altitude;
 

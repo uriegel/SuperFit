@@ -2,44 +2,26 @@ package eu.selfhost.riegel.superfit.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.NavigationView
-import android.support.v4.view.GravityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.ViewPager
+import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.SoundEffectConstants
-import android.view.View
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
-import com.google.gson.Gson
 import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.android.Service
-import eu.selfhost.riegel.superfit.database.DataBase
-import eu.selfhost.riegel.superfit.sensors.Bike
-import eu.selfhost.riegel.superfit.sensors.HeartRate
-import eu.selfhost.riegel.superfit.sensors.Searcher
-import eu.selfhost.riegel.superfit.utils.getSdCard
-import eu.selfhost.riegel.superfit.utils.serialize
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.toast
-import java.io.File
 
 class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListener, CoroutineScope {
 
@@ -139,7 +121,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
     }
 
     private fun checkPermissions(): Boolean {
-        val permissions = listOf<String>(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val permissions = listOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .filter { checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }
         return if (permissions.count() > 0) {
             requestPermissions(permissions.toTypedArray(), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS)

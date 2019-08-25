@@ -7,7 +7,6 @@ import eu.selfhost.riegel.superfit.utils.document
 import eu.selfhost.riegel.superfit.utils.element
 import eu.selfhost.riegel.superfit.utils.formatRfc3339
 import java.io.OutputStream
-import java.util.*
 
 // TODO: Namespace
 fun exportToGpx(outputStream: OutputStream, name: String, track: Track, trackPoints: Array<TrackPoint>) {

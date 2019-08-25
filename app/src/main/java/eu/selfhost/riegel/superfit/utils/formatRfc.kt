@@ -15,7 +15,7 @@ fun formatRfc3339(time: Long, timeOffset: Long): String {
             ":${date.minutes.toString().padStart(2, '0')}" +
             ":${date.seconds.toString().padStart(2, '0')}" +
             "${if (timeOffset > 0) '+' else '-'}" +
-            "${(abs(timeOffset / 3600000)).toString().padStart(2, '0')}" +
+            (abs(timeOffset / 3600000)).toString().padStart(2, '0') +
             "00"
 }
 

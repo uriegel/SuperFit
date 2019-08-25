@@ -1,9 +1,7 @@
 package eu.selfhost.riegel.superfit.database
 
 import android.location.Location
-import kotlinx.coroutines.Deferred
 import org.jetbrains.anko.db.*
-import java.util.*
 
 object DataBase {
     fun createTrack(location: Location, timeOffset: Int): Long {

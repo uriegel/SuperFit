@@ -17,6 +17,7 @@ class TracksAdapter(private val context: Context, private var data: Array<Track>
         return data.count()
     }
 
+    @Suppress("DEPRECATION")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.track = data[position]
         val name = data[position].name

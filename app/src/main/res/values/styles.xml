@@ -10,12 +10,14 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.Preference">
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
-    </style>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>    </style>
 
     <style name="AppTheme.FullScreen">
         <item name="windowActionBar">true</item>

@@ -1,5 +1,6 @@
 package eu.selfhost.riegel.superfit.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import kotlin.coroutines.Continuation
@@ -11,6 +12,7 @@ data class ActivityResult(
         val data: Intent?
 )
 
+@SuppressLint("Registered")
 open class ActivityEx : AppCompatActivity() {
     suspend fun activityRequest(intent: Intent): ActivityResult? {
         return suspendCoroutine { continuation ->

@@ -75,9 +75,11 @@ class MapActivity : ActivityEx(), CoroutineScope {
 				if (result?.resultCode == Activity.RESULT_OK) {
 					val uri = result.data?.data!!
 					val stream = contentResolver.openOutputStream(uri)
-					val trackPoints = DataBase.getTrackPoints(trackNr)
-					exportToGpx(stream, name, track, trackPoints)
-					stream.close()
+					stream.let {
+						val trackPoints = DataBase.getTrackPoints(trackNr)
+						exportToGpx(it, name, track, trackPoints)
+						it.close()
+					}
 					this@MapActivity.finish()
 				}
 			}

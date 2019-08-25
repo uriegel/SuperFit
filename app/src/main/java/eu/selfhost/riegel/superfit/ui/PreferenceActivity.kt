@@ -1,6 +1,5 @@
 package eu.selfhost.riegel.superfit.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceFragment
 import android.support.v7.app.AlertDialog
@@ -8,7 +7,6 @@ import android.support.v7.app.AppCompatActivity
 import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.utils.getSdCard
 import java.io.File
-import java.lang.Exception
 
 class PreferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +45,8 @@ class PreferenceActivity : AppCompatActivity() {
                 val sdCard: String = it.context.getSdCard()
                 val mapsDir = "$sdCard/Maps"
                 val directory = File(mapsDir)
-                val maps = directory.listFiles().filter { it.extension == "map" }.map { it.name }
+                val maps = directory.listFiles().filter { file -> file.extension == "map" }
+                        .map { file -> file.name }
                 it.entries = maps.toTypedArray()
                 it.entryValues = it.entries
             }

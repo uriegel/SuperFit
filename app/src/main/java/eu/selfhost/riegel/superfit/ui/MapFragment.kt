@@ -1,15 +1,13 @@
 package eu.selfhost.riegel.superfit.ui
 
 
-import android.annotation.SuppressLint
-import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
-import android.view.*
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.database.TrackPoint
@@ -21,8 +19,8 @@ import eu.selfhost.riegel.superfit.utils.getSdCard
 import kotlinx.android.synthetic.main.fragment_tracking.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.mapsforge.core.model.BoundingBox
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
@@ -80,8 +78,8 @@ class MapFragment : Fragment(), CoroutineScope {
         frameLayout.addView(mapView)
 
         launch {
-            val tracks = async(Dispatchers.Default) {getCurrentTrackAsync() }.await()
-            if (tracks.isNotEmpty())
+            val tracks = withContext(Dispatchers.Default) { getCurrentTrackAsync() }
+			if (tracks.isNotEmpty())
                 tracks.forEach { (trackLine.latLongs.add(it)) }
             LocationManager.listener = {
                 val currentLatLong = LatLong(it.latitude, it.longitude)
@@ -193,7 +191,6 @@ class MapFragment : Fragment(), CoroutineScope {
 	private var rotateViewChangeState = RotateViewChangeState.Disabled
 	private lateinit var frameLayout: FrameLayout
 	private lateinit var mapView: MapView
-	private lateinit var webView: WebView
 	private lateinit var tileCache: TileCache
 	private lateinit var trackLine: TrackLine
 	private lateinit var gpxTrackLine: TrackLine
