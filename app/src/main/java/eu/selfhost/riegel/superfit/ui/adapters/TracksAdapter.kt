@@ -30,6 +30,8 @@ class TracksAdapter(private val context: Context, private var data: Array<Track>
                     val dateFormat = android.text.format.DateFormat.getDateFormat(context)
                     "${dateFormat.format(date)} ${date.hours.toString().padStart(2, '0')}:${date.minutes.toString().padStart(2, '0')}"
                 }
+        holder.textViewDistance.text = String.format("%.1f km", data[position].distance)
+        holder.textViewAverage.text = String.format("%.1f km/h", data[position].averageSpeed)
     }
 
     fun delete(track: Track) {
@@ -45,6 +47,8 @@ class TracksAdapter(private val context: Context, private var data: Array<Track>
 
         var track: Track = Track(0, "", 0f, 0, 0f, 0, 0)
         val textView: TextView = view.findViewById(R.id.textView)
+        val textViewDistance: TextView = view.findViewById(R.id.textViewDistance)
+        val textViewAverage: TextView = view.findViewById(R.id.textViewAverage)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
