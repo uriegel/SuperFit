@@ -13,9 +13,10 @@ import eu.selfhost.riegel.superfit.database.DataBase
 import eu.selfhost.riegel.superfit.maps.exportToGpx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.yesButton
 import java.util.*
 
 class MapActivity : ActivityEx(), CoroutineScope {
@@ -28,7 +29,7 @@ class MapActivity : ActivityEx(), CoroutineScope {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_map)
 
-		webView = findViewById<WebView>(R.id.mapViewControls)
+		webView = findViewById(R.id.mapViewControls)
 		webView.setBackgroundColor(Color.TRANSPARENT)
 		webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
 
@@ -42,8 +43,7 @@ class MapActivity : ActivityEx(), CoroutineScope {
 		webView.addJavascriptInterface(javaScriptInterface, "NativeMapControls")
 		webView.loadUrl("file:///android_asset/index.html#map-view-controls")
 
-		val bundle = intent.extras
-		trackNr = bundle.getLong(TracksFragment.TRACK_NR)
+		trackNr = intent.getLongExtra(TracksFragment.TRACK_NR, -1L)
 		launch {
 			val trackPoints = DataBase.getTrackPoints(trackNr)
 			val fragment = supportFragmentManager.findFragmentById(R.id.fragment) as MapFragment
@@ -62,7 +62,9 @@ class MapActivity : ActivityEx(), CoroutineScope {
 			doHapticFeedback()
 			launch {
 				val track = DataBase.getTrack(trackNr)
-				val date = Date(track.time)
+
+				val timeZone = TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
+				val date = (Date(track.time+ track.timeOffset - timeZone))
 				val name = if (track.name.isEmpty()) "${date.year + 1900}-${(date.month + 1).toString().padStart(2, '0')}-${date.date.toString().padStart(2, '0')}-${date.hours.toString().padStart(2, '0')}-${date.minutes.toString().padStart(2, '0')}" else track.name
 
 				val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)

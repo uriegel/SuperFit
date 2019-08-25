@@ -52,11 +52,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
 
         setSupportActionBar(toolbar)
 
-        val toggle = object : ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-            override fun onDrawerOpened(drawerView: View) {
-                super.onDrawerOpened(drawerView)
-            }
-        }
+        val toggle = object : ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) { }
 
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()

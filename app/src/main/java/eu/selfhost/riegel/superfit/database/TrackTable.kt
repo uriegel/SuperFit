@@ -8,6 +8,7 @@ object TrackTable {
     const val Longitude = "Longitude"
     const val Distance = "Distance"
     const val Time = "Time"
+    const val TimeOffset = "TimeOffset"
     const val Duration = "Duration"
     const val AverageSpeed = "AverageSpeed"
 }

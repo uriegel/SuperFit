@@ -6,5 +6,6 @@ data class Track(
         val distance: Float,
         val duration: Long,
         val averageSpeed: Float,
-        val time: Long
+        val time: Long,
+        val timeOffset: Long
 )

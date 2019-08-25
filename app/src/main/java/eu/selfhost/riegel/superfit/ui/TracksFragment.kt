@@ -2,88 +2,59 @@ package eu.selfhost.riegel.superfit.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.icu.util.UniversalTimeScale.toLong
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.SoundEffectConstants
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
-import com.google.gson.Gson
+import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.database.DataBase
-import eu.selfhost.riegel.superfit.utils.getSdCard
+import eu.selfhost.riegel.superfit.database.Track
+import eu.selfhost.riegel.superfit.ui.adapters.TracksAdapter
+import kotlinx.android.synthetic.main.fragment_tracks.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
+
 
 class TracksFragment : Fragment(), CoroutineScope {
     override val coroutineContext = Dispatchers.Main
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        webView = WebView(activity)
-
-        with(webView)
-        {
-            with(settings)
-            {
-                javaScriptEnabled = true
-                domStorageEnabled = true
-                allowFileAccessFromFileURLs = true
-                allowUniversalAccessFromFileURLs = true
-            }
-            addJavascriptInterface(javaScriptInterface, "Native")
-            webView.loadUrl("file:///android_asset/index.html#tracks")
-
-        }
-        WebView.setWebContentsDebuggingEnabled(true)
-
-        return webView
+        return inflater.inflate(R.layout.fragment_tracks, container, false)
     }
 
-    private val javaScriptInterface = object {
-        @JavascriptInterface
-        fun doHapticFeedback() = launch { webView.playSoundEffect(SoundEffectConstants.CLICK) }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        @JavascriptInterface
-        fun fillTracks() {
+        val linearLayoutManager = LinearLayoutManager(activity)
+        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        tracksView.layoutManager = linearLayoutManager
+        tracksView.setHasFixedSize(true)
+        val itemDecoration = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
+        tracksView.addItemDecoration(itemDecoration)
+
+        fun onItemClick(track: Track) {
             launch {
-                val tracks = DataBase.getTracks()
-                val gson = Gson()
-                val json = gson.toJson(tracks)
-                webView.evaluateJavascript("onTracks($json)", null)
+                val intent = Intent(activity, MapActivity::class.java)
+                intent.putExtra(TRACK_NR, track.trackNr.toLong())
+                val result = (activity as ActivityEx).activityRequest(intent)
+                if (result?.resultCode == Activity.RESULT_OK)
+                    if (result.data?.getStringExtra(MapActivity.RESULT_TYPE) == MapActivity.RESULT_TYPE_DELETE)
+                        (tracksView.adapter as TracksAdapter).delete(track)
             }
         }
 
-        @JavascriptInterface
-        fun fillMaps() {
-            launch {
-                val sdCard: String = activity.getSdCard()
-                val mapsDir = "$sdCard/Maps"
-                val directory = File(mapsDir)
-                val files = directory.listFiles().filter { it.extension == "map" }.map { it.name }
-                val gson = Gson()
-                val json = gson.toJson(files)
-                webView.evaluateJavascript("onMaps($json)", null)
-            }
-        }
-
-        @Suppress("DEPRECATION")
-        @JavascriptInterface
-        fun onTrackSelected(trackNr: Long) = launch {
-            val intent = Intent(activity, MapActivity::class.java)
-            intent.putExtra(TRACK_NR, trackNr)
-            val result = (activity as ActivityEx).activityRequest(intent)
-            if (result?.resultCode == Activity.RESULT_OK) {
-                if (result.data?.getStringExtra(MapActivity.RESULT_TYPE) == MapActivity.RESULT_TYPE_DELETE)
-                    webView.evaluateJavascript("deleteTrack($trackNr)", null)
-            }
+        launch {
+            val tracks = DataBase.getTracks()
+            tracksView.adapter = TracksAdapter(activity!!, tracks, ::onItemClick)
         }
     }
-
-    private lateinit var webView: WebView
 
     companion object {
         const val TRACK_NR = "TRACK_NR"

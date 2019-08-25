@@ -3,27 +3,30 @@ package eu.selfhost.riegel.superfit.database
 import android.location.Location
 import kotlinx.coroutines.Deferred
 import org.jetbrains.anko.db.*
+import java.util.*
 
 object DataBase {
-    fun createTrack(location: Location): Long {
+    fun createTrack(location: Location, timeOffset: Int): Long {
         var result = 0L
         database.use {
             result = insert(TrackTable.Name,
                     TrackTable.Longitude to location.longitude,
                     TrackTable.Latitude to location.latitude,
-                    TrackTable.Time to location.time)
+                    TrackTable.Time to location.time,
+                    TrackTable.TimeOffset to timeOffset)
         }
         return result
     }
 
-    suspend fun getTracks(): Array<Track> {
+    fun getTracks(): Array<Track> {
         return database.use {
             select(TrackTable.Name,
-                TrackTable.ID,
-                TrackTable.TrackName,
-                TrackTable.Distance,
-                TrackTable.AverageSpeed,
-                TrackTable.Time)
+                    TrackTable.ID,
+                    TrackTable.TrackName,
+                    TrackTable.Distance,
+                    TrackTable.AverageSpeed,
+                    TrackTable.Time,
+                    TrackTable.TimeOffset)
                 .orderBy(TrackTable.Time, SqlOrderDirection.DESC)
                 .exec {
                     return@exec asMapSequence().map {
@@ -32,7 +35,8 @@ object DataBase {
                                 (it[TrackTable.Distance] as Double? ?: 0.0).toFloat(),
                                 it[TrackTable.Duration] as Long? ?: 0L,
                                 (it[TrackTable.AverageSpeed] as Double? ?: 0.0).toFloat(),
-                                it[TrackTable.Time] as Long)
+                                it[TrackTable.Time] as Long,
+                                it[TrackTable.TimeOffset] as Long)
                     }.toList().toTypedArray()
                 }
         }
@@ -45,7 +49,8 @@ object DataBase {
                     TrackTable.TrackName,
                     TrackTable.Distance,
                     TrackTable.AverageSpeed,
-                    TrackTable.Time)
+                    TrackTable.Time,
+                    TrackTable.TimeOffset)
                     .whereArgs("_id = {trackNr}", "trackNr" to trackNr)
                     .exec {
                         return@exec asMapSequence().map {
@@ -54,7 +59,8 @@ object DataBase {
                                     (it[TrackTable.Distance] as Double? ?: 0.0).toFloat(),
                                     it[TrackTable.Duration] as Long? ?: 0L,
                                     (it[TrackTable.AverageSpeed] as Double? ?: 0.0).toFloat(),
-                                    it[TrackTable.Time] as Long)
+                                    it[TrackTable.Time] as Long,
+                                    it[TrackTable.TimeOffset] as Long)
                         }.first()
                     }
         }

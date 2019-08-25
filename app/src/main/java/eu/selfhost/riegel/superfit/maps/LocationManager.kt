@@ -11,6 +11,7 @@ import eu.selfhost.riegel.superfit.database.DataBase
 import eu.selfhost.riegel.superfit.sensors.Bike
 import eu.selfhost.riegel.superfit.sensors.HeartRate
 import org.mapsforge.core.model.LatLong
+import java.util.*
 
 @SuppressLint("MissingPermission")
 object LocationManager {
@@ -28,7 +29,7 @@ object LocationManager {
         if (trackNr != -1L) {
             // TODO: Only, when enough track points (> 30) otherwise delete track, getTrackPointsCount
             DataBase.updateTrack(trackNr, Bike.duration, Bike.distance, Bike.averageSpeed)
-            trackNr = -1L
+            trackNr = -1
         }
     }
 
@@ -46,7 +47,8 @@ object LocationManager {
             if (!gpsActive) {
                 gpsActive = true
                 setGpsActive?.invoke()
-                trackNr = DataBase.createTrack(location)
+                trackNr = DataBase.createTrack(location,
+                        TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings)
             }
             listener?.invoke(location)
 

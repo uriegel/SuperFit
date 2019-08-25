@@ -4,7 +4,7 @@ import android.database.sqlite.SQLiteDatabase
 import eu.selfhost.riegel.superfit.android.Application
 import org.jetbrains.anko.db.*
 
-class DataBaseHelper : ManagedSQLiteOpenHelper(Application.instance, DataBaseHelper.DB_NAME, null, DataBaseHelper.DB_VERSION) {
+class DataBaseHelper : ManagedSQLiteOpenHelper(Application.instance, DB_NAME, null, DB_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
         db.createTable(TrackTable.Name, true,
                 TrackTable.ID to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
@@ -14,6 +14,7 @@ class DataBaseHelper : ManagedSQLiteOpenHelper(Application.instance, DataBaseHel
                 TrackTable.Duration to INTEGER,
                 TrackTable.Distance to REAL,
                 TrackTable.Time to INTEGER,
+                TrackTable.TimeOffset to INTEGER,
                 TrackTable.AverageSpeed to REAL)
         db.createTable(TrackPointTable.Name, true,
                 TrackPointTable.ID to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
