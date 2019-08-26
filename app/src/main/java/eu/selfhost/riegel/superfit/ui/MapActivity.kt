@@ -1,16 +1,13 @@
 package eu.selfhost.riegel.superfit.ui
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.view.SoundEffectConstants
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
+import android.view.View
 import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.database.DataBase
 import eu.selfhost.riegel.superfit.maps.exportToGpx
+import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,53 +16,52 @@ import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
 import java.util.*
 
+@Suppress("DEPRECATION")
 class MapActivity : ActivityEx(), CoroutineScope {
 
     override val coroutineContext = Dispatchers.Main
 
-	@SuppressLint("SetJavaScriptEnabled")
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_map)
 
-		webView = findViewById(R.id.mapViewControls)
-		webView.setBackgroundColor(Color.TRANSPARENT)
-		webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null)
-
-		with(webView.settings)
-		{
-			javaScriptEnabled = true
-			domStorageEnabled = true
-			allowFileAccessFromFileURLs = true
-			allowUniversalAccessFromFileURLs = true
+		btnMenu.setOnClickListener {
+			controlsActive = !controlsActive
+			val visibility = if (controlsActive) View.VISIBLE else View.GONE
+			btnDelete.visibility = visibility
+			btnEdit.visibility = visibility
+			btnSave.visibility = visibility
 		}
-		webView.addJavascriptInterface(javaScriptInterface, "NativeMapControls")
-		webView.loadUrl("file:///android_asset/index.html#map-view-controls")
 
-		trackNr = intent.getLongExtra(TracksFragment.TRACK_NR, -1L)
-		launch {
-			val trackPoints = DataBase.getTrackPoints(trackNr)
-			val fragment = supportFragmentManager.findFragmentById(R.id.fragment) as MapFragment
-			fragment.loadGpxTrack(trackPoints)
+		btnDelete.setOnClickListener {
+			launch {
+				alert("Möchtest Du diesen Track löschen?", "Track löschen") {
+					yesButton {
+						DataBase.deleteTrack(trackNr)
+						val intent = Intent()
+						intent.putExtra(RESULT_TYPE, RESULT_TYPE_DELETE)
+						setResult(Activity.RESULT_OK, intent)
+						this@MapActivity.finish()
+					}
+					noButton {}
+				}.show()
+			}
 		}
-	}
 
-	private val javaScriptInterface = object {
-		@JavascriptInterface
-		fun doHapticFeedback() = launch { webView.playSoundEffect(SoundEffectConstants.CLICK) }
-
-		@Suppress("DEPRECATION")
-		@JavascriptInterface
-		fun saveTrack()
-		{
-			doHapticFeedback()
+		btnSave.setOnClickListener {
 			launch {
 				val track = DataBase.getTrack(trackNr)
 
 				val timeZone = TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
-				val date = (Date(track.time+ track.timeOffset - timeZone))
-				val name = if (track.name.isEmpty()) "${date.year + 1900}-${(date.month + 1).toString().padStart(2, '0')}-${date.date.toString().padStart(2, '0')}-${date.hours.toString().padStart(2, '0')}-${date.minutes.toString().padStart(2, '0')}" else track.name
+				val date = (Date(track.time + track.timeOffset - timeZone))
+				val name = if (track.name.isEmpty())
+					"${date.year + 1900}" +
+							"-${(date.month + 1).toString().padStart(2, '0')}" +
+							"-${date.date.toString().padStart(2, '0')}" +
+							"-${date.hours.toString().padStart(2, '0')}" +
+							"-${date.minutes.toString().padStart(2, '0')}"
+				else track.name
 
 				val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
 				intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -85,21 +81,11 @@ class MapActivity : ActivityEx(), CoroutineScope {
 			}
 		}
 
-		@JavascriptInterface
-		fun deleteTrack() {
-			doHapticFeedback()
-			launch {
-				alert("Möchtest Du diesen Track löschen?", "Track löschen") {
-					yesButton {
-						DataBase.deleteTrack(trackNr)
-						val intent = Intent()
-						intent.putExtra(RESULT_TYPE, RESULT_TYPE_DELETE)
-						setResult(Activity.RESULT_OK, intent)
-						this@MapActivity.finish()
-					}
-					noButton {}
-				}.show()
-			}
+		trackNr = intent.getLongExtra(TracksFragment.TRACK_NR, -1L)
+		launch {
+			val trackPoints = DataBase.getTrackPoints(trackNr)
+			val fragment = supportFragmentManager.findFragmentById(R.id.fragment) as MapFragment
+			fragment.loadGpxTrack(trackPoints)
 		}
 	}
 
@@ -108,7 +94,7 @@ class MapActivity : ActivityEx(), CoroutineScope {
 		const val RESULT_TYPE_DELETE = "RESULT_TYPE_DELETE"
 	}
 
-	private lateinit var webView: WebView
 	private var trackNr = 0L
+	private var controlsActive = false
 }
 

@@ -106,9 +106,11 @@ class MapFragment : Fragment(), CoroutineScope {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		switcher.setOnClickListener {
-			followLocation = !followLocation
-			enableBearing(followLocation)
-			(activity as DisplayActivity).pagingEnabled = followLocation
+			if (activity is DisplayActivity) {
+				followLocation = !followLocation
+				enableBearing(followLocation)
+				(activity as DisplayActivity).pagingEnabled = followLocation
+			}
 		}
 	}
 

@@ -15,4 +15,8 @@
     <string name="reset">Reset</string>
     <string name="start">Start</string>
     <string name="track_symbol">Track symbol</string>
+    <string name="toggle_controls">toggle controls</string>
+    <string name="delete_track">Delete track</string>
+    <string name="edit_track">Edit track</string>
+    <string name="save_track">Save track</string>
 </resources>
