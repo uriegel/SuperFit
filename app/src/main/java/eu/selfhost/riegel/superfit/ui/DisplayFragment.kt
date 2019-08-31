@@ -2,12 +2,12 @@ package eu.selfhost.riegel.superfit.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import androidx.fragment.app.Fragment
 import eu.selfhost.riegel.superfit.maps.LocationManager
 import eu.selfhost.riegel.superfit.sensors.Bike
 import eu.selfhost.riegel.superfit.sensors.HeartRate

@@ -1,12 +1,13 @@
 package eu.selfhost.riegel.superfit.ui
 
-import android.support.v7.app.AppCompatActivity
+
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.ViewPager
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 
 class DisplayActivity : AppCompatActivity() {
 
@@ -50,7 +51,7 @@ class DisplayActivity : AppCompatActivity() {
 
 		fun getFragmentForPosition(position: Int): Fragment {
 			val tag = makeFragmentName(pagerId, getItemId(position))
-			return supportFragmentManager.findFragmentByTag(tag)
+			return supportFragmentManager.findFragmentByTag(tag)!!
 		}
 
 		private fun makeFragmentName(containerViewId: Int, id: Long) = "android:switcher:$containerViewId:$id"

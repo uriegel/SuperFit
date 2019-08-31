@@ -4,11 +4,11 @@ package eu.selfhost.riegel.superfit.ui
 import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.database.TrackPoint
 import eu.selfhost.riegel.superfit.maps.LocationManager

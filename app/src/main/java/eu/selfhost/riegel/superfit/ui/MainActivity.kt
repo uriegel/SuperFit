@@ -6,14 +6,14 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.design.widget.NavigationView
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.GravityCompat
-import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import com.google.android.material.navigation.NavigationView
 import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.android.Service
 import kotlinx.android.synthetic.main.activity_main.*
@@ -65,7 +65,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
 
         fun getFragmentForPosition(position: Int): Fragment {
             val tag = makeFragmentName(pagerId, getItemId(position))
-            return supportFragmentManager.findFragmentByTag(tag)
+            return supportFragmentManager.findFragmentByTag(tag)!!
         }
 
         private fun makeFragmentName(containerViewId: Int, id: Long) = "android:switcher:$containerViewId:$id"

@@ -2,8 +2,8 @@ package eu.selfhost.riegel.superfit.ui
 
 import android.os.Bundle
 import android.preference.PreferenceFragment
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.utils.getSdCard
 import java.io.File
