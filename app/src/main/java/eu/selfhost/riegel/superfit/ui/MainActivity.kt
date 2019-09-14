@@ -41,17 +41,17 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
 
         val pagerId = 1
         with(layoutContainer) {
-            adapter = PagerAdapter(pagerId, supportFragmentManager)
+            adapter = PagerAdapter(supportFragmentManager)
             id = pagerId
         }
 
         navigationView.setNavigationItemSelectedListener(this)
 
         if (checkPermissions())
-            initilize()
+            initialize()
     }
 
-    private inner class PagerAdapter(private val pagerId: Int, fm: FragmentManager?)
+    private inner class PagerAdapter(fm: FragmentManager?)
         : FragmentPagerAdapter(fm)
     {
         override fun getCount() = 2
@@ -63,12 +63,12 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
             }
         }
 
-        fun getFragmentForPosition(position: Int): Fragment {
-            val tag = makeFragmentName(pagerId, getItemId(position))
-            return supportFragmentManager.findFragmentByTag(tag)!!
-        }
+//        fun getFragmentForPosition(position: Int): Fragment {
+//            val tag = makeFragmentName(pagerId, getItemId(position))
+//            return supportFragmentManager.findFragmentByTag(tag)!!
+//        }
 
-        private fun makeFragmentName(containerViewId: Int, id: Long) = "android:switcher:$containerViewId:$id"
+//        private fun makeFragmentName(containerViewId: Int, id: Long) = "android:switcher:$containerViewId:$id"
     }
 
     override fun onBackPressed() {
@@ -82,7 +82,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
         when (requestCode) {
             REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
                 if (grantResults.all { it == PackageManager.PERMISSION_GRANTED })
-                    initilize()
+                    initialize()
                 else
                     toast("Some Permission denied")
             }
@@ -130,7 +130,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
             true
     }
 
-    private fun initilize() {
+    private fun initialize() {
         isInitialized = true
 
         if (Service.state == Service.ServiceState.Started)
@@ -146,6 +146,5 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
 
     companion object {
         const val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000
-        private const val CREATE_REQUEST_CODE = 40
     }
 }
