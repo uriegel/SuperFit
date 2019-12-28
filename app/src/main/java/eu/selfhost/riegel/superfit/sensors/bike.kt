@@ -1,7 +1,6 @@
 package eu.selfhost.riegel.superfit.sensors
 
 import android.content.Context
-import android.preference.PreferenceManager
 import com.dsi.ant.plugins.antplus.pcc.AntPlusBikeCadencePcc
 import com.dsi.ant.plugins.antplus.pcc.AntPlusBikeSpeedDistancePcc
 import com.dsi.ant.plugins.antplus.pcc.defines.EventFlag
@@ -11,11 +10,12 @@ import com.dsi.ant.plugins.antplus.pccbase.PccReleaseHandle
 import eu.selfhost.riegel.superfit.ui.PreferenceActivity
 import eu.selfhost.riegel.superfit.utils.MaxValue
 import eu.selfhost.riegel.superfit.utils.StopWatch
+import org.jetbrains.anko.defaultSharedPreferences
 import java.math.BigDecimal
 import java.util.*
 
 object Bike {
-    var isStarted = false
+    val isStarted
         get() = deviceHandle != null
 
     var speed = 0F
@@ -55,7 +55,7 @@ object Bike {
     private fun subScribeToBikeSpeed(context: Context, bikeController: AntPlusBikeSpeedDistancePcc) {
         var speedIsNull = true
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val preferences = context.defaultSharedPreferences
         val value = BigDecimal(preferences.getString(PreferenceActivity.PREF_WHEEL, "2096"))
         val wheelCircumference = value.divide(BigDecimal(1000.0))
 

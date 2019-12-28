@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -21,6 +20,7 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
+import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.toast
 
 class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListener, CoroutineScope {
@@ -51,9 +51,8 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
             initialize()
     }
 
-    private inner class PagerAdapter(fm: FragmentManager?)
-        : FragmentPagerAdapter(fm)
-    {
+    private inner class PagerAdapter(fm: FragmentManager)
+        : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         override fun getCount() = 2
 
         override fun getItem(position: Int): Fragment {
@@ -136,7 +135,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
         if (Service.state == Service.ServiceState.Started)
             startActivity(Intent(this@MainActivity, DisplayActivity::class.java))
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val preferences = defaultSharedPreferences
         val map = preferences.getString(PreferenceActivity.PREF_MAP, null)
         if (map == null)
             startActivity(Intent(this, PreferenceActivity::class.java))

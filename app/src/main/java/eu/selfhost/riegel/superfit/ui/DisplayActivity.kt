@@ -31,8 +31,8 @@ class DisplayActivity : AppCompatActivity() {
 		get() = viewPager.pagingEnabled
 		set(value) { viewPager.pagingEnabled = value }
 
-	private inner class PagerAdapter(private val pagerId: Int, fm: FragmentManager?)
-		: FragmentPagerAdapter(fm)
+	private inner class PagerAdapter(private val pagerId: Int, fm: FragmentManager)
+		: FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
 	{
 		override fun getCount() = 2
 

@@ -1,21 +1,22 @@
-<PreferenceScreen
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="Bike-Einstellungen">
+    <PreferenceCategory android:title="Bike-Einstallungen">
 
         <EditTextPreference
+            android:defaultValue="2096"
             android:key="PREF_WHEEL"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="Gib bitte den Rad-Umfang in mm ein"
             android:title="Radumfang"
-            android:inputType="number"
-            android:summary="Gib bitte Deinen Rad-Umfang in mm ein"
-            android:dialogMessage="Dialog Message"
-            android:defaultValue="2096" />
+            app:dialogMessage="Gib bitte den Rad-Umfang in mm ein"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
-
     <PreferenceCategory android:title="Navigation">
-        <eu.selfhost.riegel.superfit.ui.DynamicListPreference
-            android:key="PREF_MAP"
-            android:title="@string/maps" />
+        <ListPreference
+            app:key="PREF_MAP"
+            app:title="@string/maps"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
-
 </PreferenceScreen>

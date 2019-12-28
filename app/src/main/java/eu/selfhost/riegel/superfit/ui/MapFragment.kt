@@ -3,7 +3,6 @@ package eu.selfhost.riegel.superfit.ui
 
 import android.location.Location
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jetbrains.anko.defaultSharedPreferences
 import org.mapsforge.core.model.BoundingBox
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
@@ -54,8 +54,8 @@ class MapFragment : Fragment(), CoroutineScope {
         tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1.0F,
                 mapView.model.frameBufferModel.overdrawFactor)
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
-        val map = preferences.getString(PreferenceActivity.PREF_MAP, null)
+        val preferences = activity?.defaultSharedPreferences
+        val map = preferences?.getString(PreferenceActivity.PREF_MAP, null)
         val sdCard: String = activity.getSdCard()
         val mapsDir = "$sdCard/Maps"
         val mapDataStore = MapFile(File(mapsDir, map!!))

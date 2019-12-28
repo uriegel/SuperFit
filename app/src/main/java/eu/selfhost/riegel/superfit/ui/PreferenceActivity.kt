@@ -1,9 +1,19 @@
 package eu.selfhost.riegel.superfit.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.preference.PreferenceFragment
+import android.os.Environment
+import android.os.Environment.getExternalStorageDirectory
+import android.text.InputType
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
+import androidx.preference.PreferenceFragmentCompat
 import eu.selfhost.riegel.superfit.R
 import eu.selfhost.riegel.superfit.utils.getSdCard
 import java.io.File
@@ -11,23 +21,25 @@ import java.io.File
 class PreferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fragmentManager.beginTransaction().replace(android.R.id.content, AppPreferenceFragment()).commit()
+        supportFragmentManager
+            .beginTransaction()
+            .replace(android.R.id.content, AppPreferenceFragment())
+            .commit()
 
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val sdCard: String = getSdCard()
+        val sdCard = getSdCard()
         val mapsDir = "$sdCard/Maps"
         val directory = File(mapsDir)
         try {
-            val maps = directory.listFiles().filter { it.extension == "map" }.map { it.name }
-            if (maps.count() == 0)
+            val maps = directory.listFiles()?.filter { it.extension == "map" }?.map { it.name }
+            if (maps == null || maps.count() == 0)
                 throw Exception("Keine Einträge")
         } catch (e: Exception) {
             val builder = AlertDialog.Builder(this)
 
-            with(builder)
-            {
+            with(builder) {
                 setTitle("Kartenauswahl")
                 setMessage("Auf der SD-Karte im Verzeichnis '/Maps' müssen sich Karten befinden!")
                 show()
@@ -35,20 +47,26 @@ class PreferenceActivity : AppCompatActivity() {
         }
     }
 
-    class AppPreferenceFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            addPreferencesFromResource(R.xml.preference)
+    class AppPreferenceFragment : PreferenceFragmentCompat() {
 
-            val listPreference = findPreference(PREF_MAP) as DynamicListPreference
-            listPreference.setLoadingListener {
-                val sdCard: String = it.context.getSdCard()
-                val mapsDir = "$sdCard/Maps"
-                val directory = File(mapsDir)
-                val maps = directory.listFiles().filter { file -> file.extension == "map" }
-                        .map { file -> file.name }
-                it.entries = maps.toTypedArray()
-                it.entryValues = it.entries
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.preference, rootKey)
+
+            val editTextPreference = findPreference<EditTextPreference>(PREF_WHEEL)
+            editTextPreference?.setOnBindEditTextListener {
+                it.inputType = InputType.TYPE_CLASS_NUMBER
+            }
+
+            val listPreference = findPreference<ListPreference>(PREF_MAP)
+            val sdCard: String = context.getSdCard()
+            val mapsDir = "$sdCard/Maps"
+            val directory = File(mapsDir)
+            val maps = directory.listFiles()
+                ?.filter { file -> file.extension == "map" }
+                ?.map { file -> file.name }
+            if (maps != null) {
+                listPreference?.entries = maps.toTypedArray()
+                listPreference?.entryValues = listPreference?.entries
             }
         }
     }
