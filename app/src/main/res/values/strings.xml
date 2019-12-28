@@ -19,4 +19,14 @@
     <string name="delete_track">Delete track</string>
     <string name="edit_track">Edit track</string>
     <string name="save_track">Save track</string>
+    <string name="trittfrequenz">Trittfrequenz</string>
+    <string name="_1_min">1/min</string>
+    <string name="geschwindigkeit">Geschwindigkeit</string>
+    <string name="km_h">km/h</string>
+    <string name="herzfrequenz">Herzfrequenz</string>
+    <string name="strecke">Strecke</string>
+    <string name="km">km</string>
+    <string name="zeit">Zeit</string>
+    <string name="dgeschwindigkeit">Ø-Geschwindigkeit</string>
+    <string name="max_geschwindigkeit">Max. Geschwindigkeit</string>
 </resources>

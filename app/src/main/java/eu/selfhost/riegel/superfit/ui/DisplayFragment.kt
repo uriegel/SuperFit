@@ -29,10 +29,7 @@ class DisplayFragment : Fragment(), CoroutineScope {
 
         val contextThemeWrapper = ContextThemeWrapper(activity, R.style.AppTheme_DisplayFullScreen)
         // clone the inflater using the ContextThemeWrapper
-        // clone the inflater using the ContextThemeWrapper
         val localInflater = inflater.cloneInContext(contextThemeWrapper)
-
-        // inflate the layout using the cloned inflater, not default inflater
         // inflate the layout using the cloned inflater, not default inflater
         return localInflater.inflate(R.layout.fragment_display, container, false)
 //        webView = WebView(activity)
