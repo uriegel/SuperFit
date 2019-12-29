@@ -49,10 +49,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unitHorizontalMargin"
-                android:layout_marginTop="@dimen/unitVerticalMargin"
                 android:text="@string/_1_min"
-                app:layout_constraintStart_toEndOf="@+id/textView9"
-                app:layout_constraintTop_toBottomOf="@+id/textView9" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView9"
+                app:layout_constraintStart_toEndOf="@+id/textView9" />
 
             <TextView
                 android:id="@+id/textView10"
@@ -85,7 +84,7 @@
                 android:layout_marginTop="@dimen/unitVerticalMargin"
                 android:text="@string/km_h"
                 app:layout_constraintStart_toEndOf="@+id/textView11"
-                app:layout_constraintTop_toBottomOf="@+id/textView11" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView11" />
 
             <TextView
                 android:id="@+id/textView13"
@@ -118,7 +117,7 @@
                 android:layout_marginTop="@dimen/unitVerticalMargin"
                 android:text="@string/_1_min"
                 app:layout_constraintStart_toEndOf="@+id/textView14"
-                app:layout_constraintTop_toBottomOf="@+id/textView14" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView14" />
 
             <TextView
                 android:id="@+id/textView16"
@@ -139,7 +138,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView16"
                 android:textSize="@dimen/displaySmall"
-                android:textStyle="bold"
+                android:textStyle="normal"
                 android:text="@{displayModel.distance}"
                 tools:text="34.7" />
 
@@ -151,7 +150,7 @@
                 android:layout_marginTop="@dimen/unitVerticalMargin"
                 android:text="@string/km"
                 app:layout_constraintStart_toEndOf="@+id/textView17"
-                app:layout_constraintTop_toBottomOf="@+id/textView17" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView17" />
 
             <TextView
                 android:id="@+id/textView19"
@@ -172,7 +171,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView19"
                 android:textSize="@dimen/displaySmall"
-                android:textStyle="bold"
+                android:textStyle="normal"
                 android:text="@{displayModel.duration}"
                 tools:text="1:23:45" />
 
@@ -183,7 +182,7 @@
                 android:layout_marginStart="@dimen/unitHorizontalMargin"
                 android:layout_marginTop="@dimen/unitVerticalMargin"
                 app:layout_constraintStart_toEndOf="@+id/textView20"
-                app:layout_constraintTop_toBottomOf="@+id/textView20" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView20" />
 
             <TextView
                 android:id="@+id/textView22"
@@ -204,7 +203,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView22"
                 android:textSize="@dimen/displaySmall"
-                android:textStyle="bold"
+                android:textStyle="normal"
                 android:text="@{displayModel.averageVelocity}"
                 tools:text="23.7" />
 
@@ -216,7 +215,7 @@
                 android:layout_marginTop="@dimen/unitVerticalMargin"
                 android:text="@string/km_h"
                 app:layout_constraintStart_toEndOf="@+id/textView23"
-                app:layout_constraintTop_toBottomOf="@+id/textView23" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView23" />
 
             <TextView
                 android:id="@+id/textView25"
@@ -237,7 +236,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView25"
                 android:textSize="@dimen/displaySmall"
-                android:textStyle="bold"
+                android:textStyle="normal"
                 android:text="@{displayModel.maxVelocity}"
                 tools:text="45.8" />
 
@@ -249,7 +248,7 @@
                 android:layout_marginTop="@dimen/unitVerticalMargin"
                 android:text="@string/km_h"
                 app:layout_constraintStart_toEndOf="@+id/textView26"
-                app:layout_constraintTop_toBottomOf="@+id/textView26" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView26" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>
