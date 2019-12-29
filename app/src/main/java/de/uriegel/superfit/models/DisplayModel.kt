@@ -31,6 +31,7 @@ class DisplayModel : ViewModel(), CoroutineScope {
         HeartRate.listener = { launch { heartRate.value = it } }
         Bike.listener = { launch {
             cadence.value = it.cadence
+            velocity.value = it.speed
         }}
     }
 }

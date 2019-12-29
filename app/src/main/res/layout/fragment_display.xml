@@ -76,7 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/valueTopMargin"
-                    android:text="@{displayModel.velocity}"
+                    android:text='@{displayModel.velocity!= Float.NEGATIVE_INFINITY ? String.format("%.1f", displayModel.velocity) : "-"}'
                     android:textSize="@dimen/displayLarge"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
