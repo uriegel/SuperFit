@@ -13,16 +13,17 @@ import de.uriegel.superfit.utils.StopWatch
 import org.jetbrains.anko.defaultSharedPreferences
 import java.math.BigDecimal
 import java.util.*
+import kotlin.concurrent.timerTask
 
 object Bike {
+    var listener: ((data: BikeData)->Unit)? = null
+
     val isStarted
         get() = deviceHandle != null
 
     var speed = 0F
-    var maxSpeed by MaxValue(0F)
     var averageSpeed = 0F
     var distance = 0F
-    var cadence = 0
     var duration = 0L
 
     fun start(context: Context, device: MultiDeviceSearch.MultiDeviceSearchResult) {
@@ -36,9 +37,14 @@ object Bike {
             duration = it
             averageSpeed = (if (it > 0) distance / it else 0f) * 3600f
         }
+
+        timer.schedule(timerTask {
+            listener?.invoke(BikeData(speed, maxSpeed, averageSpeed, distance, cadence, Date(duration)))
+        }, delay , delay )
     }
 
     fun stop() {
+        timer.cancel()
         deviceHandle?.close()
         deviceHandle = null
         cadenceDeviceHandle?.close()
@@ -94,8 +100,13 @@ object Bike {
         }
     }
 
+    private var maxSpeed by MaxValue(0F)
+    private var cadence = 0
+
     private var deviceHandle: PccReleaseHandle<AntPlusBikeSpeedDistancePcc>? = null
     private var cadenceDeviceHandle: PccReleaseHandle<AntPlusBikeCadencePcc>? = null
+    private val timer by lazy { Timer() }
+    private val delay = 500L
 }
 
 

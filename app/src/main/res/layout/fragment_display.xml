@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/valueTopMargin"
-                    android:text="@{displayModel.cadence}"
+                    android:text='@{displayModel.cadence!= -1 ? displayModel.cadence.toString() : "-"}'
                     android:textSize="@dimen/displayLarge"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -109,7 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/valueTopMargin"
-                    android:text="@{displayModel.heartRate}"
+                    android:text='@{displayModel.heartRate != -1 ? displayModel.heartRate.toString() : "-"}'
                     android:textSize="@dimen/displayLarge"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
