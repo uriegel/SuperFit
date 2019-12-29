@@ -6,6 +6,7 @@
     
     <data>
         <import type="android.view.View"/>
+        <import type="de.uriegel.superfit.utils.PipesKt"/>
         <variable
             name="displayModel"
             type="de.uriegel.superfit.models.DisplayModel" />
@@ -142,7 +143,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/valueTopMargin"
-                    android:text="@{displayModel.distance}"
+                    android:text='@{displayModel.distance!= Float.NEGATIVE_INFINITY ? String.format("%.1f", displayModel.distance) : "-"}'
                     android:textSize="@dimen/displaySmall"
                     android:textStyle="normal"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -175,7 +176,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/valueTopMargin"
-                    android:text="@{displayModel.duration}"
+                    android:text="@{PipesKt.duration(displayModel.duration)}"
                     android:textSize="@dimen/displaySmall"
                     android:textStyle="normal"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -207,7 +208,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/valueTopMargin"
-                    android:text="@{displayModel.averageVelocity}"
+                    android:text='@{displayModel.averageVelocity!= Float.NEGATIVE_INFINITY ? String.format("%.1f", displayModel.averageVelocity) : "-"}'
                     android:textSize="@dimen/displaySmall"
                     android:textStyle="normal"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -240,7 +241,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/valueTopMargin"
-                    android:text="@{displayModel.maxVelocity}"
+                    android:text='@{displayModel.maxVelocity!= Float.NEGATIVE_INFINITY ? String.format("%.1f", displayModel.maxVelocity) : "-"}'
                     android:textSize="@dimen/displaySmall"
                     android:textStyle="normal"
                     app:layout_constraintEnd_toEndOf="parent"

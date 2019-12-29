@@ -110,7 +110,7 @@ object DataBase {
 //        }
 //    }
 
-    fun updateTrack(trackNr: Long, duration: Long, distance: Float, averageSpeed: Float) {
+    fun updateTrack(trackNr: Long, duration: Int, distance: Float, averageSpeed: Float) {
         database.use {
             update(TrackTable.Name,
                     TrackTable.Distance to distance, TrackTable.AverageSpeed to averageSpeed, TrackTable.Duration to duration)

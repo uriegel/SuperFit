@@ -24,7 +24,7 @@ object Bike {
     var speed = 0F
     var averageSpeed = 0F
     var distance = 0F
-    var duration = 0L
+    var duration = 0
 
     fun start(context: Context, device: MultiDeviceSearch.MultiDeviceSearchResult) {
         deviceHandle = AntPlusBikeSpeedDistancePcc.requestAccess(context, device.antDeviceNumber, 0, true, { bikeController, resultCode, _ ->
@@ -39,7 +39,7 @@ object Bike {
         }
 
         timer.schedule(timerTask {
-            listener?.invoke(BikeData(speed, maxSpeed, averageSpeed, distance, cadence, Date(duration)))
+            listener?.invoke(BikeData(speed, maxSpeed, averageSpeed, distance, cadence, duration))
         }, delay , delay )
     }
 
@@ -55,7 +55,7 @@ object Bike {
         averageSpeed = 0F
         distance = 0F
         cadence = 0
-        duration = 0L
+        duration = 0
     }
 
     private fun subScribeToBikeSpeed(context: Context, bikeController: AntPlusBikeSpeedDistancePcc) {

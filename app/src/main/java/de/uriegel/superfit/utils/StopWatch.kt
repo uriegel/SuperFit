@@ -5,14 +5,14 @@ import kotlin.concurrent.timerTask
 
 object StopWatch {
 
-    var tick: ((time: Long)->Unit)? = null
+    var tick: ((time: Int)->Unit)? = null
 
     fun start() {
         timer = Timer()
         startTime = System.currentTimeMillis()
         timer.schedule(timerTask {
             val now = System.currentTimeMillis()
-            tick?.invoke((now - startTime + previousTimeSpan) / 1000)
+            tick?.invoke(((now - startTime + previousTimeSpan) / 1000).toInt())
         }, period, period)
     }
 

@@ -17,10 +17,10 @@ class DisplayModel : ViewModel(), CoroutineScope {
     val cadence: MutableLiveData<Int> = MutableLiveData(-1)
     val velocity: MutableLiveData<Float> = MutableLiveData(Float.NEGATIVE_INFINITY)
     val heartRate: MutableLiveData<Int> = MutableLiveData(-1)
-    val distance: MutableLiveData<String> = MutableLiveData("12.5")
-    val duration: MutableLiveData<String> = MutableLiveData("1:03:45")
-    val averageVelocity: MutableLiveData<String> = MutableLiveData("20.2")
-    val maxVelocity: MutableLiveData<String> = MutableLiveData("46.9")
+    val distance: MutableLiveData<Float> = MutableLiveData(Float.NEGATIVE_INFINITY)
+    val duration: MutableLiveData<Int> = MutableLiveData(-1)
+    val averageVelocity: MutableLiveData<Float> = MutableLiveData(Float.NEGATIVE_INFINITY)
+    val maxVelocity: MutableLiveData<Float> = MutableLiveData(Float.NEGATIVE_INFINITY)
     val gpsActive: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
@@ -32,6 +32,10 @@ class DisplayModel : ViewModel(), CoroutineScope {
         Bike.listener = { launch {
             cadence.value = it.cadence
             velocity.value = it.speed
+            distance.value = it.distance
+            duration.value = it.duration
+            averageVelocity.value = it.averageSpeed
+            maxVelocity.value = it.maxSpeed
         }}
     }
 }

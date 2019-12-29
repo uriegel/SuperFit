@@ -8,4 +8,4 @@ class BikeData(
     val averageSpeed: Float,
     val distance: Float,
     val cadence: Int,
-    val duration: Date)
+    val duration: Int)
