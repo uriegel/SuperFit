@@ -8,7 +8,7 @@
         <import type="android.view.View"/>
         <variable
             name="displayModel"
-            type="eu.selfhost.riegel.superfit.models.DisplayModel" />
+            type="de.uriegel.superfit.models.DisplayModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

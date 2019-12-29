@@ -9,7 +9,7 @@
     tools:context=".ui.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <eu.selfhost.riegel.superfit.ui.ExtendedViewPager
+    <de.uriegel.superfit.ui.ExtendedViewPager
         android:id="@+id/layoutContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

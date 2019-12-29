@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "eu.selfhost.riegel.superfit"
+        applicationId "de.uriegel.superfit"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
