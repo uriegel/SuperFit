@@ -9,9 +9,14 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import eu.selfhost.riegel.superfit.R
+import eu.selfhost.riegel.superfit.BR.displayModel
+import eu.selfhost.riegel.superfit.databinding.FragmentDisplayBinding
 import eu.selfhost.riegel.superfit.maps.LocationManager
+import eu.selfhost.riegel.superfit.models.DisplayModel
 import eu.selfhost.riegel.superfit.sensors.HeartRate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +27,7 @@ import java.util.*
 class DisplayFragment : Fragment(), CoroutineScope {
 
     override val coroutineContext = Dispatchers.Main
+    lateinit var binding: FragmentDisplayBinding
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +37,14 @@ class DisplayFragment : Fragment(), CoroutineScope {
         // clone the inflater using the ContextThemeWrapper
         val localInflater = inflater.cloneInContext(contextThemeWrapper)
         // inflate the layout using the cloned inflater, not default inflater
-        return localInflater.inflate(R.layout.fragment_display, container, false)
+        binding = DataBindingUtil.inflate(localInflater, R.layout.fragment_display, container, false)
+        binding.lifecycleOwner = this
+        return binding.root
+
+
+
+
+
 //        webView = WebView(activity)
 //
 //        with (webView) {
@@ -61,11 +74,20 @@ class DisplayFragment : Fragment(), CoroutineScope {
 //        return webView
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        binding.setVariable(displayModel, viewModel)
+    }
+
     override fun onDestroyView() {
         LocationManager.setGpsActive = null
         HeartRate.listener = null
         timer.cancel()
         super.onDestroyView()
+    }
+
+    private val viewModel by lazy {
+        ViewModelProviders.of(this).get(DisplayModel::class.java)
     }
 
     private val javaScriptInterface = object {
