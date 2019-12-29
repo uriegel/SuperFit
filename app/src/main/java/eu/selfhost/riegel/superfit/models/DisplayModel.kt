@@ -2,6 +2,7 @@ package eu.selfhost.riegel.superfit.models
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import eu.selfhost.riegel.superfit.maps.LocationManager
 
 class DisplayModel : ViewModel() {
 
@@ -12,4 +13,13 @@ class DisplayModel : ViewModel() {
     val duration: MutableLiveData<String> = MutableLiveData("1:03:45")
     val averageVelocity: MutableLiveData<String> = MutableLiveData("20.2")
     val maxVelocity: MutableLiveData<String> = MutableLiveData("46.9")
+    val gpsActive: MutableLiveData<Boolean> = MutableLiveData()
+
+    init {
+        LocationManager.setGpsActive = {
+            gpsActive.value = true
+            LocationManager.setGpsActive = null
+        }
+    }
 }
+

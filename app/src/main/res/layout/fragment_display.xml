@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     
     <data>
+        <import type="android.view.View"/>
         <variable
             name="displayModel"
             type="eu.selfhost.riegel.superfit.models.DisplayModel" />
@@ -267,6 +268,7 @@
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/gps_marker"
+            android:visibility="@{displayModel.gpsActive ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/gps" />

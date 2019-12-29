@@ -64,6 +64,11 @@ object LocationManager {
 
     var gpsActive = false
     var setGpsActive: (()->Unit)? = null
+        set(value) {
+            field = value
+            if (gpsActive)
+                setGpsActive?.invoke()
+        }
 
     private lateinit var locationManager: LocationManager
     private var trackNr = -1L

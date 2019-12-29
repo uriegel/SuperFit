@@ -1,13 +1,9 @@
 package eu.selfhost.riegel.superfit.ui
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -20,16 +16,13 @@ import eu.selfhost.riegel.superfit.models.DisplayModel
 import eu.selfhost.riegel.superfit.sensors.HeartRate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
-
 
 class DisplayFragment : Fragment(), CoroutineScope {
 
     override val coroutineContext = Dispatchers.Main
     lateinit var binding: FragmentDisplayBinding
 
-    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
@@ -45,20 +38,6 @@ class DisplayFragment : Fragment(), CoroutineScope {
 
 
 
-//        webView = WebView(activity)
-//
-//        with (webView) {
-//            with(settings) {
-//                javaScriptEnabled = true
-//                domStorageEnabled = true
-//                allowFileAccessFromFileURLs = true
-//                allowUniversalAccessFromFileURLs = true
-//            }
-//            addJavascriptInterface(javaScriptInterface, "DisplayNative")
-//        }
-//        WebView.setWebContentsDebuggingEnabled(true)
-//        webView.loadUrl("file:///android_asset/display.html")
-//
 //        HeartRate.listener = { heartRate -> launch { webView.evaluateJavascript("onHeartRateChanged($heartRate)", null) } }
 //        timer = Timer()
 //        timer.schedule(timerTask {
@@ -68,10 +47,6 @@ class DisplayFragment : Fragment(), CoroutineScope {
 //                    "onBikeDataChanged(${Bike.speed}, ${Bike.maxSpeed}, ${Bike.averageSpeed}, ${Bike.distance}, ${Bike.duration}, ${Bike.cadence})", null)
 //                }
 //        }, delay , delay )
-//
-//        LocationManager.setGpsActive = { launch { webView.evaluateJavascript("setGpsActive()", null) } }
-//
-//        return webView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -80,9 +55,8 @@ class DisplayFragment : Fragment(), CoroutineScope {
     }
 
     override fun onDestroyView() {
-        LocationManager.setGpsActive = null
-        HeartRate.listener = null
-        timer.cancel()
+//        HeartRate.listener = null
+//        timer.cancel()
         super.onDestroyView()
     }
 
@@ -90,15 +64,6 @@ class DisplayFragment : Fragment(), CoroutineScope {
         ViewModelProviders.of(this).get(DisplayModel::class.java)
     }
 
-    private val javaScriptInterface = object {
-        @JavascriptInterface
-        fun onReady() {
-            if (LocationManager.gpsActive)
-                launch { webView.evaluateJavascript("setGpsActive()", null) }
-        }
-    }
-
-    private lateinit var webView: WebView
-    private lateinit var timer: Timer
-    private val delay = 500L
+//    private lateinit var timer: Timer
+//    private val delay = 500L
 }
