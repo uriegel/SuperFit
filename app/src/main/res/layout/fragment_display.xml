@@ -9,246 +9,267 @@
             name="displayModel"
             type="eu.selfhost.riegel.superfit.models.DisplayModel" />
     </data>
-    
-    <ScrollView
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ScrollView
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/leftMargin"
+                    android:layout_marginTop="@dimen/topMargin"
+                    android:text="@string/trittfrequenz"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/valueTopMargin"
+                    android:text="@{displayModel.cadence}"
+                    android:textSize="@dimen/displayLarge"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView1"
+                    tools:text="87" />
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unitHorizontalMargin"
+                    android:text="@string/_1_min"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView9"
+                    app:layout_constraintStart_toEndOf="@+id/textView9" />
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/leftMargin"
+                    android:layout_marginTop="@dimen/topMargin"
+                    android:text="@string/geschwindigkeit"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/valueTopMargin"
+                    android:text="@{displayModel.velocity}"
+                    android:textSize="@dimen/displayLarge"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView10"
+                    tools:text="25.9" />
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unitHorizontalMargin"
+                    android:layout_marginTop="@dimen/unitVerticalMargin"
+                    android:text="@string/km_h"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView11"
+                    app:layout_constraintStart_toEndOf="@+id/textView11" />
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/leftMargin"
+                    android:layout_marginTop="@dimen/topMargin"
+                    android:text="@string/herzfrequenz"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/valueTopMargin"
+                    android:text="@{displayModel.heartRate}"
+                    android:textSize="@dimen/displayLarge"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView13"
+                    tools:text="124" />
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unitHorizontalMargin"
+                    android:layout_marginTop="@dimen/unitVerticalMargin"
+                    android:text="@string/_1_min"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView14"
+                    app:layout_constraintStart_toEndOf="@+id/textView14" />
+
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/leftMargin"
+                    android:layout_marginTop="@dimen/topMargin"
+                    android:text="@string/strecke"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/valueTopMargin"
+                    android:text="@{displayModel.distance}"
+                    android:textSize="@dimen/displaySmall"
+                    android:textStyle="normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView16"
+                    tools:text="34.7" />
+
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unitHorizontalMargin"
+                    android:layout_marginTop="@dimen/unitVerticalMargin"
+                    android:text="@string/km"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView17"
+                    app:layout_constraintStart_toEndOf="@+id/textView17" />
+
+                <TextView
+                    android:id="@+id/textView19"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/leftMargin"
+                    android:layout_marginTop="@dimen/topMargin"
+                    android:text="@string/zeit"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
+                <TextView
+                    android:id="@+id/textView20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/valueTopMargin"
+                    android:text="@{displayModel.duration}"
+                    android:textSize="@dimen/displaySmall"
+                    android:textStyle="normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView19"
+                    tools:text="1:23:45" />
+
+                <TextView
+                    android:id="@+id/textView21"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unitHorizontalMargin"
+                    android:layout_marginTop="@dimen/unitVerticalMargin"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView20"
+                    app:layout_constraintStart_toEndOf="@+id/textView20" />
+
+                <TextView
+                    android:id="@+id/textView22"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/leftMargin"
+                    android:layout_marginTop="@dimen/topMargin"
+                    android:text="@string/dgeschwindigkeit"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView21" />
+
+                <TextView
+                    android:id="@+id/textView23"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/valueTopMargin"
+                    android:text="@{displayModel.averageVelocity}"
+                    android:textSize="@dimen/displaySmall"
+                    android:textStyle="normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView22"
+                    tools:text="23.7" />
+
+                <TextView
+                    android:id="@+id/textView24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unitHorizontalMargin"
+                    android:layout_marginTop="@dimen/unitVerticalMargin"
+                    android:text="@string/km_h"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView23"
+                    app:layout_constraintStart_toEndOf="@+id/textView23" />
+
+                <TextView
+                    android:id="@+id/textView25"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/leftMargin"
+                    android:layout_marginTop="@dimen/topMargin"
+                    android:text="@string/max_geschwindigkeit"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView24" />
+
+                <TextView
+                    android:id="@+id/textView26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/valueTopMargin"
+                    android:text="@{displayModel.maxVelocity}"
+                    android:textSize="@dimen/displaySmall"
+                    android:textStyle="normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView25"
+                    tools:text="45.8" />
+
+                <TextView
+                    android:id="@+id/textView27"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unitHorizontalMargin"
+                    android:layout_marginTop="@dimen/unitVerticalMargin"
+                    android:text="@string/km_h"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/textView26"
+                    app:layout_constraintStart_toEndOf="@+id/textView26" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/gps_marker"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/gps" />
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/leftMargin"
-                android:layout_marginTop="@dimen/topMargin"
-                android:text="@string/trittfrequenz"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/valueTopMargin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView1"
-                android:textSize="@dimen/displayLarge"
-                android:textStyle="bold"
-                tools:text="87"
-                android:text="@{displayModel.cadence}"
-                />
-
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unitHorizontalMargin"
-                android:text="@string/_1_min"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView9"
-                app:layout_constraintStart_toEndOf="@+id/textView9" />
-
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/leftMargin"
-                android:layout_marginTop="@dimen/topMargin"
-                android:text="@string/geschwindigkeit"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-            <TextView
-                android:id="@+id/textView11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/valueTopMargin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView10"
-                android:textSize="@dimen/displayLarge"
-                android:textStyle="bold"
-                android:text="@{displayModel.velocity}"
-                tools:text="25.9" />
-
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unitHorizontalMargin"
-                android:layout_marginTop="@dimen/unitVerticalMargin"
-                android:text="@string/km_h"
-                app:layout_constraintStart_toEndOf="@+id/textView11"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView11" />
-
-            <TextView
-                android:id="@+id/textView13"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/leftMargin"
-                android:layout_marginTop="@dimen/topMargin"
-                android:text="@string/herzfrequenz"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView12" />
-
-            <TextView
-                android:id="@+id/textView14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/valueTopMargin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView13"
-                android:textSize="@dimen/displayLarge"
-                android:textStyle="bold"
-                android:text="@{displayModel.heartRate}"
-                tools:text="124" />
-
-            <TextView
-                android:id="@+id/textView15"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unitHorizontalMargin"
-                android:layout_marginTop="@dimen/unitVerticalMargin"
-                android:text="@string/_1_min"
-                app:layout_constraintStart_toEndOf="@+id/textView14"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView14" />
-
-            <TextView
-                android:id="@+id/textView16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/leftMargin"
-                android:layout_marginTop="@dimen/topMargin"
-                android:text="@string/strecke"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView15" />
-
-            <TextView
-                android:id="@+id/textView17"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/valueTopMargin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView16"
-                android:textSize="@dimen/displaySmall"
-                android:textStyle="normal"
-                android:text="@{displayModel.distance}"
-                tools:text="34.7" />
-
-            <TextView
-                android:id="@+id/textView18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unitHorizontalMargin"
-                android:layout_marginTop="@dimen/unitVerticalMargin"
-                android:text="@string/km"
-                app:layout_constraintStart_toEndOf="@+id/textView17"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView17" />
-
-            <TextView
-                android:id="@+id/textView19"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/leftMargin"
-                android:layout_marginTop="@dimen/topMargin"
-                android:text="@string/zeit"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView18" />
-
-            <TextView
-                android:id="@+id/textView20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/valueTopMargin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView19"
-                android:textSize="@dimen/displaySmall"
-                android:textStyle="normal"
-                android:text="@{displayModel.duration}"
-                tools:text="1:23:45" />
-
-            <TextView
-                android:id="@+id/textView21"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unitHorizontalMargin"
-                android:layout_marginTop="@dimen/unitVerticalMargin"
-                app:layout_constraintStart_toEndOf="@+id/textView20"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView20" />
-
-            <TextView
-                android:id="@+id/textView22"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/leftMargin"
-                android:layout_marginTop="@dimen/topMargin"
-                android:text="@string/dgeschwindigkeit"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView21" />
-
-            <TextView
-                android:id="@+id/textView23"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/valueTopMargin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView22"
-                android:textSize="@dimen/displaySmall"
-                android:textStyle="normal"
-                android:text="@{displayModel.averageVelocity}"
-                tools:text="23.7" />
-
-            <TextView
-                android:id="@+id/textView24"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unitHorizontalMargin"
-                android:layout_marginTop="@dimen/unitVerticalMargin"
-                android:text="@string/km_h"
-                app:layout_constraintStart_toEndOf="@+id/textView23"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView23" />
-
-            <TextView
-                android:id="@+id/textView25"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/leftMargin"
-                android:layout_marginTop="@dimen/topMargin"
-                android:text="@string/max_geschwindigkeit"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView24" />
-
-            <TextView
-                android:id="@+id/textView26"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/valueTopMargin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView25"
-                android:textSize="@dimen/displaySmall"
-                android:textStyle="normal"
-                android:text="@{displayModel.maxVelocity}"
-                tools:text="45.8" />
-
-            <TextView
-                android:id="@+id/textView27"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unitHorizontalMargin"
-                android:layout_marginTop="@dimen/unitVerticalMargin"
-                android:text="@string/km_h"
-                app:layout_constraintStart_toEndOf="@+id/textView26"
-                app:layout_constraintBaseline_toBaselineOf="@+id/textView26" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
