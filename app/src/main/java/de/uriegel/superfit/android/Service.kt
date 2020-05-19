@@ -7,9 +7,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import de.uriegel.superfit.R
+import de.uriegel.superfit.android.Application.Companion.CHANNEL_SERVICE_ID
 import de.uriegel.superfit.maps.LocationManager
 import de.uriegel.superfit.sensors.Bike
 import de.uriegel.superfit.sensors.HeartRate
@@ -18,106 +20,70 @@ import de.uriegel.superfit.ui.MainActivity
 
 class Service : Service() {
 
-    enum class ServiceState {
-        Stopped,
-        Starting,
-        Started,
-        Stopping
+    override fun onCreate() {
+        super.onCreate()
+
+        val notificationIntent = Intent(this, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+        notification = NotificationCompat.Builder(this, CHANNEL_SERVICE_ID)
+            .setContentTitle("Super Fit")
+            .setContentText("Erfasst Fitness-Daten")
+            .setSmallIcon(R.drawable.ic_bike)
+            .setContentIntent(pendingIntent)
+            .build()
+
+        Searcher.start(this)
+        LocationManager.start(this)
+
+        wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
+            .run {
+                newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "EndlessService::lock").apply {
+                    acquire(20 * 3600_000)
+                }
+            }
+
+        isRunning = true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        wakeLock.let {
+            if (it.isHeld) {
+                it.release()
+            }
+        }
+
+        LocationManager.stop()
+        HeartRate.stop()
+        Bike.stop()
+        Searcher.stop()
+
+        isRunning = false
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        super.onStartCommand(intent, flags, startId)
-
-        when (intent?.action) {
-            ACTION_START -> {
-                if (state == ServiceState.Stopped) {
-                    state = ServiceState.Starting
-
-                    val channelId =
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                                createNotificationChannel("my_service", "My Background Service")
-                            else
-                                // If earlier version channel ID is not used
-                                // https://developer.android.com/reference/android/support/v4/app/NotificationCompat.Builder.html#NotificationCompat.Builder(android.content.Context)
-                                ""
-
-                    val notificationIntent = Intent(this, MainActivity::class.java)
-                    notificationIntent.action = ACTION_START
-                    notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
-
-                    @Suppress("DEPRECATION")
-                    val notification = NotificationCompat.Builder(this, channelId)
-                            .setContentTitle("Super Fit")
-                            .setContentText("Erfasst Fitness-Daten")
-                            .setContentIntent(pendingIntent)
-                            .setSmallIcon(R.drawable.ic_bike)
-                            .setOngoing(true).build()
-
-                    startForeground(NOTIFICATION_ID, notification)
-                    val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.notify(NOTIFICATION_ID, notification)
-
-                    Searcher.start(this)
-
-                    LocationManager.start(this)
-
-                    state = ServiceState.Started
-                    return START_STICKY
-                }
-                return START_NOT_STICKY
-            }
-            ACTION_STOP -> {
-                if (state != ServiceState.Started)
-                    return START_NOT_STICKY
-                state = ServiceState.Stopping
-
-                LocationManager.stop()
-
-                HeartRate.stop()
-                Bike.stop()
-                Searcher.stop()
-
-                stopForeground(true)
-                stopSelf()
-
-                state = ServiceState.Stopped
-                return START_NOT_STICKY
-            }
-
-            else -> return START_NOT_STICKY
-        }
+        startForeground(1, notification)
+        return START_STICKY
     }
 
     override fun onBind(intent: Intent): IBinder? = null
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel(channelId: String, channelName: String): String{
-        val chan = NotificationChannel(channelId,
-                channelName, NotificationManager.IMPORTANCE_NONE)
-        chan.lightColor = Color.BLUE
-        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-        val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        service.createNotificationChannel(chan)
-        return channelId
-    }
+    private lateinit var notification: Notification
+    private lateinit var wakeLock: PowerManager.WakeLock
 
     companion object {
-        var state: ServiceState = ServiceState.Stopped
+        var isRunning = false
             set(value){
                 field = value
-                listener?.invoke(state)
+                listener?.invoke(isRunning)
             }
 
-        const val ACTION_START = "Start"
-        const val ACTION_STOP = "Stop"
-        const val NOTIFICATION_ID = 22
-
-        fun setOnStateChangedListener(listener: ((state: ServiceState)->Unit)?) {
+        fun setOnStateChangedListener(listener: ((isRunning: Boolean)->Unit)?) {
             this.listener = listener
-            listener?.invoke(state)
+            listener?.invoke(isRunning)
         }
 
-        private var listener: ((state: ServiceState)->Unit)? = null
+        private var listener: ((isRunning: Boolean)->Unit)? = null
     }
 }

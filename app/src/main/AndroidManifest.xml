@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:requestLegacyExternalStorage="true"
@@ -40,9 +41,7 @@
             android:theme="@style/AppTheme.Preference"/>
 
         <service
-            android:name=".android.Service"
-            android:enabled="true"
-            android:exported="false" />
+            android:name=".android.Service" />
     </application>
 
 </manifest>

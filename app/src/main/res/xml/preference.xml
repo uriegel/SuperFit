@@ -3,6 +3,11 @@
 
     <PreferenceCategory android:title="Bike-Einstallungen">
 
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="bike_support"
+            android:summary="Unterstützung für Bike Sensoren einschalten"
+            android:title="Bike-Sensor" />
         <EditTextPreference
             android:defaultValue="2096"
             android:key="PREF_WHEEL"

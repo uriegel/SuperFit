@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.preference.CheckBoxPreference
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
@@ -52,13 +53,19 @@ class PreferenceActivity : AppCompatActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.preference, rootKey)
 
+            val bikeSupport = findPreference<CheckBoxPreference>(BIKE_SUPPORT)
             val editTextPreference = findPreference<EditTextPreference>(PREF_WHEEL)
+            bikeSupport?.setOnPreferenceClickListener {
+                editTextPreference?.isEnabled = bikeSupport.isChecked == true
+                true
+            }
+            editTextPreference?.isEnabled = bikeSupport?.isChecked == true
             editTextPreference?.setOnBindEditTextListener {
                 it.inputType = InputType.TYPE_CLASS_NUMBER
             }
 
             val listPreference = findPreference<ListPreference>(PREF_MAP)
-            val sdCard: String = context.getSdCard()
+                val sdCard: String = context.getSdCard()
             val mapsDir = "$sdCard/Maps"
             val directory = File(mapsDir)
             val maps = directory.listFiles()
@@ -79,5 +86,6 @@ class PreferenceActivity : AppCompatActivity() {
     companion object {
         const val PREF_MAP = "PREF_MAP"
         const val PREF_WHEEL = "PREF_WHEEL"
+        const val BIKE_SUPPORT = "bike_support"
     }
 }

@@ -27,6 +27,9 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
 
     override val coroutineContext = Main
 
+    // TODO: Velocity from location
+    // TODO:
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -129,9 +132,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
     }
 
     private fun initialize() {
-        isInitialized = true
-
-        if (Service.state == Service.ServiceState.Started)
+        if (Service.isRunning)
             startActivity(Intent(this@MainActivity, DisplayActivity::class.java))
 
         val preferences = defaultSharedPreferences
@@ -139,8 +140,6 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
         if (map == null)
             startActivity(Intent(this, PreferenceActivity::class.java))
     }
-
-    private var isInitialized = false
 
     companion object {
         const val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000

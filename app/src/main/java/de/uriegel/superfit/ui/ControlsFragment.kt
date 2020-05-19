@@ -30,7 +30,6 @@ class ControlsFragment : Fragment(), CoroutineScope {
 
         btnStart.setOnClickListener {
             val startIntent = Intent(activity, Service::class.java)
-            startIntent.action = Service.ACTION_START
             activity?.startService(startIntent)
             startActivity(Intent(activity, DisplayActivity::class.java))
         }
@@ -50,18 +49,17 @@ class ControlsFragment : Fragment(), CoroutineScope {
         }
         btnStop.setOnClickListener {
             val startIntent = Intent(activity, Service::class.java)
-            startIntent.action = Service.ACTION_STOP
-            activity?.startService(startIntent)
+            activity?.stopService(startIntent)
             activity?.finish()
         }
 
         Service.setOnStateChangedListener { onStateChanged(it) }
     }
 
-    private fun onStateChanged(state: Service.ServiceState) {
-        btnStart.isEnabled = state == Service.ServiceState.Stopped
-        btnDisplay.isEnabled = state == Service.ServiceState.Started
-        btnReset.isEnabled = state == Service.ServiceState.Started
-        btnStop.isEnabled = state == Service.ServiceState.Started
+    private fun onStateChanged(isRunning: Boolean) {
+        btnStart.isEnabled = !isRunning
+        btnDisplay.isEnabled = isRunning
+        btnReset.isEnabled = isRunning
+        btnStop.isEnabled = isRunning
     }
 }
