@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import de.uriegel.superfit.R
 import de.uriegel.superfit.database.DataBase
 import de.uriegel.superfit.database.Track
+import de.uriegel.superfit.databinding.FragmentTracksBinding
 import de.uriegel.superfit.ui.adapters.TracksAdapter
-import kotlinx.android.synthetic.main.fragment_tracks.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,9 +22,9 @@ import kotlinx.coroutines.launch
 class TracksFragment : Fragment(), CoroutineScope {
     override val coroutineContext = Dispatchers.Main
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_tracks, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentTracksBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,10 +32,10 @@ class TracksFragment : Fragment(), CoroutineScope {
 
         val linearLayoutManager = LinearLayoutManager(activity)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        tracksView.layoutManager = linearLayoutManager
-        tracksView.setHasFixedSize(true)
+        binding.tracksView.layoutManager = linearLayoutManager
+        binding.tracksView.setHasFixedSize(true)
         val itemDecoration = DividerItemDecoration(activity, DividerItemDecoration.VERTICAL)
-        tracksView.addItemDecoration(itemDecoration)
+        binding.tracksView.addItemDecoration(itemDecoration)
 
         fun onItemClick(track: Track) {
             launch {
@@ -44,15 +44,17 @@ class TracksFragment : Fragment(), CoroutineScope {
                 val result = (activity as ActivityEx).activityRequest(intent)
                 if (result?.resultCode == Activity.RESULT_OK)
                     if (result.data?.getStringExtra(MapActivity.RESULT_TYPE) == MapActivity.RESULT_TYPE_DELETE)
-                        (tracksView.adapter as TracksAdapter).delete(track)
+                        (binding.tracksView.adapter as TracksAdapter).delete(track)
             }
         }
 
         launch {
             val tracks = DataBase.getTracks()
-            tracksView.adapter = TracksAdapter(activity!!, tracks, ::onItemClick)
+            binding.tracksView.adapter = TracksAdapter(requireActivity(), tracks, ::onItemClick)
         }
     }
+
+    private lateinit var binding: FragmentTracksBinding
 
     companion object {
         const val TRACK_NR = "TRACK_NR"

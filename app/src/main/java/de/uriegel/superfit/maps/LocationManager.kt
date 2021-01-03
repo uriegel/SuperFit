@@ -8,6 +8,8 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import de.uriegel.superfit.database.DataBase
+import de.uriegel.superfit.databinding.ActivityMainBinding
+import de.uriegel.superfit.databinding.FragmentControlsBinding
 import de.uriegel.superfit.sensors.Bike
 import de.uriegel.superfit.sensors.HeartRate
 import org.mapsforge.core.model.LatLong
@@ -57,9 +59,9 @@ object LocationManager {
             DataBase.insertTrackPoint(trackNr, location, Bike.speed, HeartRate.currentHeartRate)
         }
 
-        override fun onProviderEnabled(p0: String?) {}
+//        fun onProviderEnabled(p0: String?) {}
         override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {}
-        override fun onProviderDisabled(p0: String?) {}
+        //override fun onProviderDisabled(p0: String?) {}
     }
 
     var gpsActive = false

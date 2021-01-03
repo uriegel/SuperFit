@@ -10,12 +10,12 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import de.uriegel.superfit.R
 import de.uriegel.superfit.database.TrackPoint
+import de.uriegel.superfit.databinding.FragmentTrackingBinding
 import de.uriegel.superfit.maps.LocationManager
 import de.uriegel.superfit.maps.LocationManager.getCurrentTrackAsync
 import de.uriegel.superfit.maps.LocationMarker
 import de.uriegel.superfit.maps.TrackLine
 import de.uriegel.superfit.utils.getSdCard
-import kotlinx.android.synthetic.main.fragment_tracking.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,14 +32,16 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer
 import org.mapsforge.map.reader.MapFile
 import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.File
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 class MapFragment : Fragment(), CoroutineScope {
 
 	override val coroutineContext = Dispatchers.Main
 
-	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val root = inflater.inflate(R.layout.fragment_tracking, container, false)
-        frameLayout = root.findViewById(R.id.mapContainer)
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+		binding = FragmentTrackingBinding.inflate(layoutInflater)
+        frameLayout = binding.root.findViewById(R.id.mapContainer)
         mapView = MapView(activity)
         with(mapView)
         {
@@ -82,7 +84,11 @@ class MapFragment : Fragment(), CoroutineScope {
 			if (tracks.isNotEmpty())
                 tracks.forEach { (trackLine.latLongs.add(it)) }
             LocationManager.listener = {
-                val currentLatLong = LatLong(it.latitude, it.longitude)
+				val speed =(BigDecimal(it.speed * 3.6).setScale(1, RoundingMode.HALF_EVEN)).toString()
+				val speedAccuracy =(BigDecimal(it.speedAccuracyMetersPerSecond * 3.6).setScale(1, RoundingMode.HALF_EVEN)).toString()
+				binding.testSpeed.text = "$speed-$speedAccuracy"
+
+				val currentLatLong = LatLong(it.latitude, it.longitude)
                 if (location != null)
                     mapView.layerManager.layers.remove(location)
                 location = LocationMarker(currentLatLong)
@@ -100,12 +106,12 @@ class MapFragment : Fragment(), CoroutineScope {
             }
         }
 
-        return root
+        return binding.root
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		switcher.setOnClickListener {
+		binding.switcher.setOnClickListener {
 			if (activity is DisplayActivity) {
 				followLocation = !followLocation
 				enableBearing(followLocation)
@@ -201,4 +207,5 @@ class MapFragment : Fragment(), CoroutineScope {
 	private var location: LocationMarker? = null
 	private var followLocation = true
 	private var lastLocation: Location? = null
+	private lateinit var binding: FragmentTrackingBinding
 }

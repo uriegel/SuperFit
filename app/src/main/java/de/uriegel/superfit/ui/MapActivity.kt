@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.View
 import de.uriegel.superfit.R
 import de.uriegel.superfit.database.DataBase
+import de.uriegel.superfit.databinding.ActivityMapBinding
 import de.uriegel.superfit.maps.exportToGpx
-import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,17 +24,18 @@ class MapActivity : ActivityEx(), CoroutineScope {
 	override fun onCreate(savedInstanceState: Bundle?)
 	{
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_map)
+		binding = ActivityMapBinding.inflate(layoutInflater)
+		setContentView(binding.root)
 
-		btnMenu.setOnClickListener {
+		binding.btnMenu.setOnClickListener {
 			controlsActive = !controlsActive
 			val visibility = if (controlsActive) View.VISIBLE else View.GONE
-			btnDelete.visibility = visibility
-			btnEdit.visibility = visibility
-			btnSave.visibility = visibility
+			binding.btnDelete.visibility = visibility
+			binding.btnEdit.visibility = visibility
+			binding.btnSave.visibility = visibility
 		}
 
-		btnDelete.setOnClickListener {
+		binding.btnDelete.setOnClickListener {
 			launch {
 				alert("Möchtest Du diesen Track löschen?", "Track löschen") {
 					yesButton {
@@ -49,7 +50,7 @@ class MapActivity : ActivityEx(), CoroutineScope {
 			}
 		}
 
-		btnSave.setOnClickListener {
+		binding.btnSave.setOnClickListener {
 			launch {
 				val track = DataBase.getTrack(trackNr)
 
@@ -96,5 +97,6 @@ class MapActivity : ActivityEx(), CoroutineScope {
 
 	private var trackNr = 0L
 	private var controlsActive = false
+	private lateinit var binding: ActivityMapBinding
 }
 

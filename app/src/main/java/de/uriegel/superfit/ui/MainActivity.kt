@@ -1,23 +1,25 @@
 package de.uriegel.superfit.ui
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.text.Layout
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.navigation.NavigationView
 import de.uriegel.superfit.R
 import de.uriegel.superfit.android.Service
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_main.*
+import de.uriegel.superfit.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import org.jetbrains.anko.defaultSharedPreferences
@@ -32,22 +34,26 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val toggle = object : ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) { }
+        val toggle = object : ActionBarDrawerToggle(this, binding.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) { }
 
-        drawerLayout.addDrawerListener(toggle)
+        binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+        layoutContainer = findViewById<ViewPager>(R.id.layoutContainer)
         val pagerId = 1
         with(layoutContainer) {
             adapter = PagerAdapter(supportFragmentManager)
             id = pagerId
         }
 
-        navigationView.setNavigationItemSelectedListener(this)
+        binding.navigationView.setNavigationItemSelectedListener(this)
 
         if (checkPermissions())
             initialize()
@@ -73,8 +79,8 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
     }
 
     override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START))
-            drawerLayout.closeDrawer(GravityCompat.START)
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START))
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
         else
             super.onBackPressed()
     }
@@ -98,7 +104,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
             R.id.nav_tracks -> layoutContainer.setCurrentItem(1, true)
         }
 
-        drawerLayout.closeDrawer(GravityCompat.START)
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 
@@ -140,6 +146,9 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
         if (map == null)
             startActivity(Intent(this, PreferenceActivity::class.java))
     }
+
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var layoutContainer: ViewPager
 
     companion object {
         const val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000

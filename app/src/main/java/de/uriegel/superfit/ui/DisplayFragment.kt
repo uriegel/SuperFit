@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import de.uriegel.superfit.R
 import de.uriegel.superfit.BR.displayModel
 import de.uriegel.superfit.databinding.FragmentDisplayBinding
@@ -21,7 +21,7 @@ class DisplayFragment : Fragment(), CoroutineScope {
     lateinit var binding: FragmentDisplayBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
 
         val contextThemeWrapper = ContextThemeWrapper(activity, R.style.AppTheme_DisplayFullScreen)
         // clone the inflater using the ContextThemeWrapper
@@ -39,6 +39,6 @@ class DisplayFragment : Fragment(), CoroutineScope {
     }
 
     private val viewModel by lazy {
-        ViewModelProviders.of(this).get(DisplayModel::class.java)
+        ViewModelProvider(this).get(DisplayModel::class.java)
     }
 }
