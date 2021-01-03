@@ -84,10 +84,6 @@ class MapFragment : Fragment(), CoroutineScope {
 			if (tracks.isNotEmpty())
                 tracks.forEach { (trackLine.latLongs.add(it)) }
             LocationManager.listener = {
-				val speed =(BigDecimal(it.speed * 3.6).setScale(1, RoundingMode.HALF_EVEN)).toString()
-				val speedAccuracy =(BigDecimal(it.speedAccuracyMetersPerSecond * 3.6).setScale(1, RoundingMode.HALF_EVEN)).toString()
-				binding.testSpeed.text = "$speed-$speedAccuracy"
-
 				val currentLatLong = LatLong(it.latitude, it.longitude)
                 if (location != null)
                     mapView.layerManager.layers.remove(location)

@@ -19,21 +19,11 @@
 
     <Button
         android:id="@+id/switcher"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="100dp"
         android:alpha="0"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/testSpeed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/colorDisplayText"
-        android:text="-"
-        android:textSize="@dimen/displaySmall"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/switcher"
-        app:layout_constraintTop_toTopOf="@+id/mapContainer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
