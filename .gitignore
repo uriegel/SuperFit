@@ -3,4 +3,4 @@
 app/build
 /build/
 app/release
-gradle.properties
+/app/gradle.properties
