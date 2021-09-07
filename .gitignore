@@ -1,3 +1,6 @@
 .gradle
 .idea
 app/build
+/build/
+app/release
+gradle.properties

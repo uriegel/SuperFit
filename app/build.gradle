@@ -3,6 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
+    signingConfigs {
+        target {
+            storeFile file('/home/uwe/Dokumente/Entwicklung/AndroidKeyStore/keystore.jks')
+            storePassword ANDROID_STORE_PASSWORD
+            keyAlias 'androidKey'
+            keyPassword ANDROID_KEY_PASSWORD
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
     defaultConfig {
@@ -11,11 +19,16 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        signingConfig signingConfigs.target
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.target
+        }
+        debug {
+            signingConfig signingConfigs.target
         }
     }
     buildFeatures {
