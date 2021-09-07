@@ -4,3 +4,4 @@ app/build
 /build/
 app/release
 /app/gradle.properties
+local.properties
