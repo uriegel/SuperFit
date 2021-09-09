@@ -30,7 +30,8 @@
     <string name="dgeschwindigkeit">Ø-Geschwindigkeit</string>
     <string name="max_geschwindigkeit">Max. Geschwindigkeit</string>
     <string name="gps_marker">Gps marker</string>
-    <string name="mapupload">Kartenupload</string>
+    <string name="mapdownload">Karten-Download</string>
     <string name="textViewUploadDescription">Karte im Format \"MapsForge\" downloaden. Besuche die Seite \"https://download.mapsforge.org/\" und suche die gewünschte Karte aus. Die Url zum Download hier eintragen:</string>
     <string name="editTextMapUploadHint">Url der Karte eintragen</string>
+    <string name="btnMapDownload">Download</string>
 </resources>
