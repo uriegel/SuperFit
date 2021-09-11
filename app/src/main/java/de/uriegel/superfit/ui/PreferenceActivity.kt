@@ -1,11 +1,20 @@
 package de.uriegel.superfit.ui
 
-import android.content.Intent
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Environment
+import android.os.Environment.getExternalStorageDirectory
 import android.text.InputType
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.preference.CheckBoxPreference
+import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
+import androidx.preference.PreferenceFragmentCompat
 import de.uriegel.superfit.R
 import de.uriegel.superfit.utils.getSdCard
 import java.io.File
@@ -55,12 +64,6 @@ class PreferenceActivity : AppCompatActivity() {
                 it.inputType = InputType.TYPE_CLASS_NUMBER
             }
 
-            val mapUpload = findPreference<Preference>(MAP_UPLOAD)
-            mapUpload?.setOnPreferenceClickListener {
-                 startActivity(Intent(context, MapDownloadActivity::class.java))
-                true
-            }
-
             val listPreference = findPreference<ListPreference>(PREF_MAP)
                 val sdCard: String = context.getSdCard()
             val mapsDir = "$sdCard/Maps"
@@ -81,7 +84,6 @@ class PreferenceActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val MAP_UPLOAD = "MAP_UPLOAD"
         const val PREF_MAP = "PREF_MAP"
         const val PREF_WHEEL = "PREF_WHEEL"
         const val BIKE_SUPPORT = "bike_support"
