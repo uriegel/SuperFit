@@ -55,7 +55,7 @@ class PreferenceActivity : AppCompatActivity() {
                 it.inputType = InputType.TYPE_CLASS_NUMBER
             }
 
-            val mapUpload = findPreference<Preference>(MAP_DOWNLOAD)
+            val mapUpload = findPreference<Preference>(MAP_UPLOAD)
             mapUpload?.setOnPreferenceClickListener {
                  startActivity(Intent(context, MapDownloadActivity::class.java))
                 true
@@ -81,7 +81,7 @@ class PreferenceActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val MAP_DOWNLOAD = "MAP_DOWNLOAD"
+        const val MAP_UPLOAD = "MAP_UPLOAD"
         const val PREF_MAP = "PREF_MAP"
         const val PREF_WHEEL = "PREF_WHEEL"
         const val BIKE_SUPPORT = "bike_support"

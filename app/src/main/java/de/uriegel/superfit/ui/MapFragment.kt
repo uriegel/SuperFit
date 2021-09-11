@@ -56,12 +56,11 @@ class MapFragment : Fragment(), CoroutineScope {
         tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1.0F,
                 mapView.model.frameBufferModel.overdrawFactor)
 
-//        val preferences = activity?.defaultSharedPreferences
-//        val map = preferences?.getString(PreferenceActivity.PREF_MAP, null)
-//        val sdCard: String = activity.getSdCard()
-//        val mapsDir = "$sdCard/Maps"
-        //val mapDataStore = MapFile(File(mapsDir, map!!))
-		val mapDataStore = MapFile(File(context?.filesDir, "map.map"))
+        val preferences = activity?.defaultSharedPreferences
+        val map = preferences?.getString(PreferenceActivity.PREF_MAP, null)
+        val sdCard: String = activity.getSdCard()
+        val mapsDir = "$sdCard/Maps"
+        val mapDataStore = MapFile(File(mapsDir, map!!))
 
         tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
                 InternalRenderTheme.OSMARENDER, false, true, false)
