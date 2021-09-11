@@ -52,10 +52,6 @@ class MapDownloadActivity : AppCompatActivity(), CoroutineScope {
         return withContext(Dispatchers.IO) {
             try {
                 val url = URL(binding.editTextMapDownload.text.toString())
-                val file = url.file
-                val index = file.lastIndexOf('/')
-                val fileName = file.substring(index + 1)
-
                 val connection = url.openConnection() as HttpURLConnection
                 connection.connect()
                 val size = connection.getHeaderField("Content-Length").toLong()
@@ -73,7 +69,7 @@ class MapDownloadActivity : AppCompatActivity(), CoroutineScope {
                 var length: Int
                 var currentProgress = 0L
 
-                val fos = FileOutputStream(File(filesDir, fileName))
+                val fos = FileOutputStream(File(filesDir, "map.map"))
                 while (dis.read(buffer).also { length = it } > 0) {
                     fos.write(buffer, 0, length)
                     currentProgress += length
