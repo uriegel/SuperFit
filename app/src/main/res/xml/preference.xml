@@ -20,8 +20,8 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="Navigation">
         <Preference
-            app:key="MAP_UPLOAD"
-            app:title="@string/mapupload" />
+            app:key="MAP_DOWNLOAD"
+            app:title="@string/mapdownload" />
         <ListPreference
             app:key="PREF_MAP"
             app:title="@string/maps"
