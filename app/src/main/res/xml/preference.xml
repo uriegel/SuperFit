@@ -19,6 +19,9 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Navigation">
+        <Preference
+            app:key="MAP_UPLOAD"
+            app:title="@string/mapupload" />
         <ListPreference
             app:key="PREF_MAP"
             app:title="@string/maps"
