@@ -11,6 +11,9 @@ import de.uriegel.superfit.maps.exportToGpx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.yesButton
 import java.util.*
 
 @Suppress("DEPRECATION")
@@ -33,18 +36,18 @@ class MapActivity : ActivityEx(), CoroutineScope {
 		}
 
 		binding.btnDelete.setOnClickListener {
-//			launch {
-//				alert("Möchtest Du diesen Track löschen?", "Track löschen") {
-//					yesButton {
-//						DataBase.deleteTrack(trackNr)
-//						val intent = Intent()
-//						intent.putExtra(RESULT_TYPE, RESULT_TYPE_DELETE)
-//						setResult(Activity.RESULT_OK, intent)
-//						this@MapActivity.finish()
-//					}
-//					noButton {}
-//				}.show()
-//			}
+			launch {
+				alert("Möchtest Du diesen Track löschen?", "Track löschen") {
+					yesButton {
+						DataBase.deleteTrack(trackNr)
+						val intent = Intent()
+						intent.putExtra(RESULT_TYPE, RESULT_TYPE_DELETE)
+						setResult(Activity.RESULT_OK, intent)
+						this@MapActivity.finish()
+					}
+					noButton {}
+				}.show()
+			}
 		}
 
 		binding.btnSave.setOnClickListener {
@@ -52,8 +55,8 @@ class MapActivity : ActivityEx(), CoroutineScope {
 				val track = DataBase.getTrack(trackNr)
 
 				val timeZone = TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
-				val date = (Date(track.time!! + track.timeOffset!! - timeZone))
-				val name = if (track.name!!.isEmpty())
+				val date = (Date(track.time + track.timeOffset - timeZone))
+				val name = if (track.name.isEmpty())
 					"${date.year + 1900}" +
 							"-${(date.month + 1).toString().padStart(2, '0')}" +
 							"-${date.date.toString().padStart(2, '0')}" +

@@ -1,17 +1,16 @@
 package de.uriegel.superfit.sensors
 
 import android.content.Context
-import androidx.preference.PreferenceManager
 import com.dsi.ant.plugins.antplus.pcc.AntPlusBikeCadencePcc
 import com.dsi.ant.plugins.antplus.pcc.AntPlusBikeSpeedDistancePcc
 import com.dsi.ant.plugins.antplus.pcc.defines.EventFlag
 import com.dsi.ant.plugins.antplus.pcc.defines.RequestAccessResult
 import com.dsi.ant.plugins.antplus.pccbase.MultiDeviceSearch
 import com.dsi.ant.plugins.antplus.pccbase.PccReleaseHandle
-import de.uriegel.superfit.ui.MainActivity
 import de.uriegel.superfit.ui.PreferenceActivity
 import de.uriegel.superfit.utils.MaxValue
 import de.uriegel.superfit.utils.StopWatch
+import org.jetbrains.anko.defaultSharedPreferences
 import java.math.BigDecimal
 import java.util.*
 import kotlin.concurrent.timerTask
@@ -62,9 +61,10 @@ object Bike {
     private fun subScribeToBikeSpeed(context: Context, bikeController: AntPlusBikeSpeedDistancePcc) {
         var speedIsNull = true
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val preferences = context.defaultSharedPreferences
         val value = BigDecimal(preferences.getString(PreferenceActivity.PREF_WHEEL, "2096"))
         val wheelCircumference = value.divide(BigDecimal(1000.0))
+
 
         bikeController.subscribeCalculatedSpeedEvent(object : AntPlusBikeSpeedDistancePcc.CalculatedSpeedReceiver(wheelCircumference) {
             override fun onNewCalculatedSpeed(estTimestamp: Long, flags: EnumSet<EventFlag>?, calculatedSpeedInMs: BigDecimal?) {

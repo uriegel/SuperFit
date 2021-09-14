@@ -1,7 +1,6 @@
 package de.uriegel.superfit.ui
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -16,15 +15,15 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.navigation.NavigationView
 import de.uriegel.superfit.R
 import de.uriegel.superfit.android.Service
 import de.uriegel.superfit.databinding.ActivityMainBinding
-import de.uriegel.superfit.utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
+import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.toast
 
 class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListener, CoroutineScope {
 
@@ -142,7 +141,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
         if (Service.isRunning)
             startActivity(Intent(this@MainActivity, DisplayActivity::class.java))
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val preferences = defaultSharedPreferences
         val map = preferences.getString(PreferenceActivity.PREF_MAP, null)
         if (map == null)
             startActivity(Intent(this, PreferenceActivity::class.java))

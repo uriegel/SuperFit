@@ -2,13 +2,11 @@ package de.uriegel.superfit.ui
 
 
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import de.uriegel.superfit.R
 import de.uriegel.superfit.database.TrackPoint
@@ -17,10 +15,12 @@ import de.uriegel.superfit.maps.LocationManager
 import de.uriegel.superfit.maps.LocationManager.getCurrentTrackAsync
 import de.uriegel.superfit.maps.LocationMarker
 import de.uriegel.superfit.maps.TrackLine
+import de.uriegel.superfit.utils.getSdCard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jetbrains.anko.defaultSharedPreferences
 import org.mapsforge.core.model.BoundingBox
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
@@ -34,9 +34,6 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.File
 import java.math.BigDecimal
 import java.math.RoundingMode
-import org.mapsforge.map.datastore.MapDataStore
-import java.io.FileInputStream
-
 
 class MapFragment : Fragment(), CoroutineScope {
 
@@ -59,16 +56,12 @@ class MapFragment : Fragment(), CoroutineScope {
         tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1.0F,
                 mapView.model.frameBufferModel.overdrawFactor)
 
-		val preferences = activity?.getSharedPreferences("default", AppCompatActivity.MODE_PRIVATE)
-		val uristring = preferences?.getString("map", "")
-		val uri = Uri.parse(uristring)
-		val fis: FileInputStream =activity?.getContentResolver()?.openInputStream(uri) as FileInputStream
-		val mapDataStore: MapDataStore = MapFile(fis)
+//        val preferences = activity?.defaultSharedPreferences
 //        val map = preferences?.getString(PreferenceActivity.PREF_MAP, null)
 //        val sdCard: String = activity.getSdCard()
 //        val mapsDir = "$sdCard/Maps"
         //val mapDataStore = MapFile(File(mapsDir, map!!))
-		//val mapDataStore = MapFile(File(context?.filesDir, "germany.map"))
+		val mapDataStore = MapFile(File(context?.filesDir, "map.map"))
 
         tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
                 InternalRenderTheme.OSMARENDER, false, true, false)
