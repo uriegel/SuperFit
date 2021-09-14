@@ -14,7 +14,6 @@ import de.uriegel.superfit.sensors.Searcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.*
 
 class ControlsFragment : Fragment(), CoroutineScope {
     override val coroutineContext = Dispatchers.Main
@@ -34,17 +33,17 @@ class ControlsFragment : Fragment(), CoroutineScope {
         }
         binding.btnDisplay.setOnClickListener { launch { startActivity(Intent(activity, DisplayActivity::class.java))}}
         binding.btnReset.setOnClickListener {
-            launch {
-                activity?.alert("Möchtest Du die App resetten?", "Reset") {
-                    yesButton {
-                        Searcher.stop()
-                        HeartRate.stop()
-                        Bike.stop()
-                        activity?.let { Searcher.start(requireActivity()) }
-                    }
-                    noButton {}
-                }?.show()
-            }
+//            launch {
+//                activity?.alert("Möchtest Du die App resetten?", "Reset") {
+//                    yesButton {
+//                        Searcher.stop()
+//                        HeartRate.stop()
+//                        Bike.stop()
+//                        activity?.let { Searcher.start(requireActivity()) }
+//                    }
+//                    noButton {}
+//                }?.show()
+//            }
         }
         binding.btnStop.setOnClickListener {
             val startIntent = Intent(activity, Service::class.java)

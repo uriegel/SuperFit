@@ -1,100 +1,137 @@
 package de.uriegel.superfit.database
 
+import android.content.Context
 import android.location.Location
-import org.jetbrains.anko.db.*
+import androidx.room.*
+
+@Entity
+data class Track(
+    @PrimaryKey val _id: Int,
+    @Ignore val trackNr: Int,
+    @ColumnInfo(name = "TrackName") val name: String?,
+    @ColumnInfo(name = "Latitude") val latitude: Float?,
+    @ColumnInfo(name = "Longitude") val longitude: Float?,
+    @ColumnInfo(name = "Distance") val distance: Float?,
+    @ColumnInfo(name = "Time") val time: Long?,
+    @ColumnInfo(name = "TimeOffset") val timeOffset: Long?,
+    @ColumnInfo(name = "Duration") val duration: Long?,
+    @ColumnInfo(name = "AverageSpeed") val averageSpeed: Float?
+)
+
+@Dao
+interface TrackDao {
+    @Query("SELECT * FROM Tracks")
+    fun getAll(): List<Track>
+}
+
+
+@Database(entities = arrayOf(Track::class), version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun trackDao(): TrackDao
+}
+
+fun test(context: Context) {
+    val db = Room.databaseBuilder(context, AppDatabase::class.java, "tracks.db")
+        .build()
+    val trackDao = db.trackDao()
+    val alle = trackDao.getAll()
+}
 
 object DataBase {
     fun createTrack(location: Location, timeOffset: Int): Long {
         var result = 0L
-        database.use {
-            result = insert(TrackTable.Name,
-                    TrackTable.Longitude to location.longitude,
-                    TrackTable.Latitude to location.latitude,
-                    TrackTable.Time to location.time,
-                    TrackTable.TimeOffset to timeOffset)
-        }
+//        database.use {
+//            result = insert(TrackTable.Name,
+//                    TrackTable.Longitude to location.longitude,
+//                    TrackTable.Latitude to location.latitude,
+//                    TrackTable.Time to location.time,
+//                    TrackTable.TimeOffset to timeOffset)
+//        }
         return result
     }
 
     fun getTracks(): Array<Track> {
-        return database.use {
-            select(TrackTable.Name,
-                    TrackTable.ID,
-                    TrackTable.TrackName,
-                    TrackTable.Distance,
-                    TrackTable.AverageSpeed,
-                    TrackTable.Time,
-                    TrackTable.TimeOffset)
-                .orderBy(TrackTable.Time, SqlOrderDirection.DESC)
-                .exec {
-                    return@exec asMapSequence().map {
-                        Track((it[TrackTable.ID] as Long).toInt(),
-                                it[TrackTable.TrackName] as String? ?: "",
-                                (it[TrackTable.Distance] as Double? ?: 0.0).toFloat(),
-                                it[TrackTable.Duration] as Long? ?: 0L,
-                                (it[TrackTable.AverageSpeed] as Double? ?: 0.0).toFloat(),
-                                it[TrackTable.Time] as Long,
-                                it[TrackTable.TimeOffset] as Long)
-                    }.toList().toTypedArray()
-                }
-        }
+//        return database.use {
+//            select(TrackTable.Name,
+//                    TrackTable.ID,
+//                    TrackTable.TrackName,
+//                    TrackTable.Distance,
+//                    TrackTable.AverageSpeed,
+//                    TrackTable.Time,
+//                    TrackTable.TimeOffset)
+//                .orderBy(TrackTable.Time, SqlOrderDirection.DESC)
+//                .exec {
+//                    return@exec asMapSequence().map {
+//                        Track((it[TrackTable.ID] as Long).toInt(),
+//                                it[TrackTable.TrackName] as String? ?: "",
+//                                (it[TrackTable.Distance] as Double? ?: 0.0).toFloat(),
+//                                it[TrackTable.Duration] as Long? ?: 0L,
+//                                (it[TrackTable.AverageSpeed] as Double? ?: 0.0).toFloat(),
+//                                it[TrackTable.Time] as Long,
+//                                it[TrackTable.TimeOffset] as Long)
+//                    }.toList().toTypedArray()
+//                }
+//        }
+        return emptyArray<Track>()
     }
 
     fun getTrack(trackNr: Long): Track {
-        return database.use {
-            select(TrackTable.Name,
-                    TrackTable.ID,
-                    TrackTable.TrackName,
-                    TrackTable.Distance,
-                    TrackTable.AverageSpeed,
-                    TrackTable.Time,
-                    TrackTable.TimeOffset)
-                    .whereArgs("_id = {trackNr}", "trackNr" to trackNr)
-                    .exec {
-                        return@exec asMapSequence().map {
-                            Track((it[TrackTable.ID] as Long).toInt(),
-                                    it[TrackTable.TrackName] as String? ?: "",
-                                    (it[TrackTable.Distance] as Double? ?: 0.0).toFloat(),
-                                    it[TrackTable.Duration] as Long? ?: 0L,
-                                    (it[TrackTable.AverageSpeed] as Double? ?: 0.0).toFloat(),
-                                    it[TrackTable.Time] as Long,
-                                    it[TrackTable.TimeOffset] as Long)
-                        }.first()
-                    }
-        }
+//        return database.use {
+//            select(TrackTable.Name,
+//                    TrackTable.ID,
+//                    TrackTable.TrackName,
+//                    TrackTable.Distance,
+//                    TrackTable.AverageSpeed,
+//                    TrackTable.Time,
+//                    TrackTable.TimeOffset)
+//                    .whereArgs("_id = {trackNr}", "trackNr" to trackNr)
+//                    .exec {
+//                        return@exec asMapSequence().map {
+//                            Track((it[TrackTable.ID] as Long).toInt(),
+//                                    it[TrackTable.TrackName] as String? ?: "",
+//                                    (it[TrackTable.Distance] as Double? ?: 0.0).toFloat(),
+//                                    it[TrackTable.Duration] as Long? ?: 0L,
+//                                    (it[TrackTable.AverageSpeed] as Double? ?: 0.0).toFloat(),
+//                                    it[TrackTable.Time] as Long,
+//                                    it[TrackTable.TimeOffset] as Long)
+//                        }.first()
+//                    }
+//        }
+        return Track(2, 34,"", "", 2f, 4f, 4f, 3L, 0L, 5L, 22f )
     }
 
     fun deleteTrack(trackNr: Long): Boolean {
-        database.use {
-            delete(TrackTable.Name, "_id = {trackNr}", "trackNr" to trackNr)
-            delete(TrackPointTable.Name, "TrackNr = {trackNr}", "trackNr" to trackNr)
-        }
+//        database.use {
+//            delete(TrackTable.Name, "_id = {trackNr}", "trackNr" to trackNr)
+//            delete(TrackPointTable.Name, "TrackNr = {trackNr}", "trackNr" to trackNr)
+//        }
         return true
     }
 
     fun getTrackPoints(trackNr: Long): Array<TrackPoint> {
-        return database.use {
-            select(TrackPointTable.Name,
-                    TrackPointTable.Latitude,
-                    TrackPointTable.Longitude,
-                    TrackPointTable.Elevation,
-                    TrackPointTable.Time,
-                    TrackPointTable.Precision,
-                    TrackPointTable.Speed,
-                    TrackPointTable.HeartRate)
-                    .whereArgs("TrackNr = {trackNr}", "trackNr" to trackNr)
-                    .exec {
-                        return@exec asMapSequence().map {
-                            TrackPoint(it[TrackPointTable.Latitude] as Double,
-                                    it[TrackPointTable.Longitude] as Double,
-                                    (it[TrackPointTable.Elevation] as Double).toFloat(),
-                                    it[TrackTable.Time] as Long,
-                                    (it[TrackPointTable.Precision] as Double).toFloat(),
-                                    (it[TrackPointTable.Speed] as Double).toFloat(),
-                                    (it[TrackPointTable.HeartRate] as Long).toInt())
-                        }.toList().toTypedArray()
-                    }
-        }
+//        return database.use {
+//            select(TrackPointTable.Name,
+//                    TrackPointTable.Latitude,
+//                    TrackPointTable.Longitude,
+//                    TrackPointTable.Elevation,
+//                    TrackPointTable.Time,
+//                    TrackPointTable.Precision,
+//                    TrackPointTable.Speed,
+//                    TrackPointTable.HeartRate)
+//                    .whereArgs("TrackNr = {trackNr}", "trackNr" to trackNr)
+//                    .exec {
+//                        return@exec asMapSequence().map {
+//                            TrackPoint(it[TrackPointTable.Latitude] as Double,
+//                                    it[TrackPointTable.Longitude] as Double,
+//                                    (it[TrackPointTable.Elevation] as Double).toFloat(),
+//                                    it[TrackTable.Time] as Long,
+//                                    (it[TrackPointTable.Precision] as Double).toFloat(),
+//                                    (it[TrackPointTable.Speed] as Double).toFloat(),
+//                                    (it[TrackPointTable.HeartRate] as Long).toInt())
+//                        }.toList().toTypedArray()
+//                    }
+//        }
+        return emptyArray<TrackPoint>()
     }
 
 //    // TODO: When < 30 then delete all trackpoints and track with trackNR
@@ -111,27 +148,27 @@ object DataBase {
 //    }
 
     fun updateTrack(trackNr: Long, duration: Int, distance: Float, averageSpeed: Float) {
-        database.use {
-            update(TrackTable.Name,
-                    TrackTable.Distance to distance, TrackTable.AverageSpeed to averageSpeed, TrackTable.Duration to duration)
-                    .whereArgs("_id = {trackNr}", "trackNr" to trackNr)
-                    .exec()
-        }
+//        database.use {
+//            update(TrackTable.Name,
+//                    TrackTable.Distance to distance, TrackTable.AverageSpeed to averageSpeed, TrackTable.Duration to duration)
+//                    .whereArgs("_id = {trackNr}", "trackNr" to trackNr)
+//                    .exec()
+//        }
     }
 
     fun insertTrackPoint(trackNr: Long, location: Location, speed: Float, heartRate: Int) {
-        database.use {
-            insert(TrackPointTable.Name,
-                    TrackPointTable.TrackNr to trackNr,
-                    TrackPointTable.Longitude to location.longitude,
-                    TrackPointTable.Latitude to location.latitude,
-                    TrackPointTable.Elevation to location.altitude,
-                    TrackPointTable.Time to location.time,
-                    TrackPointTable.Precision to location.accuracy,
-                    TrackPointTable.Speed to speed,
-                    TrackPointTable.HeartRate to heartRate)
-        }
+//        database.use {
+//            insert(TrackPointTable.Name,
+//                    TrackPointTable.TrackNr to trackNr,
+//                    TrackPointTable.Longitude to location.longitude,
+//                    TrackPointTable.Latitude to location.latitude,
+//                    TrackPointTable.Elevation to location.altitude,
+//                    TrackPointTable.Time to location.time,
+//                    TrackPointTable.Precision to location.accuracy,
+//                    TrackPointTable.Speed to speed,
+//                    TrackPointTable.HeartRate to heartRate)
+//        }
     }
 
-    private val database: DataBaseHelper = DataBaseHelper.instance
+    //private val database: DataBaseHelper = DataBaseHelper.instance
 }

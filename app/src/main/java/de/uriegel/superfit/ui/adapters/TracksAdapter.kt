@@ -22,11 +22,11 @@ class TracksAdapter(private val context: Context, private var data: Array<Track>
         holder.track = data[position]
         val name = data[position].name
         holder.textView.text =
-                if (name.isNotEmpty())
+                if (name!!.isNotEmpty())
                     name
                 else {
                     val timeZone = TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
-                    val date = (Date(data[position].time+ data[position].timeOffset - timeZone))
+                    val date = (Date(data[position].time!!+ data[position].timeOffset!! - timeZone))
                     val dateFormat = android.text.format.DateFormat.getDateFormat(context)
                     "${dateFormat.format(date)} ${date.hours.toString().padStart(2, '0')}:${date.minutes.toString().padStart(2, '0')}"
                 }
@@ -45,7 +45,8 @@ class TracksAdapter(private val context: Context, private var data: Array<Track>
             view.setOnClickListener {clickListener(track) }
         }
 
-        var track: Track = Track(0, "", 0f, 0, 0f, 0, 0)
+        var track: Track = Track(0, 22,"", "", 0f,
+            0f, 0f, 0L, 88, 44, 55f)
         val textView: TextView = view.findViewById(R.id.textView)
         val textViewDistance: TextView = view.findViewById(R.id.textViewDistance)
         val textViewAverage: TextView = view.findViewById(R.id.textViewAverage)
