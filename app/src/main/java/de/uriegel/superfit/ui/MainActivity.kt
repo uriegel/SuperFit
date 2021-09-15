@@ -1,15 +1,20 @@
 package de.uriegel.superfit.ui
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.text.Layout
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -22,8 +27,16 @@ import de.uriegel.superfit.android.Service
 import de.uriegel.superfit.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.defaultSharedPreferences
-import org.jetbrains.anko.toast
+
+fun Context.toast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, message, duration).show()
+}
+
+fun Context.toast(@StringRes resId: Int, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, this.resources.getText(resId), duration).show()
+}
 
 class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListener, CoroutineScope {
 
@@ -55,8 +68,10 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
 
         binding.navigationView.setNavigationItemSelectedListener(this)
 
-        if (checkPermissions())
-            initialize()
+        launch {
+            if (checkPermissions())
+                initialize()
+        }
     }
 
     private inner class PagerAdapter(fm: FragmentManager)
@@ -83,18 +98,6 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         else
             super.onBackPressed()
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
-                if (grantResults.all { it == PackageManager.PERMISSION_GRANTED })
-                    initialize()
-                else
-                    toast("Some Permission denied")
-            }
-            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -127,14 +130,27 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
         return super.onOptionsItemSelected(item)
     }
 
-    private fun checkPermissions(): Boolean {
-        val permissions = listOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .filter { checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }
-        return if (permissions.count() > 0) {
-            requestPermissions(permissions.toTypedArray(), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS)
-            false
-        } else
-            true
+    private suspend fun checkPermissions(): Boolean {
+        val result = activityRequest.checkAndAccessPermissions(arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ))
+        if (result.any { !it.value }) {
+            this.toast("Kein Zugriff auf den Standort", Toast.LENGTH_LONG)
+            finish()
+            return false
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val backgroundResult = activityRequest.checkAndAccessPermissions(arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION))
+            if (backgroundResult.any { !it.value }) {
+                this.toast("Kein ständiger Zugriff auf den Standort", Toast.LENGTH_LONG)
+                finish()
+                return false
+            }
+        }
+
+        return true
     }
 
     private fun initialize() {
@@ -149,6 +165,7 @@ class MainActivity : ActivityEx(), NavigationView.OnNavigationItemSelectedListen
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var layoutContainer: ViewPager
+    private val activityRequest = ActivityRequest(this)
 
     companion object {
         const val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 1000

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
 import de.uriegel.superfit.R
 import de.uriegel.superfit.utils.getSdCard
+import org.jetbrains.anko.defaultSharedPreferences
 import java.io.File
 
 class PreferenceActivity : AppCompatActivity() {
@@ -57,21 +58,41 @@ class PreferenceActivity : AppCompatActivity() {
 
             val mapUpload = findPreference<Preference>(MAP_DOWNLOAD)
             mapUpload?.setOnPreferenceClickListener {
-                 startActivity(Intent(context, MapDownloadActivity::class.java))
+// startActivity(Intent(context, MapDownloadActivity::class.java))
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "*/*"
+
+                    // Optionally, specify a URI for the file that should appear in the
+                    // system file picker when it loads.
+                    // putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
+                }
+                startActivityForResult(intent, 7)
                 true
             }
+//            val listPreference = findPreference<ListPreference>(PREF_MAP)
+//                val sdCard: String = context.getSdCard()
+//            val mapsDir = "$sdCard/Maps"
+//            val directory = File(mapsDir)
+//            val maps = directory.listFiles()
+//                ?.filter { file -> file.extension == "map" }
+//                ?.map { file -> file.name }
+//            if (maps != null) {
+//                listPreference?.entries = maps.toTypedArray()
+//                listPreference?.entryValues = listPreference?.entries
+//            }
+        }
+    }
 
-            val listPreference = findPreference<ListPreference>(PREF_MAP)
-                val sdCard: String = context.getSdCard()
-            val mapsDir = "$sdCard/Maps"
-            val directory = File(mapsDir)
-            val maps = directory.listFiles()
-                ?.filter { file -> file.extension == "map" }
-                ?.map { file -> file.name }
-            if (maps != null) {
-                listPreference?.entries = maps.toTypedArray()
-                listPreference?.entryValues = listPreference?.entries
-            }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        data?.data?.also {
+            val contentResolver = applicationContext.contentResolver
+            val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            // Check for the freshest data.
+            contentResolver.takePersistableUriPermission(it, takeFlags)
+            val preferences = defaultSharedPreferences
+            preferences.edit().putString("map", it.toString()).apply()
         }
     }
 

@@ -2,6 +2,7 @@ package de.uriegel.superfit.ui
 
 
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,11 +28,13 @@ import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.rotation.RotateView
 import org.mapsforge.map.android.util.AndroidUtil
 import org.mapsforge.map.android.view.MapView
+import org.mapsforge.map.datastore.MapDataStore
 import org.mapsforge.map.layer.cache.TileCache
 import org.mapsforge.map.layer.renderer.TileRendererLayer
 import org.mapsforge.map.reader.MapFile
 import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.File
+import java.io.FileInputStream
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -56,12 +59,16 @@ class MapFragment : Fragment(), CoroutineScope {
         tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1.0F,
                 mapView.model.frameBufferModel.overdrawFactor)
 
-//        val preferences = activity?.defaultSharedPreferences
+        val preferences = activity?.defaultSharedPreferences
+		val uristring = preferences?.getString("map", "")
+		val uri = Uri.parse(uristring)
+		val fis: FileInputStream =activity?.getContentResolver()?.openInputStream(uri) as FileInputStream
+		val mapDataStore: MapDataStore = MapFile(fis)
 //        val map = preferences?.getString(PreferenceActivity.PREF_MAP, null)
-//        val sdCard: String = activity.getSdCard()
+////        val sdCard: String = activity.getSdCard()
 //        val mapsDir = "$sdCard/Maps"
-        //val mapDataStore = MapFile(File(mapsDir, map!!))
-		val mapDataStore = MapFile(File(context?.filesDir, "map.map"))
+//        //val mapDataStore = MapFile(File(mapsDir, map!!))
+//		val mapDataStore = MapFile(File(context?.filesDir, "map.map"))
 
         tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
                 InternalRenderTheme.OSMARENDER, false, true, false)
