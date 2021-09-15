@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="de.uriegel.superfit">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -19,32 +18,17 @@
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:theme="@style/AppTheme.NoActionBar"
-        tools:targetApi="q">
-        <activity
-            android:name=".ui.MapDownloadActivity"
-            android:theme="@style/AppTheme.Preference"
-            android:exported="true" />
+        android:theme="@style/Theme.SuperFit">
         <activity
             android:name=".ui.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/Theme.SuperFit.NoActionBar"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.DisplayActivity"
-            android:theme="@style/AppTheme.FullScreen" />
-        <activity
-            android:name=".ui.MapActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.PreferenceActivity"
-            android:theme="@style/AppTheme.Preference" />
 
-        <service android:name=".android.Service" />
     </application>
 
 </manifest>

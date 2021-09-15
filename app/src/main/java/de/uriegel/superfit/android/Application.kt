@@ -5,12 +5,12 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.core.content.getSystemService
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory
+//import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 
 class Application: android.app.Application() {
     override fun onCreate() {
         super.onCreate()
-        AndroidGraphicFactory.createInstance(this)
+  //      AndroidGraphicFactory.createInstance(this)
         instance = this
         createNotificationChannel()
     }
