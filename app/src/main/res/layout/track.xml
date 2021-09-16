@@ -6,7 +6,8 @@
     android:background="?attr/selectableItemBackground"
     xmlns:tools="http://schemas.android.com/tools"
     android:focusable="true"
-    android:clickable="true">
+    android:clickable="true"
+    tools:ignore="Overdraw">
 
     <TextView
         android:id="@+id/textView"

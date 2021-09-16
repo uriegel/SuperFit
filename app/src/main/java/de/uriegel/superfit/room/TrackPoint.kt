@@ -3,7 +3,6 @@ package de.uriegel.superfit.room
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.jetbrains.annotations.NotNull
 
 //@Entity(tableName = "TrackPoints")
 //data class TrackPoint(

@@ -1,9 +1,7 @@
 package de.uriegel.superfit.room
 
 import androidx.room.ColumnInfo
-import org.jetbrains.annotations.NotNull
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "Tracks")
