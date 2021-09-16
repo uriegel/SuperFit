@@ -1,10 +1,11 @@
+@file:Suppress("unused")
+
 package de.uriegel.superfit.android
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.os.Build
-import androidx.core.content.getSystemService
+
 //import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 
 class Application: android.app.Application() {
