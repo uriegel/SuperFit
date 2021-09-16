@@ -16,7 +16,7 @@ class TracksFragment : Fragment() {
 
     private lateinit var binding: FragmentTracksBinding
 
-    companion object {
-        const val TRACK_NR = "TRACK_NR"
-    }
+//    companion object {
+//        const val TRACK_NR = "TRACK_NR"
+//    }
 }

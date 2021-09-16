@@ -1,5 +1,6 @@
 package de.uriegel.superfit.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -59,8 +60,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         if (item.itemId == R.id.action_settings) {
-//            val i = Intent(this, PreferenceActivity::class.java)
-//            startActivity(i)
+            startActivity(Intent(this, PreferenceActivity::class.java))
             return true
         }
 
