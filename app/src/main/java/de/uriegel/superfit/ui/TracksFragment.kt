@@ -1,4 +1,4 @@
-package de.uriegel.superfit.ui.adapters
+package de.uriegel.superfit.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater

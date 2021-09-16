@@ -6,11 +6,13 @@ import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.viewpager.widget.ViewPager
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
 import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.ActivityMainBinding
-import de.uriegel.superfit.ui.adapters.ExtendedPagerAdapter
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -28,16 +30,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         layoutContainer = findViewById(R.id.layoutContainer)
-        val pagerId = 1
         with(layoutContainer) {
-            adapter = ExtendedPagerAdapter(supportFragmentManager)
-            id = pagerId
+            adapter = PagerAdapter(supportFragmentManager)
+            offscreenPageLimit = 2
         }
         binding.navigationView.setNavigationItemSelectedListener(this)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_controls -> layoutContainer.setCurrentItem(0, true)
             R.id.nav_tracks -> layoutContainer.setCurrentItem(1, true)
@@ -74,6 +74,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             super.onBackPressed()
     }
 
+    private inner class PagerAdapter(fm: FragmentManager)
+        : FragmentStateAdapter(fm, lifecycle) {
+
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0    -> ControlsFragment()
+                else -> TracksFragment()
+            }
+        }
+
+        override fun getItemCount(): Int = 2
+    }
+
     private lateinit var binding: ActivityMainBinding
-    private lateinit var layoutContainer: ViewPager
+    private lateinit var layoutContainer: ViewPager2
 }
