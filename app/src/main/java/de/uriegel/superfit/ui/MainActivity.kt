@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
-import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.navigation.NavigationView
 import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.ActivityMainBinding
+import de.uriegel.superfit.ui.adapters.ExtendedPagerAdapter
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -25,14 +27,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+        layoutContainer = findViewById(R.id.layoutContainer)
+        val pagerId = 1
+        with(layoutContainer) {
+            adapter = ExtendedPagerAdapter(supportFragmentManager)
+            id = pagerId
+        }
         binding.navigationView.setNavigationItemSelectedListener(this)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-//            R.id.nav_controls -> layoutContainer.setCurrentItem(0, true)
-//            R.id.nav_tracks -> layoutContainer.setCurrentItem(1, true)
+            R.id.nav_controls -> layoutContainer.setCurrentItem(0, true)
+            R.id.nav_tracks -> layoutContainer.setCurrentItem(1, true)
         }
 
         binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -67,4 +75,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var layoutContainer: ViewPager
 }
