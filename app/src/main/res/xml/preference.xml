@@ -1,7 +1,7 @@
 <androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="Bike-Einstallungen">
+    <PreferenceCategory android:title="@string/bike_settings">
 
         <CheckBoxPreference
             android:defaultValue="false"
@@ -20,11 +20,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="Navigation">
         <Preference
-            app:key="MAP_DOWNLOAD"
-            app:title="@string/mapdownload" />
-        <ListPreference
             app:key="PREF_MAP"
-            app:title="@string/maps"
-            app:useSimpleSummaryProvider="true" />
+            app:title="@string/maps"/>
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

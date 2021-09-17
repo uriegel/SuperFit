@@ -9,7 +9,7 @@ class PreferenceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         supportFragmentManager
             .beginTransaction()
-            .replace(android.R.id.content, PreferenceFragment())
+            .replace(android.R.id.content, PreferenceFragment(this))
             .commit()
 
         supportActionBar?.setDisplayShowHomeEnabled(true)

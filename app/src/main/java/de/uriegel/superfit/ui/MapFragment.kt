@@ -1,13 +1,26 @@
 package de.uriegel.superfit.ui
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.FragmentTrackingBinding
+import de.uriegel.superfit.ui.utils.toast
+import kotlinx.coroutines.launch
+import org.mapsforge.core.model.LatLong
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory
+import org.mapsforge.map.android.util.AndroidUtil
+import org.mapsforge.map.android.view.MapView
+import org.mapsforge.map.datastore.MapDataStore
+import org.mapsforge.map.reader.MapFile
+import org.mapsforge.map.rendertheme.InternalRenderTheme
+import java.io.FileInputStream
 
 class MapFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
@@ -15,10 +28,53 @@ class MapFragment : Fragment() {
 
         binding = FragmentTrackingBinding.inflate(layoutInflater)
         frameLayout = binding.root.findViewById(R.id.mapContainer)
+        mapView = MapView(activity)
+        with(mapView) {
+            isClickable = true
+            setBuiltInZoomControls(true)
+            model.frameBufferModel.overdrawFactor = 1.0
+            setZoomLevelMin(10)
+            setZoomLevelMax(20)
+            setZoomLevel(16)
+        }
+        frameLayout.addView(mapView)
+
+        val tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1.0F,
+            mapView.model.frameBufferModel.overdrawFactor)
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val uriString = preferences?.getString(PreferenceFragment.PREF_MAP, "")
+        if (uriString == "") {
+            requireActivity().finish()
+            requireActivity().toast(R.string.toast_nomaps, Toast.LENGTH_LONG)
+            return binding.root
+        }
+        val uri = Uri.parse(uriString)
+        val fis: FileInputStream = requireActivity().contentResolver.openInputStream(uri) as FileInputStream
+        val mapDataStore: MapDataStore = MapFile(fis)
+        val tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
+            InternalRenderTheme.OSMARENDER, false, true, false)
+
+        val center = LatLong(50.90042250198412, 6.715496743031949)
+        with (mapView) {
+            layerManager.layers.add(tileRendererLayer)
+            model.frameBufferModel.overdrawFactor = 1.0
+            mapScaleBar.isVisible = true
+
+            setCenter(center)
+        }
 
         return binding.root
     }
 
+    override fun onDestroy() {
+        // LocationManager.listener = null
+        mapView.destroyAll()
+        AndroidGraphicFactory.clearResourceMemoryCache()
+        super.onDestroy()
+    }
+
     private lateinit var frameLayout: FrameLayout
+    private lateinit var mapView: MapView
     private lateinit var binding: FragmentTrackingBinding
 }
