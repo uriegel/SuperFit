@@ -12,7 +12,6 @@ import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.FragmentTrackingBinding
 import de.uriegel.superfit.ui.utils.toast
-import kotlinx.coroutines.launch
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.util.AndroidUtil
