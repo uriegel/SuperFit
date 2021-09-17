@@ -13,8 +13,8 @@ interface TrackDao {
     @Query("SELECT * FROM Tracks WHERE _id = :id")
     fun findTrack(id: Int): Track?
 
-    @Query("DELETE FROM Tracks WHERE trackName = :name")
-    fun deleteTrack(name: String)
+    @Query("DELETE FROM Tracks WHERE _id = :id")
+    fun deleteTrack(id: Int)
 
     @Query("SELECT * FROM Tracks")
     fun getAllTracks(): LiveData<Array<Track>>

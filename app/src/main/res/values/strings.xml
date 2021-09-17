@@ -4,7 +4,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="maps">Kartenauswahl</string>
-    <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="nav_header_subtitle">Erfassung aller Fitnessdaten</string>
     <string name="main_menu">Ansicht</string>
@@ -31,9 +30,12 @@
     <string name="max_geschwindigkeit">Max. Geschwindigkeit</string>
     <string name="gps_marker">Gps marker</string>
     <string name="mapdownload">Karten-Download</string>
-    <string name="textViewUploadDescription">Karte im Format \"MapsForge\" downloaden. Besuche die Seite \"https://download.mapsforge.org/\" und suche die gewünschte Karte aus. Die Url zum Download hier eintragen:</string>
     <string name="editTextMapUploadHint">Url der Karte eintragen</string>
     <string name="btnMapDownload">Download</string>
     <string name="bike_settings">Bike-Einstellungen</string>
     <string name="toast_nomaps">Du musst erst eine Karte in den Einstellungen auswählen!</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="alert_delete_track">Möchtest Du diesen Track löschen?</string>
+    <string name="alert_title_delete_track">Track löschen</string>
 </resources>

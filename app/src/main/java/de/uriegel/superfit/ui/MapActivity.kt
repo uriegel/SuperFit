@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import de.uriegel.activityextensions.ActivityRequest
 import de.uriegel.superfit.R
@@ -26,6 +27,22 @@ class MapActivity: AppCompatActivity(), CoroutineScope {
             binding.btnDelete.visibility = visibility
             binding.btnEdit.visibility = visibility
             binding.btnSave.visibility = visibility
+        }
+
+        binding.btnDelete.setOnClickListener {
+           val builder = AlertDialog.Builder(this)
+           builder.apply {
+                setPositiveButton(R.string.ok) { _, _ ->
+                    launch { viewModel.deleteTrackAsync(trackNr) }
+                    finish()
+                }
+               setNegativeButton(R.string.cancel) { _, _ -> }
+           }
+            val dialog = builder
+                .setMessage(getString(R.string.alert_delete_track))
+                .setTitle(getString(R.string.alert_title_delete_track))
+                .create()
+            dialog.show()
         }
 
         binding.btnSave.setOnClickListener {

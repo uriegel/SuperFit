@@ -10,12 +10,10 @@ class TrackRepository(application: Application) {
 
 //    fun insertTrack(track: Track) =
 //        coroutineScope.launch(Dispatchers.IO) { asyncInsert(track) }
-//
-//    fun deleteTrack(name: String) =
-//        coroutineScope.launch(Dispatchers.IO) { asyncDelete(name) }
-//
 //    private fun asyncInsert(product: Track) = trackDao?.insertTrack(product)
-//    private fun asyncDelete(name: String) = trackDao?.deleteTrack(name)
+
+    fun deleteTrackAsync(id: Int) =
+        coroutineScope.launch(Dispatchers.IO) { trackDao?.deleteTrack(id) }
     fun findTrackAsync(id: Int): Deferred<Track?> =
         coroutineScope.async(Dispatchers.IO) {
             return@async trackDao?.findTrack(id)
