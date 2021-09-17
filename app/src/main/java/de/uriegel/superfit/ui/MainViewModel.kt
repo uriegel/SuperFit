@@ -13,6 +13,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 //    fun findProduct(name: String) = repository.findTrack(name)
 //    fun deleteProduct(name: String) = repository.deleteTrack(name)
 //    fun getSearchResults(): MutableLiveData<List<Track>> = searchResults
+    fun findTrackAsync(id: Int): Deferred<Track?> = repository.findTrackAsync(id)
     fun getAllTracks(): LiveData<Array<Track>>? = allTracks
     fun findTrackPointsAsync(trackNr: Int): Deferred<Array<TrackPoint>?> =
         repository.findTrackPointsAsync(trackNr)

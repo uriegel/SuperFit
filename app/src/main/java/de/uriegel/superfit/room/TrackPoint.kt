@@ -33,7 +33,7 @@ class TrackPoint {
     @ColumnInfo(name = "Elevation")
     var elevation: Float? = 0f
     @ColumnInfo(name = "Time")
-    var time: Int? = 0
+    var time: Long? = 0
     @ColumnInfo(name = "Precision")
     var precision: Float? = 0f
     @ColumnInfo(name = "Speed")

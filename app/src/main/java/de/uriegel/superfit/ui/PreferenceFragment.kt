@@ -56,7 +56,6 @@ class PreferenceFragment(activity: ComponentActivity) : PreferenceFragmentCompat
 
     private val activityRequest: ActivityRequest = ActivityRequest(activity)
 
-
     companion object {
         const val PREF_MAP = "PREF_MAP"
         const val PREF_WHEEL = "PREF_WHEEL"

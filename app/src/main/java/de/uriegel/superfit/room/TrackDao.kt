@@ -10,8 +10,8 @@ interface TrackDao {
     @Insert
     fun insertTrack(track: Track)
 
-    @Query("SELECT * FROM Tracks WHERE trackName = :name")
-    fun findTrack(name: String): Array<Track>
+    @Query("SELECT * FROM Tracks WHERE _id = :id")
+    fun findTrack(id: Int): Track?
 
     @Query("DELETE FROM Tracks WHERE trackName = :name")
     fun deleteTrack(name: String)
