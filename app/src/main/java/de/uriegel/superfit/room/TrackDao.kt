@@ -11,11 +11,11 @@ interface TrackDao {
     fun insertTrack(track: Track)
 
     @Query("SELECT * FROM Tracks WHERE trackName = :name")
-    fun findTrack(name: String): List<Track>
+    fun findTrack(name: String): Array<Track>
 
     @Query("DELETE FROM Tracks WHERE trackName = :name")
     fun deleteTrack(name: String)
 
     @Query("SELECT * FROM Tracks")
-    fun getAllTracks(): LiveData<List<Track>>
+    fun getAllTracks(): LiveData<Array<Track>>
 }

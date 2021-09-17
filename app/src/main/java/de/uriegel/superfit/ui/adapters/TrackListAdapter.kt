@@ -15,7 +15,7 @@ class TrackListAdapter(private val context: Context, private val clickListener: 
     : RecyclerView.Adapter<TrackListAdapter.ViewHolder>() {
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setTrackList(tracks: List<Track>) {
+    fun setTrackList(tracks: Array<Track>) {
         trackList = tracks
         notifyDataSetChanged()
     }
@@ -58,5 +58,5 @@ class TrackListAdapter(private val context: Context, private val clickListener: 
         }
     }
 
-    private var trackList: List<Track>? = null
+    private var trackList: Array<Track>? = null
 }

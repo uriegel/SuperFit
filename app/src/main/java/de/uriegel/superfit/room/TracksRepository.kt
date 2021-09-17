@@ -2,11 +2,11 @@ package de.uriegel.superfit.room
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.*
 
 class TrackRepository(application: Application) {
-    // val searchResults = MutableLiveData<List<Track>>()
 
-    var allTracks: LiveData<List<Track>>?
+    var allTracks: LiveData<Array<Track>>?
 
 //    fun insertTrack(track: Track) =
 //        coroutineScope.launch(Dispatchers.IO) { asyncInsert(track) }
@@ -14,19 +14,16 @@ class TrackRepository(application: Application) {
 //    fun deleteTrack(name: String) =
 //        coroutineScope.launch(Dispatchers.IO) { asyncDelete(name) }
 //
-//    fun findTrack(name: String) =
-//        coroutineScope.launch(Dispatchers.Main) { searchResults.value = findAsync(name).await() }
-
 //    private fun asyncInsert(product: Track) = trackDao?.insertTrack(product)
 //    private fun asyncDelete(name: String) = trackDao?.deleteTrack(name)
-//    private fun findAsync(name: String): Deferred<List<Track>?> =
-//        coroutineScope.async(Dispatchers.IO) {
-//            return@async trackDao?.findTrack(name)
-//        }
+    fun findTrackPointsAsync(trackNr: Int): Deferred<Array<TrackPoint>?> =
+        coroutineScope.async(Dispatchers.IO) {
+            return@async trackPointDao?.findTrackPoints(trackNr)
+        }
 
     private var trackDao: TrackDao?
     private var trackPointDao: TrackPointDao?
-    //private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     init {
         val db : TracksRoom? =
