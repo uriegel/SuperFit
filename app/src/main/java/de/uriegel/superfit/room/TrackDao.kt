@@ -8,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface TrackDao {
     @Insert
-    fun insertTrack(track: Track)
+    fun insertTrack(track: Track): Long
 
     @Query("SELECT * FROM Tracks WHERE _id = :id")
     fun findTrack(id: Int): Track?

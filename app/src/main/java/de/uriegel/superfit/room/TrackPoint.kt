@@ -20,24 +20,24 @@ import androidx.room.PrimaryKey
 //)
 
 @Entity(tableName = "TrackPoints")
-class TrackPoint {
+data class TrackPoint(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    var id: Int? = 0
+    var id: Int? = 0,
     @ColumnInfo(name = "TrackNr")
-    var trackNr: Int? = 0
+    var trackNr: Int? = 0,
     @ColumnInfo(name = "Latitude")
-    var latitude: Double? = 0.0
+    var latitude: Double? = 0.0,
     @ColumnInfo(name = "Longitude")
-    var longitude: Double? = 0.0
+    var longitude: Double? = 0.0,
     @ColumnInfo(name = "Elevation")
-    var elevation: Float? = 0f
+    var elevation: Float? = 0f,
     @ColumnInfo(name = "Time")
-    var time: Long? = 0
+    var time: Long? = 0,
     @ColumnInfo(name = "Precision")
-    var precision: Float? = 0f
+    var precision: Float? = 0f,
     @ColumnInfo(name = "Speed")
-    var speed: Float? = 0f
+    var speed: Float? = 0f,
     @ColumnInfo(name = "HeartRate")
     var heartRate: Int? = 0
-}
+)

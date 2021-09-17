@@ -5,17 +5,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import de.uriegel.superfit.room.Track
 import de.uriegel.superfit.room.TrackPoint
-import de.uriegel.superfit.room.TrackRepository
+import de.uriegel.superfit.room.TracksRepository
 import kotlinx.coroutines.Deferred
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
-//    fun insertProduct(product: Track) = repository.insertTrack(product)
-    fun findTrackAsync(id: Int): Deferred<Track?> = repository.findTrackAsync(id)
-    fun deleteTrackAsync(id: Int) = repository.deleteTrackAsync(id)
+    fun findTrackAsync(id: Int): Deferred<Track?> = TracksRepository.findTrackAsync(id)
+    fun deleteTrackAsync(id: Int) = TracksRepository.deleteTrackAsync(id)
     fun getAllTracks(): LiveData<Array<Track>>? = allTracks
     fun findTrackPointsAsync(trackNr: Int): Deferred<Array<TrackPoint>?> =
-        repository.findTrackPointsAsync(trackNr)
+        TracksRepository.findTrackPointsAsync(trackNr)
 
-    private val repository: TrackRepository = TrackRepository(application)
-    private val allTracks: LiveData<Array<Track>>? = repository.allTracks
+    private val allTracks: LiveData<Array<Track>>? = TracksRepository.allTracks
 }
