@@ -14,9 +14,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.SuperFit.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="Theme.SuperFit.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
     </style>
 
     <style name="Theme.SuperFit.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

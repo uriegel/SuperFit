@@ -1,5 +1,6 @@
 package de.uriegel.superfit.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,14 +24,9 @@ class TracksFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerSetup {
-//            launch {
-//                val intent = Intent(activity, MapActivity::class.java)
-//                intent.putExtra(TRACK_NR, track.trackNr.toLong())
-//                val result = (activity as ActivityEx).activityRequest(intent)
-//                if (result?.resultCode == Activity.RESULT_OK)
-//                    if (result.data?.getStringExtra(MapActivity.RESULT_TYPE) == MapActivity.RESULT_TYPE_DELETE)
-//                        (binding.tracksView.adapter as TracksAdapter).delete(track)
-//            }
+            val intent = Intent(activity, MapActivity::class.java)
+            intent.putExtra(TRACK_NR, it.id)
+            startActivity(intent)
         }
         observerSetup()
     }
@@ -58,7 +54,7 @@ class TracksFragment : Fragment() {
     private val viewModel: MainViewModel by viewModels()
     private var adapter: TrackListAdapter? = null
 
-//    companion object {
-//        const val TRACK_NR = "TRACK_NR"
-//    }
+    companion object {
+       const val TRACK_NR = "TRACK_NR"
+   }
 }

@@ -25,12 +25,19 @@ class TrackPoint {
     @ColumnInfo(name = "_id")
     var id: Int? = 0
     @ColumnInfo(name = "TrackNr")
-    var TrackNr: Int? = 0
-    var Latitude: Double? = 0.0
-    var Longitude: Double? = 0.0
-    var Elevation: Float? = 0f
-    var Time: Int? = 0
-    var Precision: Float? = 0f
-    var Speed: Float? = 0f
-    var HeartRate: Int? = 0
+    var trackNr: Int? = 0
+    @ColumnInfo(name = "Latitude")
+    var latitude: Double? = 0.0
+    @ColumnInfo(name = "Longitude")
+    var longitude: Double? = 0.0
+    @ColumnInfo(name = "Elevation")
+    var elevation: Float? = 0f
+    @ColumnInfo(name = "Time")
+    var time: Int? = 0
+    @ColumnInfo(name = "Precision")
+    var precision: Float? = 0f
+    @ColumnInfo(name = "Speed")
+    var speed: Float? = 0f
+    @ColumnInfo(name = "HeartRate")
+    var heartRate: Int? = 0
 }

@@ -23,6 +23,11 @@ android {
         versionCode 1
         versionName "1.0"
         signingConfig signingConfigs.target
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
     }
     buildTypes {
         release {
@@ -51,5 +56,10 @@ dependencies {
     implementation 'com.github.uriegel:ActivityExtensions:2.3.0'
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'androidx.room:room-runtime:2.3.0'
+    implementation "org.mapsforge:mapsforge-core:0.16.0"
+    implementation "org.mapsforge:mapsforge-map:0.16.0"
+    implementation "org.mapsforge:mapsforge-map-reader:0.16.0"
+    implementation "org.mapsforge:mapsforge-themes:0.16.0"
+    implementation "org.mapsforge:mapsforge-map-android:0.16.0"
     kapt 'androidx.room:room-compiler:2.3.0'
 }

@@ -5,13 +5,14 @@ package de.uriegel.superfit.android
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 
 //import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 
 class Application: android.app.Application() {
     override fun onCreate() {
         super.onCreate()
-  //      AndroidGraphicFactory.createInstance(this)
+        AndroidGraphicFactory.createInstance(this)
         instance = this
         createNotificationChannel()
     }
