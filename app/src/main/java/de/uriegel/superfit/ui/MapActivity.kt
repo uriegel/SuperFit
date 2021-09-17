@@ -3,6 +3,7 @@ package de.uriegel.superfit.ui
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.ActivityMapBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,10 @@ class MapActivity: AppCompatActivity(), CoroutineScope {
 
         val trackNr = intent.getIntExtra(TracksFragment.TRACK_NR, -1)
         launch {
-            val points = viewModel.findTrackPointsAsync(trackNr).await()
+            viewModel.findTrackPointsAsync(trackNr).await()?.let {
+                val fragment = supportFragmentManager.findFragmentById(R.id.fragment) as MapFragment
+                fragment.loadGpxTrack(it)
+            }
         }
     }
 

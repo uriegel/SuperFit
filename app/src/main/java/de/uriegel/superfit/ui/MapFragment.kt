@@ -11,7 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.FragmentTrackingBinding
+import de.uriegel.superfit.maps.TrackLine
+import de.uriegel.superfit.room.TrackPoint
 import de.uriegel.superfit.ui.utils.toast
+import org.mapsforge.core.model.BoundingBox
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.util.AndroidUtil
@@ -22,6 +25,7 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.FileInputStream
 
 class MapFragment : Fragment() {
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
         : View {
 
@@ -63,6 +67,9 @@ class MapFragment : Fragment() {
             setCenter(center)
         }
 
+        trackLine = TrackLine()
+        mapView.layerManager.layers.add(trackLine)
+
         return binding.root
     }
 
@@ -73,7 +80,23 @@ class MapFragment : Fragment() {
         super.onDestroy()
     }
 
+    fun loadGpxTrack(track: Array<TrackPoint>) {
+        track.forEach { (trackLine.latLongs.add(LatLong(it.latitude!!, it.longitude!!))) }
+        zoomAndPan()
+    }
+
+    private fun zoomAndPan() {
+        val boundingBox = BoundingBox(trackLine.latLongs)
+        val width = mapView.width
+        val height = mapView.height
+        if (width <= 0 || height <= 0)
+            return
+        val centerPoint = LatLong((boundingBox.maxLatitude + boundingBox.minLatitude) / 2, (boundingBox.maxLongitude + boundingBox.minLongitude) / 2)
+        mapView.setCenter(centerPoint)
+    }
+
     private lateinit var frameLayout: FrameLayout
     private lateinit var mapView: MapView
     private lateinit var binding: FragmentTrackingBinding
+    private lateinit var trackLine: TrackLine
 }
