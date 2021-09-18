@@ -9,6 +9,9 @@ import android.os.Bundle
 import de.uriegel.superfit.room.Track
 import de.uriegel.superfit.room.TrackPoint
 import de.uriegel.superfit.room.TracksRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 @SuppressLint("MissingPermission")
@@ -37,26 +40,30 @@ object LocationManager {
         }
     }
 
-    private val locationListener = object : LocationListener {
+    private val locationListener = object : LocationListener, CoroutineScope {
 
         override fun onLocationChanged(location: Location) {
 
-            if (!gpsActive) {
-                gpsActive = true
-                setGpsActive?.invoke()
-                trackNr = TracksRepository.insertTrack(Track(0, null, location.time,
-                    null, location.latitude, location.longitude, null,
-                    null, TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings)).toInt()
-            }
-            listener?.invoke(location)
+            launch {
+                if (!gpsActive) {
+                    gpsActive = true
+                    setGpsActive?.invoke()
+                    trackNr = TracksRepository.insertTrackAsync(Track(location.time,
+                        location.latitude, location.longitude,
+                        TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings)).await().toInt()
+                }
+                listener?.invoke(location)
 
-            //if (location.hasBearing()) {}
-            TracksRepository.insertTrackPoint(TrackPoint(null, trackNr, location.latitude,
-                location.longitude, location.altitude.toFloat(), location.time, location.accuracy, null, null))
-            // TODO: //  Bike.speed, HeartRate.currentHeartRate)
+                //if (location.hasBearing()) {}
+                TracksRepository.insertTrackPointAsync(TrackPoint(trackNr, location.latitude,
+                    location.longitude, location.altitude.toFloat(), location.time, location.accuracy))
+                // TODO: //  Bike.speed, HeartRate.currentHeartRate)
+            }
         }
 
         override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {}
+
+        override val coroutineContext = Dispatchers.Main
     }
 
     private var trackNr = -1

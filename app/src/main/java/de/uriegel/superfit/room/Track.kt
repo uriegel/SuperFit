@@ -6,34 +6,27 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Tracks")
 data class Track (
+    @ColumnInfo(name = "Time")
+    val time: Long? = 0,
+    @ColumnInfo(name = "Latitude")
+    val latitude: Double? = 0.0,
+    @ColumnInfo(name = "Longitude")
+    val longitude: Double? = 0.0,
+    @ColumnInfo(name = "TimeOffset")
+    val timeOffset: Int? = 0
+) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    var id: Int? = 0,
-
+    var id: Int? = null
     @ColumnInfo(name = "TrackName")
-    var trackName: String? = null,
-
-    @ColumnInfo(name = "Time")
-    var time: Long? = 0,
-
+    var trackName: String? = null
     @ColumnInfo(name = "AverageSpeed")
-    var averageSpeed: Double? = 0.0,
-
-    @ColumnInfo(name = "Latitude")
-    var latitude: Double? = 0.0,
-
-    @ColumnInfo(name = "Longitude")
-    var longitude: Double? = 0.0,
-
+    var averageSpeed: Double? = 0.0
     @ColumnInfo(name = "Distance")
-    var distance: Double? = 0.0,
-
+    var distance: Double? = 0.0
     @ColumnInfo(name = "Duration")
-    var duration: Long? = 0,
-
-    @ColumnInfo(name = "TimeOffset")
-    var timeOffset: Int? = 0
-)
+    var duration: Long? = 0
+}
 
 //@Entity(tableName = "Tracks")
 //data class Track(

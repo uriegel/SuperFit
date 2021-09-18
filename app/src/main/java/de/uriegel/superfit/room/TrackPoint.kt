@@ -21,23 +21,24 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "TrackPoints")
 data class TrackPoint(
+    @ColumnInfo(name = "TrackNr")
+    val trackNr: Int? = 0,
+    @ColumnInfo(name = "Latitude")
+    val latitude: Double? = 0.0,
+    @ColumnInfo(name = "Longitude")
+    val longitude: Double? = 0.0,
+    @ColumnInfo(name = "Elevation")
+    val elevation: Float? = 0f,
+    @ColumnInfo(name = "Time")
+    val time: Long? = 0,
+    @ColumnInfo(name = "Precision")
+    val precision: Float? = 0f,
+) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    var id: Int? = 0,
-    @ColumnInfo(name = "TrackNr")
-    var trackNr: Int? = 0,
-    @ColumnInfo(name = "Latitude")
-    var latitude: Double? = 0.0,
-    @ColumnInfo(name = "Longitude")
-    var longitude: Double? = 0.0,
-    @ColumnInfo(name = "Elevation")
-    var elevation: Float? = 0f,
-    @ColumnInfo(name = "Time")
-    var time: Long? = 0,
-    @ColumnInfo(name = "Precision")
-    var precision: Float? = 0f,
+    var id: Int? = null
     @ColumnInfo(name = "Speed")
-    var speed: Float? = 0f,
+    var speed: Float? = 0f
     @ColumnInfo(name = "HeartRate")
     var heartRate: Int? = 0
-)
+}

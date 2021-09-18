@@ -7,14 +7,18 @@ object TracksRepository {
 
     val allTracks: LiveData<Array<Track>>?
 
-    fun insertTrack(track: Track): Long = trackDao.insertTrack(track)
+    fun insertTrackAsync(track: Track): Deferred<Long> =
+        coroutineScope.async(Dispatchers.IO) {
+            return@async trackDao.insertTrack(track)
+        }
     fun deleteTrackAsync(id: Int) =
         coroutineScope.launch(Dispatchers.IO) { trackDao.deleteTrack(id) }
     fun findTrackAsync(id: Int): Deferred<Track?> =
         coroutineScope.async(Dispatchers.IO) {
             return@async trackDao.findTrack(id)
         }
-    fun insertTrackPoint(trackPoint: TrackPoint) = trackPointDao.insertTrackPoint(trackPoint)
+    fun insertTrackPointAsync(trackPoint: TrackPoint) =
+        coroutineScope.launch(Dispatchers.IO) { trackPointDao.insertTrackPoint(trackPoint) }
     fun findTrackPointsAsync(trackNr: Int): Deferred<Array<TrackPoint>?> =
         coroutineScope.async(Dispatchers.IO) {
             return@async trackPointDao.findTrackPoints(trackNr)

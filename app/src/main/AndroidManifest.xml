@@ -38,6 +38,8 @@
         <activity
             android:name=".ui.MapActivity"
             android:theme="@style/Theme.SuperFit.NoActionBar" />
+
+        <service android:name=".android.Service" />
     </application>
 
 </manifest>
