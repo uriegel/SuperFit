@@ -21,7 +21,7 @@ class Service: Service() {
         notification = NotificationCompat.Builder(this, Application.CHANNEL_SERVICE_ID)
             .setContentTitle(getString(R.string.app_title))
             .setContentText(getString(R.string.service_notification_text))
-            .setSmallIcon(R.drawable.ic_bike)
+            .setSmallIcon(R.drawable.bike)
             .setContentIntent(pendingIntent)
             .build()
 
