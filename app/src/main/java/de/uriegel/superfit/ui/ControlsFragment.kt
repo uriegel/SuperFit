@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import de.uriegel.superfit.android.Service
 import de.uriegel.superfit.databinding.FragmentControlsBinding
-import kotlinx.coroutines.launch
 
 class ControlsFragment : Fragment() {
 
@@ -29,7 +28,6 @@ class ControlsFragment : Fragment() {
         binding.btnStop.setOnClickListener {
             val startIntent = Intent(activity, Service::class.java)
             activity?.stopService(startIntent)
-            activity?.finish()
         }
         Service.setOnStateChangedListener { onStateChanged(it) }
     }

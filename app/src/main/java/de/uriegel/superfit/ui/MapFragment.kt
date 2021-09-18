@@ -1,5 +1,6 @@
 package de.uriegel.superfit.ui
 
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,15 +9,22 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.FragmentTrackingBinding
+import de.uriegel.superfit.maps.LocationManager
+import de.uriegel.superfit.maps.LocationMarker
 import de.uriegel.superfit.maps.TrackLine
-import de.uriegel.superfit.room.TrackPoint
+import de.uriegel.superfit.model.MainViewModel
 import de.uriegel.superfit.ui.utils.toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.mapsforge.core.model.BoundingBox
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
+import org.mapsforge.map.android.rotation.RotateView
 import org.mapsforge.map.android.util.AndroidUtil
 import org.mapsforge.map.android.view.MapView
 import org.mapsforge.map.datastore.MapDataStore
@@ -24,10 +32,9 @@ import org.mapsforge.map.reader.MapFile
 import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.FileInputStream
 
-class MapFragment : Fragment() {
+class MapFragment : Fragment(), CoroutineScope {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
-        : View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         binding = FragmentTrackingBinding.inflate(layoutInflater)
         frameLayout = binding.root.findViewById(R.id.mapContainer)
@@ -70,6 +77,27 @@ class MapFragment : Fragment() {
         trackLine = TrackLine()
         mapView.layerManager.layers.add(trackLine)
 
+        LocationManager.getCurrentTrack()?.let {
+            loadGpxTrack(it, false)
+        }
+        LocationManager.listener = {
+            val currentLatLong = LatLong(it.latitude, it.longitude)
+            if (location != null)
+                mapView.layerManager.layers.remove(location)
+            location = LocationMarker(currentLatLong)
+            mapView.layerManager.layers.add(location)
+            if (followLocation)
+                mapView.setCenter(currentLatLong)
+            trackLine.latLongs.add(currentLatLong)
+
+            if (rotateView != null
+                && lastLocation != null
+                && lastLocation!!.accuracy < ACCURACY_BEARING
+                && it.accuracy < ACCURACY_BEARING)
+                rotateView!!.heading = lastLocation!!.bearingTo(it)
+            lastLocation = it
+        }
+
         return binding.root
     }
 
@@ -85,15 +113,22 @@ class MapFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        // LocationManager.listener = null
+        LocationManager.listener = null
         mapView.destroyAll()
         AndroidGraphicFactory.clearResourceMemoryCache()
         super.onDestroy()
     }
 
-    fun loadGpxTrack(track: Array<TrackPoint>) {
-        track.forEach { (trackLine.latLongs.add(LatLong(it.latitude!!, it.longitude!!))) }
-        zoomAndPan()
+    override val coroutineContext = Dispatchers.Main
+
+    fun loadGpxTrack(trackNr: Int, zoomAndPan: Boolean) {
+        launch {
+            viewModel.findTrackPointsAsync(trackNr).await()?.let { track ->
+                track.forEach { (trackLine.latLongs.add(LatLong(it.latitude!!, it.longitude!!))) }
+                if (zoomAndPan)
+                    zoomAndPan()
+            }
+        }
     }
 
     private fun zoomAndPan() {
@@ -106,9 +141,18 @@ class MapFragment : Fragment() {
         mapView.setCenter(centerPoint)
     }
 
+    companion object {
+        private const val ACCURACY_BEARING = 10F
+    }
+
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var frameLayout: FrameLayout
     private lateinit var mapView: MapView
     private lateinit var binding: FragmentTrackingBinding
     private lateinit var trackLine: TrackLine
     private var followLocation = true
+    private var location: LocationMarker? = null
+    private var lastLocation: Location? = null
+    // TODO: RotateView
+    private var rotateView: RotateView? = null
 }

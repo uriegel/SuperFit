@@ -33,12 +33,14 @@ object LocationManager {
     fun stop() {
         locationManager.removeUpdates(locationListener)
         gpsActive = false
-        if (trackNr != -1) {
+        if (trackNr != null) {
             // TODO: Only, when enough track points (> 30) otherwise delete track, getTrackPointsCount
             //DataBase.updateTrack(trackNr, Bike.duration, Bike.distance, Bike.averageSpeed)
-            trackNr = -1
+            trackNr = null
         }
     }
+
+    fun getCurrentTrack() = trackNr
 
     private val locationListener = object : LocationListener, CoroutineScope {
 
@@ -66,7 +68,7 @@ object LocationManager {
         override val coroutineContext = Dispatchers.Main
     }
 
-    private var trackNr = -1
+    private var trackNr: Int? = null
     private lateinit var locationManager: LocationManager
     private const val LOCATION_REFRESH_TIME = 500L
     private const val LOCATION_REFRESH_DISTANCE = 0.0F

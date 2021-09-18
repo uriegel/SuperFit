@@ -87,10 +87,10 @@ class MapActivity: AppCompatActivity(), CoroutineScope {
         }
 
         trackNr = intent.getIntExtra(TracksFragment.TRACK_NR, -1)
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment) as MapFragment
+        fragment.loadGpxTrack(trackNr, true)
         launch {
             viewModel.findTrackPointsAsync(trackNr).await()?.let {
-                val fragment = supportFragmentManager.findFragmentById(R.id.fragment) as MapFragment
-                fragment.loadGpxTrack(it)
             }
         }
     }
