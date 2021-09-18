@@ -106,7 +106,7 @@ class MapFragment : Fragment(), CoroutineScope {
         binding.switcher.setOnClickListener {
             if (activity is DisplayActivity) {
                 followLocation = !followLocation
-                // TODO enableBearing(followLocation)
+                enableBearing(followLocation)
                 (activity as DisplayActivity).pagingEnabled = followLocation
             }
         }
@@ -131,6 +131,32 @@ class MapFragment : Fragment(), CoroutineScope {
         }
     }
 
+    fun enableBearing(enable: Boolean) {
+        if (rotateViewChangeState == RotateViewChangeState.Changing)
+            return
+
+        if (enable && rotateView == null && rotateViewChangeState == RotateViewChangeState.Disabled) {
+            rotateViewChangeState = RotateViewChangeState.Changing
+            frameLayout.removeAllViews()
+            rotateView = RotateView(activity)
+            with(rotateView!!) {
+                addView(mapView)
+                setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+            }
+            frameLayout.addView(rotateView)
+            rotateViewChangeState = RotateViewChangeState.Enabled
+        }
+        else if (!enable && rotateView != null && rotateViewChangeState == RotateViewChangeState.Enabled) {
+            rotateViewChangeState = RotateViewChangeState.Changing
+            frameLayout.removeAllViews()
+            rotateView!!.removeAllViews()
+            rotateView = null
+            frameLayout.addView(mapView)
+            rotateViewChangeState = RotateViewChangeState.Disabled
+        }
+        followLocation = enable
+    }
+
     private fun zoomAndPan() {
         val boundingBox = BoundingBox(trackLine.latLongs)
         val width = mapView.width
@@ -139,6 +165,12 @@ class MapFragment : Fragment(), CoroutineScope {
             return
         val centerPoint = LatLong((boundingBox.maxLatitude + boundingBox.minLatitude) / 2, (boundingBox.maxLongitude + boundingBox.minLongitude) / 2)
         mapView.setCenter(centerPoint)
+    }
+
+    private enum class RotateViewChangeState {
+        Disabled,
+        Enabled,
+        Changing
     }
 
     companion object {
@@ -153,6 +185,6 @@ class MapFragment : Fragment(), CoroutineScope {
     private var followLocation = true
     private var location: LocationMarker? = null
     private var lastLocation: Location? = null
-    // TODO: RotateView
     private var rotateView: RotateView? = null
+    private var rotateViewChangeState = RotateViewChangeState.Disabled
 }

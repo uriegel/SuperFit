@@ -62,9 +62,8 @@ class DisplayActivity : AppCompatActivity() {
         override fun onPageSelected(position: Int) {
             val mapFragment = ((viewPager.adapter as PagerAdapter).getFragmentForPosition(1) as MapFragment?)
             when (position) {
-                // TODO enable Bearing
-//                0    -> mapFragment?.enableBearing(false)
-//                else -> mapFragment?.enableBearing(true)
+                0    -> mapFragment?.enableBearing(false)
+                else -> mapFragment?.enableBearing(true)
             }
         }
     }
