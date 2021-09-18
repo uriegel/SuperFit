@@ -56,10 +56,11 @@ object LocationManager {
                 }
                 listener?.invoke(location)
 
-                //if (location.hasBearing()) {}
-                TracksRepository.insertTrackPointAsync(TrackPoint(trackNr, location.latitude,
-                    location.longitude, location.altitude.toFloat(), location.time, location.accuracy))
-                // TODO: //  Bike.speed, HeartRate.currentHeartRate)
+                trackNr?.let {
+                    TracksRepository.insertTrackPointAsync(TrackPoint(it, location.latitude,
+                        location.longitude, location.altitude.toFloat(), location.time, location.accuracy))
+                    // TODO: //  Bike.speed, HeartRate.currentHeartRate)
+                }
             }
         }
 

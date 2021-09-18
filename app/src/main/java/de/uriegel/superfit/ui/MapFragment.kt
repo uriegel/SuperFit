@@ -124,7 +124,7 @@ class MapFragment : Fragment(), CoroutineScope {
     fun loadGpxTrack(trackNr: Int, zoomAndPan: Boolean) {
         launch {
             viewModel.findTrackPointsAsync(trackNr).await()?.let { track ->
-                track.forEach { (trackLine.latLongs.add(LatLong(it.latitude!!, it.longitude!!))) }
+                track.forEach { (trackLine.latLongs.add(LatLong(it.latitude, it.longitude))) }
                 if (zoomAndPan)
                     zoomAndPan()
             }

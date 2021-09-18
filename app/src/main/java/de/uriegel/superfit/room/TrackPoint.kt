@@ -3,11 +3,8 @@ package de.uriegel.superfit.room
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import org.jetbrains.annotations.NotNull
 
-//@Entity(tableName = "TrackPoints")
-//data class TrackPoint(
-//    @PrimaryKey(autoGenerate = true)
-//    @NotNull
 //    val id: Int = 0,
 //    val trackNr: Int = 0,
 //    val latitude: Double = 0.0,
@@ -22,21 +19,28 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "TrackPoints")
 data class TrackPoint(
     @ColumnInfo(name = "TrackNr")
-    val trackNr: Int? = 0,
+    @NotNull
+    val trackNr: Int = 0,
     @ColumnInfo(name = "Latitude")
-    val latitude: Double? = 0.0,
+    @NotNull
+    val latitude: Double = 0.0,
     @ColumnInfo(name = "Longitude")
-    val longitude: Double? = 0.0,
+    @NotNull
+    val longitude: Double = 0.0,
     @ColumnInfo(name = "Elevation")
-    val elevation: Float? = 0f,
+    @NotNull
+    val elevation: Float = 0f,
     @ColumnInfo(name = "Time")
-    val time: Long? = 0,
+    @NotNull
+    val time: Long = 0,
     @ColumnInfo(name = "Precision")
-    val precision: Float? = 0f,
+    @NotNull
+    val precision: Float = 0f,
 ) {
     @PrimaryKey(autoGenerate = true)
+    @NotNull
     @ColumnInfo(name = "_id")
-    var id: Int? = null
+    var id: Int = 0
     @ColumnInfo(name = "Speed")
     var speed: Float? = 0f
     @ColumnInfo(name = "HeartRate")

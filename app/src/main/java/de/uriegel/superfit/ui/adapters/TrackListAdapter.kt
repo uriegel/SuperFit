@@ -29,7 +29,7 @@ class TrackListAdapter(private val context: Context, private val clickListener: 
                     name
                 else {
                     val timeZone = TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
-                    val date = (Date(it[position].time!! + it[position].timeOffset!! - timeZone))
+                    val date = (Date(it[position].time + it[position].timeOffset - timeZone))
                     val cal = Calendar.getInstance()
                     cal.time = date
                     val dateFormat = android.text.format.DateFormat.getDateFormat(context)

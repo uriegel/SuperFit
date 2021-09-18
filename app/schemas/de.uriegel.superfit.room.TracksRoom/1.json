@@ -2,17 +2,41 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1b2b4fa9639250128d25481bfc6830a8",
+    "identityHash": "dddd01ba14a04347083d775a08a4c682",
     "entities": [
       {
         "tableName": "Tracks",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT, `TrackName` TEXT, `Time` INTEGER, `AverageSpeed` REAL, `Latitude` REAL, `Longitude` REAL, `Distance` REAL, `Duration` INTEGER, `TimeOffset` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`Time` INTEGER NOT NULL, `Latitude` REAL NOT NULL, `Longitude` REAL NOT NULL, `TimeOffset` INTEGER NOT NULL, `_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `TrackName` TEXT, `AverageSpeed` REAL, `Distance` REAL, `Duration` INTEGER)",
         "fields": [
+          {
+            "fieldPath": "time",
+            "columnName": "Time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "Latitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "Longitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeOffset",
+            "columnName": "TimeOffset",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "id",
             "columnName": "_id",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "trackName",
@@ -21,26 +45,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "time",
-            "columnName": "Time",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
             "fieldPath": "averageSpeed",
             "columnName": "AverageSpeed",
-            "affinity": "REAL",
-            "notNull": false
-          },
-          {
-            "fieldPath": "latitude",
-            "columnName": "Latitude",
-            "affinity": "REAL",
-            "notNull": false
-          },
-          {
-            "fieldPath": "longitude",
-            "columnName": "Longitude",
             "affinity": "REAL",
             "notNull": false
           },
@@ -53,12 +59,6 @@
           {
             "fieldPath": "duration",
             "columnName": "Duration",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "timeOffset",
-            "columnName": "TimeOffset",
             "affinity": "INTEGER",
             "notNull": false
           }
@@ -74,49 +74,49 @@
       },
       {
         "tableName": "TrackPoints",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT, `TrackNr` INTEGER, `Latitude` REAL, `Longitude` REAL, `Elevation` REAL, `Time` INTEGER, `Precision` REAL, `Speed` REAL, `HeartRate` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`TrackNr` INTEGER NOT NULL, `Latitude` REAL NOT NULL, `Longitude` REAL NOT NULL, `Elevation` REAL NOT NULL, `Time` INTEGER NOT NULL, `Precision` REAL NOT NULL, `_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `Speed` REAL, `HeartRate` INTEGER)",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "_id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
           {
             "fieldPath": "trackNr",
             "columnName": "TrackNr",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "latitude",
             "columnName": "Latitude",
             "affinity": "REAL",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "longitude",
             "columnName": "Longitude",
             "affinity": "REAL",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "elevation",
             "columnName": "Elevation",
             "affinity": "REAL",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "time",
             "columnName": "Time",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "precision",
             "columnName": "Precision",
             "affinity": "REAL",
-            "notNull": false
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "speed",
@@ -144,7 +144,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1b2b4fa9639250128d25481bfc6830a8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dddd01ba14a04347083d775a08a4c682')"
     ]
   }
 }
