@@ -73,6 +73,17 @@ class MapFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.switcher.setOnClickListener {
+            if (activity is DisplayActivity) {
+                followLocation = !followLocation
+                // TODO enableBearing(followLocation)
+                (activity as DisplayActivity).pagingEnabled = followLocation
+            }
+        }
+    }
+
     override fun onDestroy() {
         // LocationManager.listener = null
         mapView.destroyAll()
@@ -99,4 +110,5 @@ class MapFragment : Fragment() {
     private lateinit var mapView: MapView
     private lateinit var binding: FragmentTrackingBinding
     private lateinit var trackLine: TrackLine
+    private var followLocation = true
 }

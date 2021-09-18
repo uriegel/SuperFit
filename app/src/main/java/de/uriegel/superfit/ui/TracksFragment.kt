@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import de.uriegel.superfit.databinding.FragmentTracksBinding
+import de.uriegel.superfit.model.MainViewModel
 import de.uriegel.superfit.room.Track
 import de.uriegel.superfit.ui.adapters.TrackListAdapter
 

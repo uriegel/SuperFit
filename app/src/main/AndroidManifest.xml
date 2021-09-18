@@ -14,26 +14,30 @@
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
-        android:theme="@style/Theme.SuperFit">
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SuperFit"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".ui.DisplayActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SuperFit.Display"/>
         <activity
             android:name=".ui.MainActivity"
-            android:theme="@style/Theme.SuperFit.NoActionBar"
-            android:exported="true" >
+            android:exported="true"
+            android:theme="@style/Theme.SuperFit.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ui.PreferenceActivity" />
-
-        <activity android:name=".ui.MapActivity" android:theme="@style/Theme.SuperFit.NoActionBar" />
-
+        <activity
+            android:name=".ui.MapActivity"
+            android:theme="@style/Theme.SuperFit.NoActionBar" />
     </application>
 
 </manifest>

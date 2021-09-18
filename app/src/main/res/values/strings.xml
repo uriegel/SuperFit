@@ -29,13 +29,12 @@
     <string name="dgeschwindigkeit">Ø-Geschwindigkeit</string>
     <string name="max_geschwindigkeit">Max. Geschwindigkeit</string>
     <string name="gps_marker">Gps marker</string>
-    <string name="mapdownload">Karten-Download</string>
-    <string name="editTextMapUploadHint">Url der Karte eintragen</string>
-    <string name="btnMapDownload">Download</string>
     <string name="bike_settings">Bike-Einstellungen</string>
     <string name="toast_nomaps">Du musst erst eine Karte in den Einstellungen auswählen!</string>
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
     <string name="alert_delete_track">Möchtest Du diesen Track löschen?</string>
     <string name="alert_title_delete_track">Track löschen</string>
+    <string name="service_notification_text">Erfasst Fitness-Daten</string>
+    <string name="app_title">Super Fit</string>
 </resources>

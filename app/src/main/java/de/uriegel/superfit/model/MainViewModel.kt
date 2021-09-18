@@ -1,4 +1,4 @@
-package de.uriegel.superfit.ui
+package de.uriegel.superfit.model
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

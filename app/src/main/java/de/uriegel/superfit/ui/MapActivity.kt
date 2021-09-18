@@ -11,6 +11,7 @@ import de.uriegel.activityextensions.ActivityRequest
 import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.ActivityMapBinding
 import de.uriegel.superfit.maps.exportToGpx
+import de.uriegel.superfit.model.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
