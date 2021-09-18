@@ -1,9 +1,12 @@
 package de.uriegel.superfit.ui
 
+import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -12,10 +15,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
+import de.uriegel.activityextensions.ActivityRequest
 import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.ActivityMainBinding
+import de.uriegel.superfit.ui.utils.toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(),
+    NavigationView.OnNavigationItemSelectedListener, CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +45,34 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             offscreenPageLimit = 2
         }
         binding.navigationView.setNavigationItemSelectedListener(this)
+
+        launch {
+            val result = activityRequest.checkAndAccessPermissions(arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ))
+            if (result.any { !it.value && it.key == Manifest.permission.ACCESS_FINE_LOCATION}) {
+                toast(R.string.no_location_access, Toast.LENGTH_LONG)
+                finish()
+                return@launch
+            }
+            if (result.any { !it.value && it.key == Manifest.permission.READ_EXTERNAL_STORAGE}) {
+                toast(R.string.no_storage_access, Toast.LENGTH_LONG)
+                finish()
+                return@launch
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val backgroundResult = activityRequest.checkAndAccessPermissions(arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION))
+                if (backgroundResult.any { !it.value }) {
+                    toast(R.string.no_persistent_location_access, Toast.LENGTH_LONG)
+                    finish()
+                    return@launch
+                }
+            }
+        }
     }
+
+    override val coroutineContext = Dispatchers.Main
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -47,7 +83,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -87,6 +122,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         override fun getItemCount(): Int = 2
     }
 
+    private val activityRequest = ActivityRequest(this)
     private lateinit var binding: ActivityMainBinding
     private lateinit var layoutContainer: ViewPager2
 }

@@ -37,4 +37,7 @@
     <string name="alert_title_delete_track">Track löschen</string>
     <string name="service_notification_text">Erfasst Fitness-Daten</string>
     <string name="app_title">Super Fit</string>
+    <string name="no_location_access">Kein Zugriff auf den Standort</string>
+    <string name="no_persistent_location_access">Kein ständiger Zugriff auf den Standort</string>
+    <string name="no_storage_access">"Kein Zugriff auf den Speicher "</string>
 </resources>

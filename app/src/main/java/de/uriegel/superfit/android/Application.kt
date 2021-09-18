@@ -7,8 +7,6 @@ import android.app.NotificationManager
 import android.os.Build
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 
-//import org.mapsforge.map.android.graphics.AndroidGraphicFactory
-
 class Application: android.app.Application() {
     override fun onCreate() {
         super.onCreate()

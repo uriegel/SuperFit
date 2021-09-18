@@ -16,7 +16,7 @@ abstract class TracksRoom: RoomDatabase() {
         private fun getDatabase(): TracksRoom {
            synchronized(TracksRoom::class.java) {
                 return Room.databaseBuilder(
-                    Application.instance.applicationContext, TracksRoom::class.java, "tracks.db")
+                    Application.instance.applicationContext, TracksRoom::class.java, "tracks")
                     .build()
            }
         }
