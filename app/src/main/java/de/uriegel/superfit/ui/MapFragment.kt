@@ -32,7 +32,9 @@ import org.mapsforge.map.reader.MapFile
 import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.FileInputStream
 
-class MapFragment : Fragment(), CoroutineScope {
+class MapFragment(private val tracking: Boolean) : Fragment(), CoroutineScope {
+
+    constructor() : this(false)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
@@ -77,26 +79,8 @@ class MapFragment : Fragment(), CoroutineScope {
         trackLine = TrackLine()
         mapView.layerManager.layers.add(trackLine)
 
-        LocationManager.getCurrentTrack()?.let {
-            loadGpxTrack(it, false)
-        }
-        LocationManager.listener = {
-            val currentLatLong = LatLong(it.latitude, it.longitude)
-            if (location != null)
-                mapView.layerManager.layers.remove(location)
-            location = LocationMarker(currentLatLong)
-            mapView.layerManager.layers.add(location)
-            if (followLocation)
-                mapView.setCenter(currentLatLong)
-            trackLine.latLongs.add(currentLatLong)
-
-            if (rotateView != null
-                && lastLocation != null
-                && lastLocation!!.accuracy < ACCURACY_BEARING
-                && it.accuracy < ACCURACY_BEARING)
-                rotateView!!.heading = lastLocation!!.bearingTo(it)
-            lastLocation = it
-        }
+        if (tracking)
+            loadGpxTrack(null)
 
         return binding.root
     }
@@ -121,12 +105,38 @@ class MapFragment : Fragment(), CoroutineScope {
 
     override val coroutineContext = Dispatchers.Main
 
-    fun loadGpxTrack(trackNr: Int, zoomAndPan: Boolean) {
+    fun loadGpxTrack(trackNrChoice: Int?) {
         launch {
-            viewModel.findTrackPointsAsync(trackNr).await()?.let { track ->
-                track.forEach { (trackLine.latLongs.add(LatLong(it.latitude, it.longitude))) }
-                if (zoomAndPan)
-                    zoomAndPan()
+            val trackNr = trackNrChoice ?: LocationManager.getCurrentTrack()
+
+            trackNr?.let { tnr ->
+                viewModel.findTrackPointsAsync(tnr).await()?.let { track ->
+                    track.forEach { (trackLine.latLongs.add(LatLong(it.latitude, it.longitude))) }
+                    if (trackNrChoice != null)
+                        zoomAndPan()
+                }
+            }
+
+            if (trackNrChoice == null) {
+                LocationManager.listener = {
+                    val currentLatLong = LatLong(it.latitude, it.longitude)
+                    if (location != null)
+                        mapView.layerManager.layers.remove(location)
+                    location = LocationMarker(currentLatLong)
+                    mapView.layerManager.layers.add(location)
+                    if (followLocation)
+                        mapView.setCenter(currentLatLong)
+                    trackLine.latLongs.add(currentLatLong)
+
+                    if (rotateView != null
+                        && lastLocation != null
+                        && lastLocation!!.accuracy < ACCURACY_BEARING
+                        && it.accuracy < ACCURACY_BEARING
+                    )
+                        rotateView!!.heading = lastLocation!!.bearingTo(it)
+                    lastLocation = it
+                }
+                enableBearing(true)
             }
         }
     }

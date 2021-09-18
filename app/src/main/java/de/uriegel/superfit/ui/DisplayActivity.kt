@@ -47,8 +47,8 @@ class DisplayActivity : AppCompatActivity() {
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
-                0    -> if (bikeSupport) DisplayFragment() else MapFragment()
-                else -> MapFragment()
+                0    -> if (bikeSupport) DisplayFragment() else MapFragment(true)
+                else -> MapFragment(true)
             }
         }
 
