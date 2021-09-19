@@ -17,8 +17,8 @@ object TracksRepository {
         coroutineScope.async(Dispatchers.IO) {
             return@async trackDao.findTrack(id)
         }
-    fun insertTrackPointAsync(trackPoint: TrackPoint) =
-        coroutineScope.launch(Dispatchers.IO) { trackPointDao.insertTrackPoint(trackPoint) }
+    fun insertTrackPointAsync(trackPoint: TrackPoint): Deferred<Unit> =
+        coroutineScope.async(Dispatchers.IO) { return@async trackPointDao.insertTrackPoint(trackPoint) }
     fun findTrackPointsAsync(trackNr: Int): Deferred<Array<TrackPoint>?> =
         coroutineScope.async(Dispatchers.IO) {
             return@async trackPointDao.findTrackPoints(trackNr)

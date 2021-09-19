@@ -45,22 +45,23 @@ object LocationManager {
     private val locationListener = object : LocationListener, CoroutineScope {
 
         override fun onLocationChanged(location: Location) {
-
             launch {
+
                 if (!gpsActive) {
                     gpsActive = true
                     setGpsActive?.invoke()
-                    trackNr = TracksRepository.insertTrackAsync(Track(location.time,
-                        location.latitude, location.longitude,
-                        TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings)).await().toInt()
+                    trackNr = TracksRepository.insertTrackAsync(Track(
+                            location.time,
+                            location.latitude, location.longitude,
+                            TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
+                        )).await().toInt()
+                }
+                // TODO: //  Bike.speed, HeartRate.currentHeartRate)
+                trackNr?.let {
+                    TracksRepository.insertTrackPointAsync(
+                        TrackPoint(it,location.latitude, location.longitude, location.altitude.toFloat(), location.time, location.accuracy)).await()
                 }
                 listener?.invoke(location)
-
-                trackNr?.let {
-                    TracksRepository.insertTrackPointAsync(TrackPoint(it, location.latitude,
-                        location.longitude, location.altitude.toFloat(), location.time, location.accuracy))
-                    // TODO: //  Bike.speed, HeartRate.currentHeartRate)
-                }
             }
         }
 

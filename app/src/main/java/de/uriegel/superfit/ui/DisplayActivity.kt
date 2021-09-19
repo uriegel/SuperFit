@@ -2,6 +2,7 @@ package de.uriegel.superfit.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -67,6 +68,14 @@ class DisplayActivity : AppCompatActivity() {
             when (position) {
                 0    -> mapFragment?.enableBearing(false)
                 else -> mapFragment?.enableBearing(true)
+            }
+        }
+
+        override fun onPageScrollStateChanged(@ViewPager2.ScrollState state: Int) {
+            when (state) {
+                ViewPager2.SCROLL_STATE_IDLE -> Log.w("SF", "SCROLL_STATE_IDLE")
+                ViewPager2.SCROLL_STATE_DRAGGING -> Log.w("SF", "SCROLL_STATE_DRAGGING")
+                ViewPager2.SCROLL_STATE_SETTLING -> Log.w("SF", "SCROLL_STATE_SETTLING")
             }
         }
     }
