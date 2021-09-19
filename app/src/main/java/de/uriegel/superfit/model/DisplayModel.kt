@@ -3,6 +3,7 @@ package de.uriegel.superfit.model
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import de.uriegel.superfit.maps.LocationManager
+import de.uriegel.superfit.sensor.BikeService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -23,6 +24,9 @@ class DisplayModel : ViewModel(), CoroutineScope {
         LocationManager.setGpsActive = {
             gpsActive.value = true
             LocationManager.setGpsActive = null
+        }
+        BikeService.setSpeed = {
+            velocity.value = it.toFloat()
         }
 //        HeartRate.listener = { launch { heartRate.value = it } }
 //        Bike.listener = { launch {

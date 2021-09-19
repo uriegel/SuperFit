@@ -4,10 +4,13 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
 
     <application
         android:name=".android.Application"
@@ -21,9 +24,12 @@
         android:theme="@style/Theme.SuperFit"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.SensorDevicesActivity"
+            android:exported="true" />
+        <activity
             android:name=".ui.DisplayActivity"
             android:exported="true"
-            android:theme="@style/Theme.SuperFit.Display"/>
+            android:theme="@style/Theme.SuperFit.Display" />
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"

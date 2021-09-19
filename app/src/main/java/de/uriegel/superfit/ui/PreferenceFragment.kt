@@ -8,6 +8,8 @@ import androidx.activity.ComponentActivity
 import androidx.preference.*
 import de.uriegel.activityextensions.ActivityRequest
 import de.uriegel.superfit.R
+import de.uriegel.superfit.sensor.BikeService
+import de.uriegel.superfit.sensor.scan
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,6 +28,17 @@ class PreferenceFragment(activity: ComponentActivity) : PreferenceFragmentCompat
         editTextPreference?.isEnabled = bikeSupport?.isChecked == true
         editTextPreference?.setOnBindEditTextListener {
             it.inputType = InputType.TYPE_CLASS_NUMBER
+        }
+
+        val bikeSensor = findPreference<Preference>(PREF_BIKE_SENSOR)
+        bikeSensor?.setOnPreferenceClickListener {
+            launch {
+                activityRequest.scan(requireActivity(), BikeService.BIKE_UUID)?.let {
+                    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    preferences.edit().putString(PREF_BIKE_SENSOR, it).apply()
+                }
+            }
+            true
         }
 
         val map = findPreference<Preference>(PREF_MAP)
@@ -58,6 +71,7 @@ class PreferenceFragment(activity: ComponentActivity) : PreferenceFragmentCompat
 
     companion object {
         const val PREF_MAP = "PREF_MAP"
+        const val PREF_BIKE_SENSOR = "PREF_BIKE_SENSOR"
         const val PREF_WHEEL = "PREF_WHEEL"
         const val BIKE_SUPPORT = "bike_support"
     }
