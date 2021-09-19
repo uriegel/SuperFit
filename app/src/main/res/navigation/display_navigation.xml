@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/display_navigation"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="de.uriegel.superfit.ui.DisplayFragment"
+        android:label="ControlsFragment"
+        tools:layout="@layout/fragment_display" />
+    <fragment
+        android:id="@+id/TrackingFragment"
+        android:name="de.uriegel.superfit.ui.TrackingFragment"
+        android:label="MapFragment" />
+</navigation>

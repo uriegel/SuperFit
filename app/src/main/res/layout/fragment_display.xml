@@ -13,6 +13,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/display_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -258,6 +259,18 @@
                     android:text="@string/km_h"
                     app:layout_constraintBaseline_toBaselineOf="@+id/textView26"
                     app:layout_constraintStart_toEndOf="@+id/textView26" />
+
+                <Button
+                    android:id="@+id/navigationToMap"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="80sp"
+                    android:paddingBottom="80sp"
+                    android:text="@string/nav_to_map"
+                    android:textSize="@dimen/map_switch"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView26" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

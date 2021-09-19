@@ -11,4 +11,5 @@
     <dimen name="unitVerticalMargin">0dp</dimen>
     <dimen name="displayLarge">128sp</dimen>
     <dimen name="displaySmall">96sp</dimen>
+    <dimen name="map_switch">36sp</dimen>
 </resources>

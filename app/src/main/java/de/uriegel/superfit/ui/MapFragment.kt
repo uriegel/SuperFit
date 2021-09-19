@@ -32,7 +32,7 @@ import org.mapsforge.map.reader.MapFile
 import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.FileInputStream
 
-class MapFragment(private val tracking: Boolean) : Fragment(), CoroutineScope {
+open class MapFragment(private val tracking: Boolean) : Fragment(), CoroutineScope {
 
     constructor() : this(false)
 
@@ -91,7 +91,7 @@ class MapFragment(private val tracking: Boolean) : Fragment(), CoroutineScope {
             if (activity is DisplayActivity) {
                 followLocation = !followLocation
                 enableBearing(followLocation)
-                (activity as DisplayActivity).pagingEnabled = followLocation
+//                (activity as DisplayActivity).pagingEnabled = followLocation
             }
         }
     }
