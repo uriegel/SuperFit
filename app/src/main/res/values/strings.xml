@@ -40,5 +40,4 @@
     <string name="no_location_access">Kein Zugriff auf den Standort</string>
     <string name="no_persistent_location_access">Kein ständiger Zugriff auf den Standort</string>
     <string name="no_storage_access">"Kein Zugriff auf den Speicher "</string>
-    <string name="nav_to_map">Kartenansicht</string>
 </resources>
