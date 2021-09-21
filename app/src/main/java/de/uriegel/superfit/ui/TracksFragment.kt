@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import de.uriegel.superfit.databinding.FragmentTracksBinding
 import de.uriegel.superfit.model.MainViewModel
 import de.uriegel.superfit.room.Track
+import de.uriegel.superfit.ui.TrackActivity.Companion.TRACK_NR
 import de.uriegel.superfit.ui.adapters.TrackListAdapter
 
 class TracksFragment : Fragment() {
@@ -25,7 +26,7 @@ class TracksFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerSetup {
-            val intent = Intent(activity, KannWegMapActivity::class.java)
+            val intent = Intent(activity, TrackActivity::class.java)
             intent.putExtra(TRACK_NR, it.id)
             startActivity(intent)
         }
@@ -54,8 +55,4 @@ class TracksFragment : Fragment() {
     private lateinit var binding: FragmentTracksBinding
     private val viewModel: MainViewModel by viewModels()
     private var adapter: TrackListAdapter? = null
-
-    companion object {
-       const val TRACK_NR = "TRACK_NR"
-   }
 }

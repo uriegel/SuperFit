@@ -7,10 +7,11 @@ import android.widget.FrameLayout
 import de.uriegel.superfit.databinding.ActivityTrackingBinding
 import de.uriegel.superfit.maps.LocationManager
 import de.uriegel.superfit.maps.LocationMarker
+import kotlinx.coroutines.launch
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.rotation.RotateView
 
-class TrackingActivity: MapActivity(null) {
+class TrackingActivity: MapActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,6 +36,16 @@ class TrackingActivity: MapActivity(null) {
             lastLocation = it
         }
         enableBearing(true)
+        LocationManager.getCurrentTrack()?.let {
+            launch {
+                loadGpxTrack(it)
+            }
+        }
+
+        binding.switcher.setOnClickListener {
+            followLocation = !followLocation
+            enableBearing(followLocation)
+        }
     }
 
     override fun initializeBinding(): BindingData {
@@ -42,7 +53,7 @@ class TrackingActivity: MapActivity(null) {
         return BindingData(binding.root, binding.mapContainer)
     }
 
-    fun enableBearing(enable: Boolean) {
+    private fun enableBearing(enable: Boolean) {
         if (rotateViewChangeState == RotateViewChangeState.Changing)
             return
 

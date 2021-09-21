@@ -35,7 +35,7 @@ import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.rotation.RotateView
 import java.io.FileInputStream
 
-abstract class MapActivity(private val trackNrChoice: Int?) : AppCompatActivity(), CoroutineScope {
+abstract class MapActivity : AppCompatActivity(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,9 +45,7 @@ abstract class MapActivity(private val trackNrChoice: Int?) : AppCompatActivity(
 
         mapView = MapView(this)
         with(mapView) {
-            // isClickable = true
-            setBuiltInZoomControls(true)
-            mapScaleBar.isVisible = true
+            isClickable = true
             //model.frameBufferModel.overdrawFactor = 1.0
 //            setZoomLevelMin(10)
 //            setZoomLevelMax(20)
@@ -78,11 +76,12 @@ abstract class MapActivity(private val trackNrChoice: Int?) : AppCompatActivity(
         with(mapView) {
             layerManager.layers.add(tileRendererLayer)
             setCenter(LatLong(50.90042250198412, 6.715496743031949))
+            setBuiltInZoomControls(true)
+            mapScaleBar.isVisible = true
         }
 
         trackLine = TrackLine()
         mapView.layerManager.layers.add(trackLine)
-        loadGpxTrack()
     }
 
     override fun onDestroy() {
@@ -93,30 +92,12 @@ abstract class MapActivity(private val trackNrChoice: Int?) : AppCompatActivity(
 
     protected data class BindingData(val root: View, val mapContainer: FrameLayout)
 
-    abstract protected fun initializeBinding(): BindingData
+    protected abstract fun initializeBinding(): BindingData
 
-    private fun loadGpxTrack() {
-        launch {
-            val trackNr = trackNrChoice ?: LocationManager.getCurrentTrack()
-
-            trackNr?.let { tnr ->
-                viewModel.findTrackPointsAsync(tnr).await()?.let { track ->
-                    track.forEach { (trackLine.latLongs.add(LatLong(it.latitude, it.longitude))) }
-                    if (trackNrChoice != null)
-                        zoomAndPan()
-                }
-            }
+    protected suspend fun loadGpxTrack(trackNr: Int) {
+        viewModel.findTrackPointsAsync(trackNr).await()?.let { track ->
+            track.forEach { (trackLine.latLongs.add(LatLong(it.latitude, it.longitude))) }
         }
-    }
-
-    private fun zoomAndPan() {
-        val boundingBox = BoundingBox(trackLine.latLongs)
-        val width = mapView.width
-        val height = mapView.height
-        if (width <= 0 || height <= 0)
-            return
-        val centerPoint = LatLong((boundingBox.maxLatitude + boundingBox.minLatitude) / 2, (boundingBox.maxLongitude + boundingBox.minLongitude) / 2)
-        mapView.setCenter(centerPoint)
     }
 
     override val coroutineContext = Dispatchers.Main
