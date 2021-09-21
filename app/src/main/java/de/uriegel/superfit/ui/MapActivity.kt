@@ -40,6 +40,11 @@ abstract class MapActivity : AppCompatActivity(), CoroutineScope {
 //            setZoomLevelMin(10)
 //            setZoomLevelMax(20)
             setZoomLevel(16)
+            setCenter(LatLong(50.90042250198412, 6.715496743031949))
+            setBuiltInZoomControls(true)
+            mapZoomControls.setMarginVertical(100)
+            mapScaleBar.marginVertical = 100
+            mapScaleBar.isVisible = true
         }
         mapContainer.addView(mapView)
 
@@ -47,30 +52,19 @@ abstract class MapActivity : AppCompatActivity(), CoroutineScope {
             mapView.model.frameBufferModel.overdrawFactor)
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val uriString = preferences?.getString(PreferenceFragment.PREF_MAP, "")
-        if (uriString == "") {
-            toast(R.string.toast_nomaps, Toast.LENGTH_LONG)
-            // TODO
-            return
-        }
-        val uri = Uri.parse(uriString)
-        val fis: FileInputStream = contentResolver.openInputStream(uri) as FileInputStream
-        val mapDataStore: MapDataStore = MapFile(fis)
+        preferences?.getString(PreferenceFragment.PREF_MAP, null)?.let {
+            val uri = Uri.parse(it)
+            val fis: FileInputStream = contentResolver.openInputStream(uri) as FileInputStream
+            val mapDataStore: MapDataStore = MapFile(fis)
 //        val tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
 //            InternalRenderTheme.OSMARENDER, false, true, false)
-        val tileRendererLayer = TileRendererLayer(
-            tileCache, mapDataStore,
-            mapView.model.mapViewPosition, AndroidGraphicFactory.INSTANCE
-        )
-        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT)
-        with(mapView) {
-            layerManager.layers.add(tileRendererLayer)
-            setCenter(LatLong(50.90042250198412, 6.715496743031949))
-            setBuiltInZoomControls(true)
-            mapZoomControls.setMarginVertical(100)
-            mapScaleBar.marginVertical = 100
-            mapScaleBar.isVisible = true
-        }
+            val tileRendererLayer = TileRendererLayer(
+                tileCache, mapDataStore,
+                mapView.model.mapViewPosition, AndroidGraphicFactory.INSTANCE
+            )
+            tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT)
+            mapView.layerManager.layers.add(tileRendererLayer)
+        } ?: toast(R.string.toast_nomaps, Toast.LENGTH_LONG)
 
         trackLine = TrackLine()
         mapView.layerManager.layers.add(trackLine)

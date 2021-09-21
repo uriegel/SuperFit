@@ -3,6 +3,7 @@ package de.uriegel.superfit.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -97,13 +98,20 @@ class TrackActivity: MapActivity() {
     }
 
     private fun zoomAndPan() {
-        val boundingBox = BoundingBox(trackLine.latLongs)
-        val width = mapView.width
-        val height = mapView.height
-        if (width <= 0 || height <= 0)
-            return
-        val centerPoint = LatLong((boundingBox.maxLatitude + boundingBox.minLatitude) / 2, (boundingBox.maxLongitude + boundingBox.minLongitude) / 2)
-        mapView.setCenter(centerPoint)
+        try {
+            val boundingBox = BoundingBox(trackLine.latLongs)
+            val width = mapView.width
+            val height = mapView.height
+            if (width <= 0 || height <= 0)
+                return
+            val centerPoint = LatLong(
+                (boundingBox.maxLatitude + boundingBox.minLatitude) / 2,
+                (boundingBox.maxLongitude + boundingBox.minLongitude) / 2
+            )
+            mapView.setCenter(centerPoint)
+        } catch (e: Exception) {
+            Log.w("SF", "Zoom and Pan", e)
+        }
     }
 
     companion object {
