@@ -48,8 +48,8 @@ class DisplayActivity : AppCompatActivity() {
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
-                0    -> if (bikeSupport) DisplayFragment() else MapFragment(true)
-                else -> MapFragment(true)
+                0    -> DisplayFragment()
+                else -> DisplayFragment()
             }
         }
 
@@ -62,14 +62,6 @@ class DisplayActivity : AppCompatActivity() {
     }
 
     private val onPageChangeListener = object : ViewPager2.OnPageChangeCallback() {
-
-        override fun onPageSelected(position: Int) {
-            val mapFragment = ((viewPager.adapter as PagerAdapter).getFragmentForPosition(1) as MapFragment?)
-            when (position) {
-                0    -> mapFragment?.enableBearing(false)
-                else -> mapFragment?.enableBearing(true)
-            }
-        }
 
         override fun onPageScrollStateChanged(@ViewPager2.ScrollState state: Int) {
             when (state) {

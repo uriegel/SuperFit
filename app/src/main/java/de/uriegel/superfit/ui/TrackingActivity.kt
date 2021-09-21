@@ -64,7 +64,7 @@ class TrackingActivity: MapActivity() {
             mapContainer.addView(rotateView)
             with(rotateView!!) {
                 addView(mapView)
-                setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null)
+                setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
             }
 
             rotateViewChangeState = RotateViewChangeState.Enabled
