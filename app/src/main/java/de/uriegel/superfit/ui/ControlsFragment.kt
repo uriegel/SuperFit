@@ -1,10 +1,14 @@
 package de.uriegel.superfit.ui
 
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.webkit.RenderProcessGoneDetail
 import androidx.fragment.app.Fragment
 import de.uriegel.superfit.android.Service
 import de.uriegel.superfit.databinding.FragmentControlsBinding
@@ -25,8 +29,8 @@ class ControlsFragment : Fragment() {
             //startActivity(Intent(activity, DisplayActivity::class.java))
             startActivity(Intent(activity, TrackingActivity::class.java))
         }
-        //binding.btnDisplay.setOnClickListener { startActivity(Intent(activity, DisplayActivity::class.java))}
-        binding.btnDisplay.setOnClickListener { startActivity(Intent(activity, TrackingActivity::class.java))}
+        binding.btnDisplay.setOnClickListener { startActivity(Intent(activity, DisplayActivity::class.java))}
+        binding.btnMap.setOnClickListener { startActivity(Intent(activity, TrackingActivity::class.java))}
         binding.btnStop.setOnClickListener {
             val startIntent = Intent(activity, Service::class.java)
             activity?.stopService(startIntent)
@@ -35,10 +39,10 @@ class ControlsFragment : Fragment() {
     }
 
     private fun onStateChanged(isRunning: Boolean) {
-        binding.btnStart.isEnabled = !isRunning
-        binding.btnDisplay.isEnabled = isRunning
-        binding.btnReset.isEnabled = isRunning
-        binding.btnStop.isEnabled = isRunning
+        binding.btnStart.visibility = if (isRunning) GONE else VISIBLE
+        //binding.btnDisplay.visibility = if (isRunning) VISIBLE else GONE
+        binding.btnMap.visibility = if (isRunning) VISIBLE else GONE
+        binding.btnStop.visibility = if (isRunning) VISIBLE else GONE
     }
 
     private lateinit var binding: FragmentControlsBinding
