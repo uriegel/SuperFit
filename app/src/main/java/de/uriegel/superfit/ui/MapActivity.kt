@@ -1,6 +1,5 @@
 package de.uriegel.superfit.ui
 
-import android.location.Location
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,29 +9,20 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
-import de.uriegel.superfit.maps.LocationManager
-import de.uriegel.superfit.maps.LocationMarker
 import de.uriegel.superfit.maps.TrackLine
 import de.uriegel.superfit.model.MainViewModel
 import de.uriegel.superfit.ui.utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.mapsforge.core.model.BoundingBox
 import org.mapsforge.map.android.view.MapView
 import org.mapsforge.map.android.util.AndroidUtil
 
 import org.mapsforge.map.rendertheme.InternalRenderTheme
-
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
-
 import org.mapsforge.map.layer.renderer.TileRendererLayer
-
 import org.mapsforge.map.reader.MapFile
-
 import org.mapsforge.map.datastore.MapDataStore
 import org.mapsforge.core.model.LatLong
-import org.mapsforge.map.android.rotation.RotateView
 import java.io.FileInputStream
 
 abstract class MapActivity : AppCompatActivity(), CoroutineScope {
@@ -77,6 +67,8 @@ abstract class MapActivity : AppCompatActivity(), CoroutineScope {
             layerManager.layers.add(tileRendererLayer)
             setCenter(LatLong(50.90042250198412, 6.715496743031949))
             setBuiltInZoomControls(true)
+            mapZoomControls.setMarginVertical(100)
+            mapScaleBar.marginVertical = 100
             mapScaleBar.isVisible = true
         }
 
@@ -102,7 +94,7 @@ abstract class MapActivity : AppCompatActivity(), CoroutineScope {
 
     override val coroutineContext = Dispatchers.Main
 
-    protected lateinit var mapContainer: FrameLayout
+    private lateinit var mapContainer: FrameLayout
     protected lateinit var mapView: MapView
     protected lateinit var trackLine: TrackLine
     private val viewModel: MainViewModel by viewModels()

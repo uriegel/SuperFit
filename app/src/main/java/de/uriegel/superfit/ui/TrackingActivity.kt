@@ -3,13 +3,11 @@ package de.uriegel.superfit.ui
 import android.location.Location
 import android.os.Bundle
 import android.view.WindowManager
-import android.widget.FrameLayout
 import de.uriegel.superfit.databinding.ActivityTrackingBinding
 import de.uriegel.superfit.maps.LocationManager
 import de.uriegel.superfit.maps.LocationMarker
 import kotlinx.coroutines.launch
 import org.mapsforge.core.model.LatLong
-import org.mapsforge.map.android.rotation.RotateView
 
 class TrackingActivity: MapActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,25 +24,19 @@ class TrackingActivity: MapActivity() {
             if (followLocation)
                 mapView.setCenter(currentLatLong)
             trackLine.latLongs.add(currentLatLong)
-
-            if (rotateView != null
-                && lastLocation != null
-                && lastLocation!!.accuracy < ACCURACY_BEARING
-                && it.accuracy < ACCURACY_BEARING
-            )
-                rotateView!!.heading = lastLocation!!.bearingTo(it)
             lastLocation = it
         }
-        enableBearing(true)
         LocationManager.getCurrentTrack()?.let {
             launch {
                 loadGpxTrack(it)
             }
         }
 
+        mapView.setBuiltInZoomControls(false)
+        mapView.mapScaleBar.isVisible = false
+
         binding.switcher.setOnClickListener {
             followLocation = !followLocation
-            enableBearing(followLocation)
         }
     }
 
@@ -53,45 +45,13 @@ class TrackingActivity: MapActivity() {
         return BindingData(binding.root, binding.mapContainer)
     }
 
-    private fun enableBearing(enable: Boolean) {
-        if (rotateViewChangeState == RotateViewChangeState.Changing)
-            return
-
-        mapContainer.removeAllViews()
-        if (enable && rotateView == null && rotateViewChangeState == RotateViewChangeState.Disabled) {
-            rotateViewChangeState = RotateViewChangeState.Changing
-            rotateView = RotateView(this)
-            mapContainer.addView(rotateView)
-            with(rotateView!!) {
-                addView(mapView)
-                setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
-            }
-
-            rotateViewChangeState = RotateViewChangeState.Enabled
-        } else if (!enable && rotateView != null && rotateViewChangeState == RotateViewChangeState.Enabled) {
-            rotateViewChangeState = RotateViewChangeState.Changing
-            rotateView!!.removeAllViews()
-            rotateView = null
-            mapContainer.addView(mapView)
-            rotateViewChangeState = RotateViewChangeState.Disabled
-        }
-        followLocation = enable
-    }
-
-    private enum class RotateViewChangeState {
-        Disabled,
-        Enabled,
-        Changing
-    }
-
-    companion object {
-        private const val ACCURACY_BEARING = 10F
-    }
-
     private lateinit var binding: ActivityTrackingBinding
     private var followLocation = true
+        set(value) {
+            field = value
+            mapView.setBuiltInZoomControls(!value)
+            mapView.mapScaleBar.isVisible = !value
+        }
     private var location: LocationMarker? = null
     private var lastLocation: Location? = null
-    private var rotateViewChangeState = RotateViewChangeState.Disabled
-    private var rotateView: RotateView? = null
 }
