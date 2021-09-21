@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-
     <application
         android:name=".android.Application"
         android:allowBackup="true"
@@ -24,12 +23,16 @@
         android:theme="@style/Theme.SuperFit"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.TrackingActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SuperFit.Map" />
+        <activity
             android:name=".ui.SensorDevicesActivity"
             android:exported="true" />
         <activity
             android:name=".ui.DisplayActivity"
             android:exported="true"
-            android:theme="@style/Theme.SuperFit.Display" />
+            android:theme="@style/Theme.SuperFit.Map" />
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
@@ -42,8 +45,8 @@
         </activity>
         <activity android:name=".ui.PreferenceActivity" />
         <activity
-            android:name=".ui.MapActivity"
-            android:theme="@style/Theme.SuperFit.NoActionBar" />
+            android:name=".ui.KannWegMapActivity"
+            android:theme="@style/Theme.SuperFit.Map" />
 
         <service android:name=".android.Service" />
     </application>

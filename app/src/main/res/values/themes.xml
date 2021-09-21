@@ -14,7 +14,14 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.SuperFit.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.SuperFit.NoActionBar" parent="Theme.SuperFit">
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.SuperFit.Map" parent="Theme.SuperFit">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="Theme.SuperFit.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -23,9 +30,7 @@
 
     <style name="Theme.SuperFit.Display">
         <item name="android:textColor">@color/colorDisplayText</item>
-<!--        <item name="android:windowBackground">@color/colorDisplayDark</item>-->
         <item name="android:colorBackground">@color/colorDisplayDark</item>
-<!--        <item name="android:background">@color/colorDisplayDark</item>-->
         <item name="android:colorEdgeEffect">@color/colorDisplayText</item>
         <item name="android:textSize">16sp</item>
         <item name="windowNoTitle">true</item>

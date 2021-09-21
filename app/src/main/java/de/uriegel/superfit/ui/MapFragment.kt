@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
-import de.uriegel.superfit.databinding.FragmentTrackingBinding
 import de.uriegel.superfit.maps.LocationManager
 import de.uriegel.superfit.maps.LocationMarker
 import de.uriegel.superfit.maps.TrackLine
@@ -32,14 +31,14 @@ import org.mapsforge.map.reader.MapFile
 import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.FileInputStream
 
-class MapFragment(private val tracking: Boolean) : Fragment(), CoroutineScope {
+open class MapFragment(private val tracking: Boolean) : Fragment(), CoroutineScope {
 
     constructor() : this(false)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
-        binding = FragmentTrackingBinding.inflate(layoutInflater)
-        frameLayout = binding.root.findViewById(R.id.mapContainer)
+        //binding = FragmentTrackingBinding.inflate(layoutInflater)
+        //frameLayout = binding.root.findViewById(R.id.map_container)
         mapView = MapView(activity)
         with(mapView) {
             isClickable = true
@@ -49,7 +48,7 @@ class MapFragment(private val tracking: Boolean) : Fragment(), CoroutineScope {
             setZoomLevelMax(20)
             setZoomLevel(16)
         }
-        frameLayout.addView(mapView)
+        //frameLayout.addView(mapView)
 
         val tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1.0F,
             mapView.model.frameBufferModel.overdrawFactor)
@@ -59,7 +58,7 @@ class MapFragment(private val tracking: Boolean) : Fragment(), CoroutineScope {
         if (uriString == "") {
             requireActivity().finish()
             requireActivity().toast(R.string.toast_nomaps, Toast.LENGTH_LONG)
-            return binding.root
+            //return binding.root
         }
         val uri = Uri.parse(uriString)
         val fis: FileInputStream = requireActivity().contentResolver.openInputStream(uri) as FileInputStream
@@ -81,19 +80,19 @@ class MapFragment(private val tracking: Boolean) : Fragment(), CoroutineScope {
 
         if (tracking)
             loadGpxTrack(null)
-
-        return binding.root
+        return mapView
+        //return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.switcher.setOnClickListener {
+        //binding.switcher.setOnClickListener {
             if (activity is DisplayActivity) {
                 followLocation = !followLocation
                 enableBearing(followLocation)
                 (activity as DisplayActivity).pagingEnabled = followLocation
             }
-        }
+        //}
     }
 
     override fun onDestroy() {
@@ -190,7 +189,7 @@ class MapFragment(private val tracking: Boolean) : Fragment(), CoroutineScope {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var frameLayout: FrameLayout
     private lateinit var mapView: MapView
-    private lateinit var binding: FragmentTrackingBinding
+
     private lateinit var trackLine: TrackLine
     private var followLocation = true
     private var location: LocationMarker? = null

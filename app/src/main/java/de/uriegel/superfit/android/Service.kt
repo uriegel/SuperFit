@@ -27,8 +27,8 @@ class Service: Service() {
             .build()
 
         LocationManager.start(this)
-        BikeService.initialize()
-        BikeService.connect(this)
+        //BikeService.initialize()
+        //BikeService.connect(this)
 
         wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
             .run {

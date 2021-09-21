@@ -1,105 +1,128 @@
 package de.uriegel.superfit.ui
 
-import android.app.Activity
-import android.content.Intent
+import android.location.Location
+import android.net.Uri
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import de.uriegel.activityextensions.ActivityRequest
+import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
-import de.uriegel.superfit.databinding.ActivityMapBinding
-import de.uriegel.superfit.maps.exportToGpx
+import de.uriegel.superfit.maps.LocationManager
+import de.uriegel.superfit.maps.LocationMarker
+import de.uriegel.superfit.maps.TrackLine
 import de.uriegel.superfit.model.MainViewModel
+import de.uriegel.superfit.ui.utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
+import org.mapsforge.core.model.BoundingBox
+import org.mapsforge.map.android.view.MapView
+import org.mapsforge.map.android.util.AndroidUtil
 
-class MapActivity: AppCompatActivity(), CoroutineScope {
+import org.mapsforge.map.rendertheme.InternalRenderTheme
+
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory
+
+import org.mapsforge.map.layer.renderer.TileRendererLayer
+
+import org.mapsforge.map.reader.MapFile
+
+import org.mapsforge.map.datastore.MapDataStore
+import org.mapsforge.core.model.LatLong
+import org.mapsforge.map.android.rotation.RotateView
+import java.io.FileInputStream
+
+abstract class MapActivity(private val trackNrChoice: Int?) : AppCompatActivity(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMapBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        binding.btnMenu.setOnClickListener {
-            val visibility = if (binding.btnDelete.visibility == View.GONE) View.VISIBLE else View.GONE
-            binding.btnDelete.visibility = visibility
-            binding.btnEdit.visibility = visibility
-            binding.btnSave.visibility = visibility
+        val (root, mapContainer) = initializeBinding()
+        this.mapContainer = mapContainer
+        setContentView(root)
+
+        mapView = MapView(this)
+        with(mapView) {
+            // isClickable = true
+            setBuiltInZoomControls(true)
+            mapScaleBar.isVisible = true
+            //model.frameBufferModel.overdrawFactor = 1.0
+//            setZoomLevelMin(10)
+//            setZoomLevelMax(20)
+            setZoomLevel(16)
+        }
+        mapContainer.addView(mapView)
+
+        val tileCache = AndroidUtil.createTileCache(this, "mapcache", mapView.model.displayModel.tileSize, 1f,
+            mapView.model.frameBufferModel.overdrawFactor)
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val uriString = preferences?.getString(PreferenceFragment.PREF_MAP, "")
+        if (uriString == "") {
+            toast(R.string.toast_nomaps, Toast.LENGTH_LONG)
+            // TODO
+            return
+        }
+        val uri = Uri.parse(uriString)
+        val fis: FileInputStream = contentResolver.openInputStream(uri) as FileInputStream
+        val mapDataStore: MapDataStore = MapFile(fis)
+//        val tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
+//            InternalRenderTheme.OSMARENDER, false, true, false)
+        val tileRendererLayer = TileRendererLayer(
+            tileCache, mapDataStore,
+            mapView.model.mapViewPosition, AndroidGraphicFactory.INSTANCE
+        )
+        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT)
+        with(mapView) {
+            layerManager.layers.add(tileRendererLayer)
+            setCenter(LatLong(50.90042250198412, 6.715496743031949))
         }
 
-        binding.btnDelete.setOnClickListener {
-           val builder = AlertDialog.Builder(this)
-           builder.apply {
-                setPositiveButton(R.string.ok) { _, _ ->
-                    launch { viewModel.deleteTrackAsync(trackNr) }
-                    finish()
-                }
-               setNegativeButton(R.string.cancel) { _, _ -> }
-           }
-            val dialog = builder
-                .setMessage(getString(R.string.alert_delete_track))
-                .setTitle(getString(R.string.alert_title_delete_track))
-                .create()
-            dialog.show()
-        }
+        trackLine = TrackLine()
+        mapView.layerManager.layers.add(trackLine)
+        loadGpxTrack()
+    }
 
-        binding.btnSave.setOnClickListener {
-            launch {
-                viewModel.findTrackAsync(trackNr).await()?.let { track ->
-                    val timeZone = TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
-                    val date = (Date(track.time + track.timeOffset - timeZone))
-                    val cal = Calendar.getInstance()
-                    cal.time = date
+    override fun onDestroy() {
+        mapView.destroyAll()
+        AndroidGraphicFactory.clearResourceMemoryCache()
+        super.onDestroy()
+    }
 
-                    val name: String = if (track.trackName?.isNotEmpty() == true)
-                        track.trackName!!
-                    else {
-                        "${cal.get(Calendar.YEAR)}" +
-                                "-${(cal.get(Calendar.MONTH) + 1).toString().padStart(2, '0')}" +
-                                "-${cal.get(Calendar.DATE).toString().padStart(2, '0')}" +
-                                "-${cal.get(Calendar.HOUR_OF_DAY).toString().padStart(2, '0')}" +
-                                "-${cal.get(Calendar.MINUTE).toString().padStart(2, '0')}"
-                    }
+    protected data class BindingData(val root: View, val mapContainer: FrameLayout)
 
-                    val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
-                    intent.addCategory(Intent.CATEGORY_OPENABLE)
-                    intent.type = "application/gpx+xml"
-                    intent.putExtra(Intent.EXTRA_TITLE, "$name.gpx")
-                    val result = activityRequest.launch(intent)
-                    if (result.resultCode == Activity.RESULT_OK) {
-                        val uri = result.data?.data!!
-                        runCatching {
-                            val stream = contentResolver.openOutputStream(uri)
-                            stream?.let {
-                                viewModel.findTrackPointsAsync(trackNr).await()?.let { trackPoints ->
-                                    exportToGpx(it, name, track, trackPoints)
-                                }
-                                it.close()
-                            }
-                        }
-                        this@MapActivity.finish()
-                    }
-                }
-            }
-        }
+    abstract protected fun initializeBinding(): BindingData
 
-        trackNr = intent.getIntExtra(TracksFragment.TRACK_NR, -1)
-        val fragment = supportFragmentManager.findFragmentById(R.id.fragment) as MapFragment
-        fragment.loadGpxTrack(trackNr)
+    private fun loadGpxTrack() {
         launch {
-            viewModel.findTrackPointsAsync(trackNr).await()?.let {
+            val trackNr = trackNrChoice ?: LocationManager.getCurrentTrack()
+
+            trackNr?.let { tnr ->
+                viewModel.findTrackPointsAsync(tnr).await()?.let { track ->
+                    track.forEach { (trackLine.latLongs.add(LatLong(it.latitude, it.longitude))) }
+                    if (trackNrChoice != null)
+                        zoomAndPan()
+                }
             }
         }
     }
 
+    private fun zoomAndPan() {
+        val boundingBox = BoundingBox(trackLine.latLongs)
+        val width = mapView.width
+        val height = mapView.height
+        if (width <= 0 || height <= 0)
+            return
+        val centerPoint = LatLong((boundingBox.maxLatitude + boundingBox.minLatitude) / 2, (boundingBox.maxLongitude + boundingBox.minLongitude) / 2)
+        mapView.setCenter(centerPoint)
+    }
+
     override val coroutineContext = Dispatchers.Main
 
-    private val activityRequest: ActivityRequest = ActivityRequest(this)
-
+    protected lateinit var mapContainer: FrameLayout
+    protected lateinit var mapView: MapView
+    protected lateinit var trackLine: TrackLine
     private val viewModel: MainViewModel by viewModels()
-    private lateinit var binding: ActivityMapBinding
-    private var trackNr: Int = -1
 }

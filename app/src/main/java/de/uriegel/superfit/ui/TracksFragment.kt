@@ -25,7 +25,7 @@ class TracksFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerSetup {
-            val intent = Intent(activity, MapActivity::class.java)
+            val intent = Intent(activity, KannWegMapActivity::class.java)
             intent.putExtra(TRACK_NR, it.id)
             startActivity(intent)
         }

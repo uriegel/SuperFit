@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MapActivity">
+    tools:context=".ui.KannWegMapActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment"
@@ -29,7 +29,8 @@
         android:contentDescription="@string/toggle_controls"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/fragment"
-        app:srcCompat="@drawable/menu" />
+        app:srcCompat="@drawable/menu"
+        tools:ignore="ImageContrastCheck" />
 
     <ImageButton
         android:id="@+id/btnDelete"
@@ -42,7 +43,9 @@
         app:layout_constraintHorizontal_bias="0.209"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnMenu"
-        app:srcCompat="@android:drawable/ic_menu_delete" />
+        app:srcCompat="@android:drawable/ic_menu_delete"
+        tools:ignore="ImageContrastCheck"
+        tools:visibility="visible" />
 
     <ImageButton
         android:id="@+id/btnEdit"
@@ -55,7 +58,9 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btnDelete"
         app:layout_constraintTop_toBottomOf="@+id/btnMenu"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
+        app:srcCompat="@android:drawable/ic_menu_edit"
+        tools:ignore="ImageContrastCheck"
+        tools:visibility="visible" />
 
     <ImageButton
         android:id="@+id/btnSave"
@@ -68,6 +73,8 @@
         app:layout_constraintHorizontal_bias="0.627"
         app:layout_constraintStart_toEndOf="@+id/btnEdit"
         app:layout_constraintTop_toBottomOf="@+id/btnMenu"
-        app:srcCompat="@android:drawable/ic_menu_save" />
+        app:srcCompat="@android:drawable/ic_menu_save"
+        tools:ignore="ImageContrastCheck"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,9 +22,11 @@ class ControlsFragment : Fragment() {
         binding.btnStart.setOnClickListener {
             val startIntent = Intent(activity, Service::class.java)
             activity?.startService(startIntent)
-            startActivity(Intent(activity, DisplayActivity::class.java))
+            //startActivity(Intent(activity, DisplayActivity::class.java))
+            startActivity(Intent(activity, TrackingActivity::class.java))
         }
-        binding.btnDisplay.setOnClickListener { startActivity(Intent(activity, DisplayActivity::class.java))}
+        //binding.btnDisplay.setOnClickListener { startActivity(Intent(activity, DisplayActivity::class.java))}
+        binding.btnDisplay.setOnClickListener { startActivity(Intent(activity, TrackingActivity::class.java))}
         binding.btnStop.setOnClickListener {
             val startIntent = Intent(activity, Service::class.java)
             activity?.stopService(startIntent)
