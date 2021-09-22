@@ -36,7 +36,7 @@
         <activity
             android:name=".ui.DisplayActivity"
             android:exported="true"
-            android:theme="@style/Theme.SuperFit.Map" />
+            android:theme="@style/Theme.SuperFit.Display" />
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"

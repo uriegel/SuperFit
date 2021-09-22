@@ -11,7 +11,6 @@ import android.os.ParcelUuid
 import android.util.Log
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.ActivitySensorDevicesBinding
 import de.uriegel.superfit.ui.adapters.SensorDevicesAdapter
 
@@ -46,7 +45,7 @@ class SensorDevicesActivity : AppCompatActivity() {
         handler.postDelayed({
             scanning = false
             bleScanner?.stopScan(scanCallback)
-        }, SCAN_PERIOD)
+        }, scanPeriod)
         scanning = true
         bleScanner?.startScan(listOf(scanFilter), scanSettings, scanCallback)
     }
@@ -71,7 +70,7 @@ class SensorDevicesActivity : AppCompatActivity() {
 
     private var scanning = false
     private val handler = Handler(Looper.getMainLooper())
-    private val SCAN_PERIOD = 10000L
+    private val scanPeriod = 10000L
     private var devicesAdapter = SensorDevicesAdapter {
         val intent = Intent()
         intent.putExtra(RESULT_DEVICE, it.address)
