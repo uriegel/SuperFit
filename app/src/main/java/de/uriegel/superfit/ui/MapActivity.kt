@@ -62,7 +62,7 @@ abstract class MapActivity : AppCompatActivity(), CoroutineScope {
                 tileCache, mapDataStore,
                 mapView.model.mapViewPosition, AndroidGraphicFactory.INSTANCE
             )
-            tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT)
+            tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER)
             mapView.layerManager.layers.add(tileRendererLayer)
         } ?: toast(R.string.toast_nomaps, Toast.LENGTH_LONG)
 
