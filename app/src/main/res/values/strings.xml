@@ -41,4 +41,6 @@
     <string name="no_persistent_location_access">Kein ständiger Zugriff auf den Standort</string>
     <string name="no_storage_access">"Kein Zugriff auf den Speicher "</string>
     <string name="bike_sensor">Festlegung des Bike-Sensors</string>
+    <string name="alert_stop_service">Möchtest Du die Aufzeichnung beenden?</string>
+    <string name="alert_title_stop_service">Beenden</string>
 </resources>

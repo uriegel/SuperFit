@@ -1,16 +1,16 @@
 package de.uriegel.superfit.ui
 
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.webkit.RenderProcessGoneDetail
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import de.uriegel.superfit.R
 import de.uriegel.superfit.android.Service
 import de.uriegel.superfit.databinding.FragmentControlsBinding
 
@@ -34,8 +34,20 @@ class ControlsFragment : Fragment() {
         binding.btnDisplay.setOnClickListener { startActivity(Intent(activity, DisplayActivity::class.java))}
         binding.btnMap.setOnClickListener { startActivity(Intent(activity, TrackingActivity::class.java))}
         binding.btnStop.setOnClickListener {
-            val startIntent = Intent(activity, Service::class.java)
-            activity?.stopService(startIntent)
+            val builder = AlertDialog.Builder(requireActivity())
+            builder.apply {
+                setPositiveButton(R.string.ok) { _, _ ->
+                    val startIntent = Intent(activity, Service::class.java)
+                    activity?.stopService(startIntent)
+                }
+                setNegativeButton(R.string.cancel) { _, _ -> }
+            }
+            val dialog = builder
+                .setMessage(getString(R.string.alert_stop_service))
+                .setTitle(getString(R.string.alert_title_stop_service))
+                .create()
+            dialog.show()
+
         }
         Service.setOnStateChangedListener { onStateChanged(it) }
     }
