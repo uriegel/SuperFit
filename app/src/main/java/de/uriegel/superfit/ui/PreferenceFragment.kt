@@ -21,16 +21,21 @@ class PreferenceFragment(activity: ComponentActivity) : PreferenceFragmentCompat
 
         val bikeSupport = findPreference<CheckBoxPreference>(BIKE_SUPPORT)
         val editTextPreference = findPreference<EditTextPreference>(PREF_WHEEL)
+        val bikeSensor = findPreference<Preference>(PREF_BIKE_SENSOR)
+
+        fun setEnabled(isEnabled: Boolean) {
+            editTextPreference?.isEnabled = isEnabled
+            bikeSensor?.isEnabled = isEnabled
+        }
+        bikeSupport?.isChecked?.also { setEnabled(it) }
+
         bikeSupport?.setOnPreferenceClickListener {
-            editTextPreference?.isEnabled = bikeSupport.isChecked == true
+            setEnabled(bikeSupport.isChecked)
             true
         }
-        editTextPreference?.isEnabled = bikeSupport?.isChecked == true
         editTextPreference?.setOnBindEditTextListener {
             it.inputType = InputType.TYPE_CLASS_NUMBER
         }
-
-        val bikeSensor = findPreference<Preference>(PREF_BIKE_SENSOR)
         bikeSensor?.setOnPreferenceClickListener {
             launch {
                 activityRequest.scan(requireActivity(), BikeService.BIKE_UUID)?.let {
