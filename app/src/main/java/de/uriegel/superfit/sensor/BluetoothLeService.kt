@@ -3,13 +3,10 @@ package de.uriegel.superfit.sensor
 import android.bluetooth.*
 import android.content.Context
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import androidx.preference.PreferenceManager
 import java.util.*
 
-abstract class BluetoothLeService: CoroutineScope {
-
-    override val coroutineContext = Dispatchers.Main
+abstract class BluetoothLeService {
 
     fun initialize(): Boolean {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -20,7 +17,10 @@ abstract class BluetoothLeService: CoroutineScope {
         return true
     }
 
-    protected fun connect(context: Context, deviceAddress: String) {
+    fun connect(context: Context) {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val deviceAddress = preferences.getString(getPrefAddress(),"") ?: ""
+
         bluetoothAdapter?.let {
             try {
                 val device = it.getRemoteDevice(deviceAddress)
@@ -33,6 +33,13 @@ abstract class BluetoothLeService: CoroutineScope {
         } ?: run {
             Log.w(getTag(), "BluetoothAdapter not initialized")
             false
+        }
+    }
+
+    fun stop() {
+        bluetoothGatt?.let { gatt ->
+            gatt.close()
+            bluetoothGatt = null
         }
     }
 
@@ -50,9 +57,9 @@ abstract class BluetoothLeService: CoroutineScope {
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 bluetoothGatt?.let {
-                    it.services?.let { services ->
+                        bluetoothGatt -> bluetoothGatt.services?.let { services ->
                         services.find { it.uuid == UUID.fromString(getUuid()) }
-                            ?.let { service -> discoverService(it, service) }
+                            ?.let { service -> discoverService(bluetoothGatt, service) }
                     }
                 }
             } else {
@@ -69,20 +76,11 @@ abstract class BluetoothLeService: CoroutineScope {
     protected abstract fun discoverService(bluetoothGatt: BluetoothGatt, service: BluetoothGattService)
     protected abstract fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic)
     protected abstract fun getTag(): String
-
-    private fun close() {
-        bluetoothGatt?.let { gatt ->
-            gatt.close()
-            bluetoothGatt = null
-        }
-    }
+    protected abstract fun getPrefAddress(): String
 
     companion object {
-        const val BATTERY_CHARACTERISTICS_ID = "00002a38-0000-1000-8000-00805f9b34fb"
+        //const val BATTERY_CHARACTERISTICS_ID = "00002a38-0000-1000-8000-00805f9b34fb"
         const val CLIENT_CHARACTERISTICS_ID = "00002902-0000-1000-8000-00805f9b34fb"
-        const val DEVICE_ADDRESS = "DEVICE_ADDRESS"
-        const val ACTION_GATT_CONNECTED = "de.uriegel.superfit.ACTION_GATT_CONNECTED"
-        const val ACTION_GATT_DISCONNECTED = "de.uriegel.superfit.ACTION_GATT_DISCONNECTED"
         private const val STATE_DISCONNECTED = 0
         private const val STATE_CONNECTED = 2
     }

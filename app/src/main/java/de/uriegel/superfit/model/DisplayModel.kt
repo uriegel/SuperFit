@@ -4,12 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import de.uriegel.superfit.maps.LocationManager
 import de.uriegel.superfit.sensor.BikeService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import de.uriegel.superfit.sensor.HeartRateService
 
-class DisplayModel : ViewModel(), CoroutineScope {
-
-    override val coroutineContext = Dispatchers.Main
+class DisplayModel : ViewModel() {
 
     val cadence: MutableLiveData<Int> = MutableLiveData(-1)
     val velocity: MutableLiveData<Float> = MutableLiveData(Float.NEGATIVE_INFINITY)
@@ -25,10 +22,8 @@ class DisplayModel : ViewModel(), CoroutineScope {
             gpsActive.value = true
             LocationManager.setGpsActive = null
         }
-        BikeService.setSpeed = {
-            velocity.value = it.toFloat()
-        }
-//        HeartRate.listener = { launch { heartRate.value = it } }
+        BikeService.setSpeed = { velocity.postValue(it.toFloat()) }
+        HeartRateService.setHeartRate = { heartRate.postValue(it) }
 //        Bike.listener = { launch {
 //            cadence.value = it.cadence
 //            velocity.value = it.speed

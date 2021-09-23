@@ -51,7 +51,7 @@ class SensorDevicesActivity : AppCompatActivity() {
     }
 
     private val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-    var bleScanner: BluetoothLeScanner? = null
+    private var bleScanner: BluetoothLeScanner? = null
 
     private val scanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
