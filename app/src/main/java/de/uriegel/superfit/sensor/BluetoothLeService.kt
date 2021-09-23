@@ -65,9 +65,9 @@ abstract class BluetoothLeService: CoroutineScope {
         }
     }
 
+    abstract fun getUuid(): String
     protected abstract fun discoverService(bluetoothGatt: BluetoothGatt, service: BluetoothGattService)
     protected abstract fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic)
-    protected abstract fun getUuid(): String
     protected abstract fun getTag(): String
 
     private fun close() {

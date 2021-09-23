@@ -5,8 +5,6 @@ import android.bluetooth.le.*
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.os.ParcelUuid
 import android.util.Log
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -42,12 +40,14 @@ class SensorDevicesActivity : AppCompatActivity() {
             .build()
 
         bleScanner = bluetoothAdapter.bluetoothLeScanner
-        handler.postDelayed({
-            scanning = false
-            bleScanner?.stopScan(scanCallback)
-        }, scanPeriod)
         scanning = true
         bleScanner?.startScan(listOf(scanFilter), scanSettings, scanCallback)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        scanning = false
+        bleScanner?.stopScan(scanCallback)
     }
 
     private val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -69,8 +69,6 @@ class SensorDevicesActivity : AppCompatActivity() {
     }
 
     private var scanning = false
-    private val handler = Handler(Looper.getMainLooper())
-    private val scanPeriod = 10000L
     private var devicesAdapter = SensorDevicesAdapter {
         val intent = Intent()
         intent.putExtra(RESULT_DEVICE, it.address)

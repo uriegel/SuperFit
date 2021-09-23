@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.maps.LocationManager
 import de.uriegel.superfit.sensor.BikeService.BIKE_CHARACTERISTICS_ID
-import de.uriegel.superfit.sensor.BikeService.BIKE_UUID
 import de.uriegel.superfit.ui.MainActivity
 import de.uriegel.superfit.ui.PreferenceFragment
 import kotlinx.coroutines.launch
@@ -20,7 +19,7 @@ import java.util.*
 import kotlin.math.log
 
 object BikeService : BluetoothLeService() {
-    override fun getUuid() = BIKE_UUID
+    override fun getUuid() = uuid
 
     fun connect(context: Context) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -74,7 +73,7 @@ object BikeService : BluetoothLeService() {
     var lastTimestampWheel = 0
 
     private lateinit var deviceAddress: String
-    const val BIKE_UUID = "00001816-0000-1000-8000-00805f9b34fb"
+    private  const val uuid = "00001816-0000-1000-8000-00805f9b34fb"
     const val BIKE_CHARACTERISTICS_ID = "00002a5b-0000-1000-8000-00805f9b34fb"
     const val BIKE_RATE = "BIKE_RATE"
 }

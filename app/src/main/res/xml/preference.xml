@@ -21,6 +21,10 @@
             app:dialogMessage="Hier wird der Bike-Sensor gesucht und festgelegt"
             app:key="PREF_BIKE_SENSOR"
             app:title="@string/bike_sensor" />
+        <Preference
+            app:dialogMessage="Hier wird der Herzfrequenz-Sensor gesucht und festgelegt"
+            app:key="PREF_HEARTRATE_SENSOR"
+            app:title="@string/heartrate_sensor" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Navigation">
         <Preference

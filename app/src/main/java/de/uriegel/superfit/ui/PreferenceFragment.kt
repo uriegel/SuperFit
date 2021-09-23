@@ -2,6 +2,7 @@ package de.uriegel.superfit.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
 import androidx.activity.ComponentActivity
@@ -9,6 +10,7 @@ import androidx.preference.*
 import de.uriegel.activityextensions.ActivityRequest
 import de.uriegel.superfit.R
 import de.uriegel.superfit.sensor.BikeService
+import de.uriegel.superfit.sensor.HeartRateService
 import de.uriegel.superfit.sensor.scan
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,10 +24,12 @@ class PreferenceFragment(activity: ComponentActivity) : PreferenceFragmentCompat
         val bikeSupport = findPreference<CheckBoxPreference>(BIKE_SUPPORT)
         val editTextPreference = findPreference<EditTextPreference>(PREF_WHEEL)
         val bikeSensor = findPreference<Preference>(PREF_BIKE_SENSOR)
+        val heartrateSensor = findPreference<Preference>(PREF_HEARTRATE_SENSOR)
 
         fun setEnabled(isEnabled: Boolean) {
             editTextPreference?.isEnabled = isEnabled
             bikeSensor?.isEnabled = isEnabled
+            heartrateSensor?.isEnabled = isEnabled
         }
         bikeSupport?.isChecked?.also { setEnabled(it) }
 
@@ -36,17 +40,33 @@ class PreferenceFragment(activity: ComponentActivity) : PreferenceFragmentCompat
         editTextPreference?.setOnBindEditTextListener {
             it.inputType = InputType.TYPE_CLASS_NUMBER
         }
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        bikeSensor?.summary =preferences.getString(PREF_BIKE_SENSOR, "")
         bikeSensor?.setOnPreferenceClickListener {
             launch {
-                activityRequest.scan(requireActivity(), BikeService.BIKE_UUID)?.let {
-                    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+                activityRequest.scan(requireActivity(), BikeService.getUuid())?.let {
                     preferences.edit().putString(PREF_BIKE_SENSOR, it).apply()
+                    bikeSensor.summary = it
+                }
+            }
+            true
+        }
+        heartrateSensor?.summary =preferences.getString(PREF_HEARTRATE_SENSOR, "")
+        heartrateSensor?.setOnPreferenceClickListener {
+            launch {
+                activityRequest.scan(requireActivity(), HeartRateService.getUuid())?.let {
+                    preferences.edit().putString(PREF_HEARTRATE_SENSOR, it).apply()
+                    heartrateSensor.summary = it
                 }
             }
             true
         }
 
         val map = findPreference<Preference>(PREF_MAP)
+        preferences.getString(PREF_MAP, null)?.let {
+            val uri = Uri.parse(it)
+            map?.summary = uri.path
+        }
         map?.setOnPreferenceClickListener {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
@@ -60,9 +80,8 @@ class PreferenceFragment(activity: ComponentActivity) : PreferenceFragmentCompat
                         val contentResolver = requireActivity().contentResolver
                         val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
                         contentResolver.takePersistableUriPermission(it, takeFlags)
-                        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
                         preferences.edit().putString(PREF_MAP, it.toString()).apply()
-                        // TODO: show map in fragment
+                        map.summary = it.path
                     }
                 }
             }
@@ -77,6 +96,7 @@ class PreferenceFragment(activity: ComponentActivity) : PreferenceFragmentCompat
     companion object {
         const val PREF_MAP = "PREF_MAP"
         const val PREF_BIKE_SENSOR = "PREF_BIKE_SENSOR"
+        const val PREF_HEARTRATE_SENSOR = "PREF_HEARTRATE_SENSOR"
         const val PREF_WHEEL = "PREF_WHEEL"
         const val BIKE_SUPPORT = "bike_support"
     }
