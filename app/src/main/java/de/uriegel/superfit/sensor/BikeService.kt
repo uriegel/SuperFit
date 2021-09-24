@@ -26,7 +26,6 @@ object BikeService : BluetoothLeService() {
         lastTimestampWheel = 0
         lastCrankCycles = 0
         lastTimestampCrank = 0
-        wheelCircumference = 0
         maxVelocity = 0F
 
         return result && this.wheelCircumference != 0
@@ -35,7 +34,9 @@ object BikeService : BluetoothLeService() {
     override fun getUuid() = uuid
 
     override fun discoverService(bluetoothGatt: BluetoothGatt, service: BluetoothGattService) {
-        service.characteristics?.find { characteristic -> characteristic.uuid == UUID.fromString(characteristics_id) }?.let {
+        service.characteristics?.find {
+                characteristic -> characteristic.uuid == UUID.fromString(characteristics_id)
+        }?.let {
             bluetoothGatt.setCharacteristicNotification(it, true)
             val descriptor = it.getDescriptor(UUID.fromString(CLIENT_CHARACTERISTICS_ID))
             descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
@@ -69,6 +70,7 @@ object BikeService : BluetoothLeService() {
 
         val velocity = wheelCircumference * cyclesPerSecs * 0.0036F
         val distance = wheelCircumference * wheelCycles / 1_000_000F
+
         maxVelocity =
             if (velocity > maxVelocity)
                 velocity

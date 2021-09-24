@@ -10,7 +10,9 @@ import java.util.*
 object HeartRateService : BluetoothLeService() {
 
     override fun discoverService(bluetoothGatt: BluetoothGatt, service: BluetoothGattService) {
-        service.characteristics?.find { characteristic -> characteristic.uuid == UUID.fromString(characteristics_id) }?.let {
+        service.characteristics?.find {
+            characteristic -> characteristic.uuid == UUID.fromString(characteristics_id)
+        }?.let {
             bluetoothGatt.setCharacteristicNotification(it, true)
             val descriptor = it.getDescriptor(UUID.fromString(CLIENT_CHARACTERISTICS_ID))
             descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE

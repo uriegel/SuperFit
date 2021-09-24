@@ -24,7 +24,7 @@ abstract class BluetoothLeService {
         bluetoothAdapter?.let {
             try {
                 val device = it.getRemoteDevice(deviceAddress)
-                bluetoothGatt = device.connectGatt(context, false, bluetoothGattCallback)
+                bluetoothGatt = device.connectGatt(context, true, bluetoothGattCallback)
                 true
             } catch (exception: IllegalArgumentException) {
                 Log.w(getTag(), "Device not found with provided address.")
@@ -46,11 +46,7 @@ abstract class BluetoothLeService {
     private val bluetoothGattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             when (newState) {
-                BluetoothProfile.STATE_CONNECTED -> {
-                    connectionState = STATE_CONNECTED
-                    bluetoothGatt?.discoverServices()
-                }
-                BluetoothProfile.STATE_DISCONNECTED -> connectionState = STATE_DISCONNECTED
+                BluetoothProfile.STATE_CONNECTED -> bluetoothGatt?.discoverServices()
             }
         }
 
@@ -81,12 +77,9 @@ abstract class BluetoothLeService {
     companion object {
         //const val BATTERY_CHARACTERISTICS_ID = "00002a38-0000-1000-8000-00805f9b34fb"
         const val CLIENT_CHARACTERISTICS_ID = "00002902-0000-1000-8000-00805f9b34fb"
-        private const val STATE_DISCONNECTED = 0
-        private const val STATE_CONNECTED = 2
     }
 
     private var bluetoothAdapter: BluetoothAdapter? = null
     private var bluetoothGatt: BluetoothGatt? = null
-    private var connectionState = STATE_DISCONNECTED
 }
 
