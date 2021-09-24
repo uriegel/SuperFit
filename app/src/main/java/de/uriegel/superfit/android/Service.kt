@@ -10,6 +10,7 @@ import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import de.uriegel.superfit.R
 import de.uriegel.superfit.maps.LocationManager
+import de.uriegel.superfit.sensor.BikeService
 import de.uriegel.superfit.sensor.HeartRateService
 import de.uriegel.superfit.ui.MainActivity
 
@@ -27,9 +28,9 @@ class Service: Service() {
             .build()
 
         LocationManager.start(this)
-        //BikeService.initialize()
-        //BikeService.connect(this)
-        HeartRateService.initialize()
+        BikeService.initialize(this)
+        BikeService.connect(this)
+        HeartRateService.initialize(this)
         HeartRateService.connect(this)
 
         wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
@@ -53,7 +54,7 @@ class Service: Service() {
 
         LocationManager.stop()
         HeartRateService.stop()
-        //Bike.stop()
+        BikeService.stop()
 
         isRunning = false
     }

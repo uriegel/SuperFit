@@ -8,7 +8,7 @@ import java.util.*
 
 abstract class BluetoothLeService {
 
-    fun initialize(): Boolean {
+    open fun initialize(context: Context): Boolean {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if (bluetoothAdapter == null) {
             Log.e(getTag(), "Unable to obtain a BluetoothAdapter.")
