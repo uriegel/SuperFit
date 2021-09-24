@@ -22,11 +22,22 @@ object BikeService : BluetoothLeService() {
             }
         }
 
+        stopwatch = StopWatch().also { sw ->
+            sw.tick = {
+                duration = it
+                averageVelocity = (if (it > 0) distance / it else 0f) * 3600f
+            }
+        }
+
         lastWheelCycles = 0
         lastTimestampWheel = 0
         lastCrankCycles = 0
         lastTimestampCrank = 0
         maxVelocity = 0F
+        distance = 0F
+        duration = 0
+        averageVelocity = 0F
+        speedIsNull = true
 
         return result && this.wheelCircumference != 0
     }
@@ -69,17 +80,28 @@ object BikeService : BluetoothLeService() {
         val crankCyclesPerMin = (crankCyclesPerSecs * 60F).toInt()
 
         val velocity = wheelCircumference * cyclesPerSecs * 0.0036F
-        val distance = wheelCircumference * wheelCycles / 1_000_000F
+        distance = wheelCircumference * wheelCycles / 1_000_000F
 
         maxVelocity =
             if (velocity > maxVelocity)
                 velocity
             else maxVelocity
+
+        if (velocity > 4.0f && speedIsNull) {
+            speedIsNull = false
+            stopwatch?.start()
+        } else if (velocity <= 4.0f && !speedIsNull) {
+            speedIsNull = true
+            stopwatch?.pause()
+        }
+
         setBikeData?.invoke(BikeData(
             velocity,
             distance,
             maxVelocity,
-            crankCyclesPerMin
+            crankCyclesPerMin,
+            duration,
+            averageVelocity
         ))
     }
 
@@ -94,7 +116,12 @@ object BikeService : BluetoothLeService() {
     private var lastTimestampCrank = 0
     private var wheelCircumference = 0
     private var maxVelocity = 0F
+    private var distance = 0F
+    private var duration = 0
+    private var averageVelocity = 0F
+    private var speedIsNull = true
 
     private const val uuid = "00001816-0000-1000-8000-00805f9b34fb"
     private const val characteristics_id = "00002a5b-0000-1000-8000-00805f9b34fb"
+    private var stopwatch: StopWatch? = null
 }

@@ -27,7 +27,8 @@ class DisplayModel : ViewModel() {
             distance.postValue(bikeData.distance)
             maxVelocity.postValue(bikeData.maxVelocity)
             cadence.postValue(bikeData.crankCyclesPerSecs)
-
+            duration.postValue(bikeData.duration)
+            averageVelocity.postValue(bikeData.averageVelocity)
         }
         HeartRateService.setHeartRate = { heartRate.postValue(it) }
     }
