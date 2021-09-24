@@ -22,15 +22,13 @@ class DisplayModel : ViewModel() {
             gpsActive.value = true
             LocationManager.setGpsActive = null
         }
-        BikeService.setSpeed = { velocity.postValue(it.toFloat()) }
+        BikeService.setBikeData = { bikeData ->
+            velocity.postValue(bikeData.velocity)
+            distance.postValue(bikeData.distance)
+            maxVelocity.postValue(bikeData.maxVelocity)
+            cadence.postValue(bikeData.crankCyclesPerSecs)
+
+        }
         HeartRateService.setHeartRate = { heartRate.postValue(it) }
-//        Bike.listener = { launch {
-//            cadence.value = it.cadence
-//            velocity.value = it.speed
-//            distance.value = it.distance
-//            duration.value = it.duration
-//            averageVelocity.value = it.averageSpeed
-//            maxVelocity.value = it.maxSpeed
-//        }}
     }
 }

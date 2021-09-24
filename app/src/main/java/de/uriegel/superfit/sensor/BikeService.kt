@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
 import android.content.Context
 import androidx.preference.PreferenceManager
+import de.uriegel.superfit.model.BikeData
 import de.uriegel.superfit.ui.PreferenceFragment
 
 import java.util.*
@@ -20,6 +21,14 @@ object BikeService : BluetoothLeService() {
                 this.wheelCircumference = it.toInt()
             }
         }
+
+        lastWheelCycles = 0
+        lastTimestampWheel = 0
+        lastCrankCycles = 0
+        lastTimestampCrank = 0
+        wheelCircumference = 0
+        maxVelocity = 0F
+
         return result && this.wheelCircumference != 0
     }
 
@@ -37,44 +46,42 @@ object BikeService : BluetoothLeService() {
     override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
         val wheelCycles = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT32, 1)
         val timestampWheel = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 5)
-        val newWheelCycles = if (wheelCycles > lastWheelCycles) { wheelCycles } else null
-        val cyclesPerSecs: Float? = if (lastWheelCycles != wheelCycles) {
-            val timeSpan = if (timestampWheel > lastTimestampWheel)
-                timestampWheel - lastTimestampWheel
-            else
-                timestampWheel + 0x10000 - lastTimestampWheel
-            val cyclesPerSecs = (wheelCycles - lastWheelCycles).toFloat() / timeSpan.toFloat() * 1024
-            lastWheelCycles = wheelCycles
-            lastTimestampWheel = timestampWheel
-            cyclesPerSecs
-        } else null
+        val timeSpan = if (timestampWheel > lastTimestampWheel)
+            timestampWheel - lastTimestampWheel
+        else
+            timestampWheel + 0x10000 - lastTimestampWheel
+        val cyclesPerSecs = (wheelCycles - lastWheelCycles).toFloat() / timeSpan.toFloat() * 1024
+        lastWheelCycles = wheelCycles
+        lastTimestampWheel = timestampWheel
 
         val crankCycles = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 7)
         val timestampCrank = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 9)
-        val crankCyclesPerSecs: Float? = if (lastCrankCycles != crankCycles) {
-            val timeSpan = if (timestampCrank > lastTimestampCrank)
-                timestampCrank - lastTimestampCrank
-            else
-                timestampCrank + 0x10000 - lastTimestampCrank
-            val crankCyclesPerSecs = (crankCycles - lastCrankCycles).toFloat() / timeSpan.toFloat() * 1024
 
-            lastCrankCycles = crankCycles
-            lastTimestampCrank = timestampCrank
-            crankCyclesPerSecs
-        } else null
+        val timeSpanCrank = if (timestampCrank > lastTimestampCrank)
+            timestampCrank - lastTimestampCrank
+        else
+            timestampCrank + 0x10000 - lastTimestampCrank
+        val crankCyclesPerSecs = (crankCycles - lastCrankCycles).toFloat() / timeSpanCrank.toFloat() * 1024
 
-        val speed = cyclesPerSecs?.let { wheelCircumference * it * 0.0036F }
-        val distance = newWheelCycles?.let { wheelCircumference * it / 1_000 }
-        maxSpeed = speed?.let {
-            if (it > maxSpeed)
-                it
-            else maxSpeed
-        } ?: maxSpeed
-        //setSpeed?.invoke(speed)
+        lastCrankCycles = crankCycles
+        lastTimestampCrank = timestampCrank
+        val crankCyclesPerMin = (crankCyclesPerSecs * 60F).toInt()
+
+        val velocity = wheelCircumference * cyclesPerSecs * 0.0036F
+        val distance = wheelCircumference * wheelCycles / 1_000_000F
+        maxVelocity =
+            if (velocity > maxVelocity)
+                velocity
+            else maxVelocity
+        setBikeData?.invoke(BikeData(
+            velocity,
+            distance,
+            maxVelocity,
+            crankCyclesPerMin
+        ))
     }
 
-
-    var setSpeed: ((speed: Double)->Unit)? = null
+    var setBikeData: ((bikeData: BikeData)->Unit)? = null
 
     override fun getTag() = "BIKE"
     override fun getPrefAddress() = PreferenceFragment.PREF_BIKE_SENSOR
@@ -84,7 +91,7 @@ object BikeService : BluetoothLeService() {
     private var lastCrankCycles = 0
     private var lastTimestampCrank = 0
     private var wheelCircumference = 0
-    private var maxSpeed = 0F
+    private var maxVelocity = 0F
 
     private const val uuid = "00001816-0000-1000-8000-00805f9b34fb"
     private const val characteristics_id = "00002a5b-0000-1000-8000-00805f9b34fb"
