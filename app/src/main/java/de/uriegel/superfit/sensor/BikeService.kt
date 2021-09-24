@@ -16,7 +16,9 @@ object BikeService : BluetoothLeService() {
         val result = super.initialize(context)
         if (result) {
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-            this.wheelCircumference = preferences.getInt(PreferenceFragment.PREF_WHEEL, 0)
+            preferences.getString(PreferenceFragment.PREF_WHEEL, null)?.let {
+                this.wheelCircumference = it.toInt()
+            }
         }
         return result && this.wheelCircumference != 0
     }
