@@ -56,7 +56,11 @@ object LocationManager {
                             TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
                         )).await().toInt()
                 }
-                // TODO: //  Bike.speed, HeartRate.currentHeartRate)
+                // TODO Bike.speed, HeartRate.currentHeartRate)
+                // TODO Save track: when stopping: average velocity, time
+                // TODO When Bike sensor is resetting: distance is not enlarging but is now smaller: calculate difference and add it
+                // TODO Save track to google files
+                // TODO optional accuracy circle on location marker
                 trackNr?.let {
                     TracksRepository.insertTrackPointAsync(
                         TrackPoint(it,location.latitude, location.longitude, location.altitude.toFloat(), location.time, location.accuracy)).await()
