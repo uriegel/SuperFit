@@ -16,6 +16,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
 import de.uriegel.activityextensions.ActivityRequest
+import de.uriegel.superfit.EventLogActivity
 import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.ActivityMainBinding
 import de.uriegel.superfit.ui.utils.toast
@@ -85,7 +86,6 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
@@ -94,12 +94,15 @@ class MainActivity : AppCompatActivity(),
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        if (item.itemId == R.id.action_settings) {
-            startActivity(Intent(this, PreferenceActivity::class.java))
-            return true
+        when (item.itemId) {
+            R.id.action_settings ->
+                startActivity(Intent(this, PreferenceActivity::class.java))
+            R.id.action_eventlog ->
+                startActivity(Intent(this, EventLogActivity::class.java))
+            else -> super.onOptionsItemSelected(item)
         }
 
-        return super.onOptionsItemSelected(item)
+        return true
     }
 
     override fun onBackPressed() {

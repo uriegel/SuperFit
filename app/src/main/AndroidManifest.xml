@@ -23,6 +23,9 @@
         android:theme="@style/Theme.SuperFit"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".EventLogActivity"
+            android:exported="true" />
+        <activity
             android:name=".ui.TrackingActivity"
             android:exported="true"
             android:theme="@style/Theme.SuperFit.Map" />
@@ -43,6 +46,7 @@
             android:theme="@style/Theme.SuperFit.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

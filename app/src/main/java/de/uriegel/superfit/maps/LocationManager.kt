@@ -69,7 +69,7 @@ object LocationManager {
                         TrackPoint(nr,location.latitude, location.longitude, location.altitude.toFloat(), location.time, location.accuracy)
                             .also {
                                 it.heartRate = HeartRateService.heartRate
-                                it.speed = BikeService.velocity
+                                it.speed = BikeService.velocity / 3.6F // in m/s
                             }).await()
                 }
                 listener?.invoke(location)

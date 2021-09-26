@@ -44,4 +44,5 @@
     <string name="alert_stop_service">Möchtest Du die Aufzeichnung beenden?</string>
     <string name="alert_title_stop_service">Beenden</string>
     <string name="heartrate_sensor">Herzfrequenz-Sensor</string>
+    <string name="menu_eventlog">Ereignisanzeige</string>
 </resources>
