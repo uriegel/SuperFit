@@ -61,6 +61,8 @@ object LocationManager {
                         )).await().toInt()
                 }
                 // TODO clearLog
+                // TODO Display log
+                // TODO MapFragment and PageViewer as before
                 // TODO optional accuracy circle on location marker
                 trackNr?.let { nr ->
                     TracksRepository.insertTrackPointAsync(
