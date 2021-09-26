@@ -3,12 +3,12 @@ package de.uriegel.superfit.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import de.uriegel.activityextensions.ActivityRequest
 import de.uriegel.superfit.R
+import de.uriegel.superfit.android.logWarnung
 import de.uriegel.superfit.databinding.ActivityTrackBinding
 import de.uriegel.superfit.maps.exportToGpx
 import de.uriegel.superfit.model.MainViewModel
@@ -110,7 +110,7 @@ class TrackActivity: MapActivity() {
             )
             mapView.setCenter(centerPoint)
         } catch (e: Exception) {
-            Log.w("SF", "Zoom and Pan", e)
+            logWarnung("Zoom and Pan", e)
         }
     }
 

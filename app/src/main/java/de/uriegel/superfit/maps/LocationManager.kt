@@ -9,6 +9,7 @@ import android.os.Bundle
 import de.uriegel.superfit.room.Track
 import de.uriegel.superfit.room.TrackPoint
 import de.uriegel.superfit.room.TracksRepository
+import de.uriegel.superfit.sensor.BikeService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,9 +34,11 @@ object LocationManager {
     fun stop() {
         locationManager.removeUpdates(locationListener)
         gpsActive = false
-        if (trackNr != null) {
+        trackNr?.let {
             // TODO: Only, when enough track points (> 30) otherwise delete track, getTrackPointsCount
-            //DataBase.updateTrack(trackNr, Bike.duration, Bike.distance, Bike.averageSpeed)
+            CoroutineScope(Dispatchers.IO).launch {
+                TracksRepository.updateTrackAsync(it, BikeService.distance, BikeService.averageVelocity).await() //DataBase.updateTrack(trackNr, Bike.duration, Bike.distance, Bike.averageSpeed)
+            }
             trackNr = null
         }
     }
@@ -56,10 +59,9 @@ object LocationManager {
                             TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
                         )).await().toInt()
                 }
+                // TODO clearLog
                 // TODO Bike.speed, HeartRate.currentHeartRate)
-                // TODO Save track: when stopping: average velocity, time
-                // TODO When Bike sensor is resetting: distance is not enlarging but is now smaller: calculate difference and add it
-                // TODO Save track to google files
+                // TODO Save track: when stopping: duration
                 // TODO optional accuracy circle on location marker
                 trackNr?.let {
                     TracksRepository.insertTrackPointAsync(

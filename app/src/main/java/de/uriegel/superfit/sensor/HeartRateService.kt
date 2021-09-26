@@ -31,7 +31,6 @@ object HeartRateService : BluetoothLeService() {
 
     var setHeartRate: ((value: Int)->Unit)? = null
 
-    override fun getTag() = "HR"
     override fun getUuid() = uuid
     override fun getPrefAddress() = PreferenceFragment.PREF_HEARTRATE_SENSOR
 

@@ -2,8 +2,9 @@ package de.uriegel.superfit.sensor
 
 import android.bluetooth.*
 import android.content.Context
-import android.util.Log
 import androidx.preference.PreferenceManager
+import de.uriegel.superfit.android.logError
+import de.uriegel.superfit.android.logWarnung
 import java.util.*
 
 abstract class BluetoothLeService {
@@ -11,7 +12,7 @@ abstract class BluetoothLeService {
     open fun initialize(context: Context): Boolean {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if (bluetoothAdapter == null) {
-            Log.e(getTag(), "Unable to obtain a BluetoothAdapter.")
+            logError("Unable to obtain a BluetoothAdapter.")
             return false
         }
         return true
@@ -27,11 +28,11 @@ abstract class BluetoothLeService {
                 bluetoothGatt = device.connectGatt(context, true, bluetoothGattCallback)
                 true
             } catch (exception: IllegalArgumentException) {
-                Log.w(getTag(), "Device not found with provided address.")
+                logWarnung("Device not found with provided address.")
                 false
             }
         } ?: run {
-            Log.w(getTag(), "BluetoothAdapter not initialized")
+            logWarnung("BluetoothAdapter not initialized")
             false
         }
     }
@@ -59,7 +60,7 @@ abstract class BluetoothLeService {
                     }
                 }
             } else {
-                Log.w(getTag(), "onServicesDiscovered received: $status")
+                logWarnung("onServicesDiscovered received: $status")
             }
         }
 
@@ -71,7 +72,6 @@ abstract class BluetoothLeService {
     abstract fun getUuid(): String
     protected abstract fun discoverService(bluetoothGatt: BluetoothGatt, service: BluetoothGattService)
     protected abstract fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic)
-    protected abstract fun getTag(): String
     protected abstract fun getPrefAddress(): String
 
     companion object {

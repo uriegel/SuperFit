@@ -18,6 +18,8 @@ class Service: Service() {
     override fun onCreate() {
         super.onCreate()
 
+        logInfo("Service created")
+
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         notification = NotificationCompat.Builder(this, Application.CHANNEL_SERVICE_ID)
@@ -45,6 +47,8 @@ class Service: Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+
+        logInfo("Service destroyed")
 
         wakeLock.let {
             if (it.isHeld) {

@@ -6,12 +6,17 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
 import android.content.Context
 import androidx.preference.PreferenceManager
+import de.uriegel.superfit.android.logWarnung
 import de.uriegel.superfit.model.BikeData
 import de.uriegel.superfit.ui.PreferenceFragment
 
 import java.util.*
 
 object BikeService : BluetoothLeService() {
+    var distance = 0F
+        private set
+    var averageVelocity = 0F
+        private set
 
     override fun initialize(context: Context): Boolean {
         val result = super.initialize(context)
@@ -80,7 +85,12 @@ object BikeService : BluetoothLeService() {
         val crankCyclesPerMin = (crankCyclesPerSecs * 60F).toInt()
 
         val velocity = wheelCircumference * cyclesPerSecs * 0.0036F
-        distance = wheelCircumference * wheelCycles / 1_000_000F
+        val newDistance = wheelCircumference * wheelCycles / 1_000_000F
+        if (newDistance < distance) {
+            logWarnung("Distanz ist zurückgesetzt: neue Distanz: $newDistance")
+            distanceOffset = distance
+        }
+        distance = wheelCircumference * wheelCycles / 1_000_000F + distanceOffset
 
         maxVelocity =
             if (velocity > maxVelocity)
@@ -107,7 +117,6 @@ object BikeService : BluetoothLeService() {
 
     var setBikeData: ((bikeData: BikeData)->Unit)? = null
 
-    override fun getTag() = "BIKE"
     override fun getPrefAddress() = PreferenceFragment.PREF_BIKE_SENSOR
 
     private var lastWheelCycles = 0
@@ -116,9 +125,8 @@ object BikeService : BluetoothLeService() {
     private var lastTimestampCrank = 0
     private var wheelCircumference = 0
     private var maxVelocity = 0F
-    private var distance = 0F
+    private var distanceOffset = 0F
     private var duration = 0
-    private var averageVelocity = 0F
     private var speedIsNull = true
 
     private const val uuid = "00001816-0000-1000-8000-00805f9b34fb"

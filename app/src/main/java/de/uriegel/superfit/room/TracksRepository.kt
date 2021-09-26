@@ -11,6 +11,8 @@ object TracksRepository {
         coroutineScope.async(Dispatchers.IO) {
             return@async trackDao.insertTrack(track)
         }
+    fun updateTrackAsync(id: Int, distance: Float?, averageVelocity: Float?): Deferred<Unit> =
+        coroutineScope.async(Dispatchers.IO) { return@async trackDao.updateTrack(id, distance, averageVelocity) }
     fun deleteTrackAsync(id: Int) =
         coroutineScope.launch(Dispatchers.IO) { trackDao.deleteTrack(id) }
     fun findTrackAsync(id: Int): Deferred<Track?> =
@@ -23,14 +25,18 @@ object TracksRepository {
         coroutineScope.async(Dispatchers.IO) {
             return@async trackPointDao.findTrackPoints(trackNr)
         }
+    fun insertLogEntryAsync(entry: LogEntry): Deferred<Unit> =
+        coroutineScope.async(Dispatchers.IO) { return@async logEntryDao.insertLogEntry(entry) }
     private val trackDao: TrackDao
     private val trackPointDao: TrackPointDao
+    private val logEntryDao: LogEntryDao
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     init {
         val db : TracksRoom = TracksRoom.instance
         trackDao = db.trackDao()
         trackPointDao = db.trackPointDao()
+        logEntryDao = db.logEntryDao()
         allTracks = trackDao.getAllTracks()
     }
 }

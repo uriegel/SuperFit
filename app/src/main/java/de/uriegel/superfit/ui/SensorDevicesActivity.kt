@@ -6,9 +6,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.ParcelUuid
-import android.util.Log
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import de.uriegel.superfit.android.logError
 import de.uriegel.superfit.databinding.ActivitySensorDevicesBinding
 import de.uriegel.superfit.ui.adapters.SensorDevicesAdapter
 
@@ -59,7 +59,7 @@ class SensorDevicesActivity : AppCompatActivity() {
         }
 
         override fun onScanFailed(errorCode: Int) {
-            Log.e("BLE", "onScanFailed: code $errorCode")
+            logError("onScanFailed: code $errorCode")
         }
     }
 
