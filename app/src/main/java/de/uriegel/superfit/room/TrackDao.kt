@@ -10,8 +10,8 @@ interface TrackDao {
     @Insert
     fun insertTrack(track: Track): Long
 
-    @Query("UPDATE Tracks SET Distance=:distance, AverageSpeed=:averageVelocity WHERE _id = :id")
-    fun updateTrack(id: Int, distance: Float?, averageVelocity: Float?)
+    @Query("UPDATE Tracks SET Distance=:distance, AverageSpeed=:averageVelocity, Duration=:duration WHERE _id = :id")
+    fun updateTrack(id: Int, distance: Float?, averageVelocity: Float?, duration: Int?)
 
     @Query("SELECT * FROM Tracks WHERE _id = :id")
     fun findTrack(id: Int): Track?

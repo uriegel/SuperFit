@@ -9,6 +9,9 @@ import java.util.*
 
 object HeartRateService : BluetoothLeService() {
 
+    var heartRate = 0
+        private set
+
     override fun discoverService(bluetoothGatt: BluetoothGatt, service: BluetoothGattService) {
         service.characteristics?.find {
             characteristic -> characteristic.uuid == UUID.fromString(characteristics_id)
@@ -26,7 +29,8 @@ object HeartRateService : BluetoothLeService() {
             0x01 -> BluetoothGattCharacteristic.FORMAT_UINT16
             else -> BluetoothGattCharacteristic.FORMAT_UINT8
         }
-        setHeartRate?.invoke(characteristic.getIntValue(format, 1))
+        heartRate = characteristic.getIntValue(format, 1)
+        setHeartRate?.invoke(heartRate)
     }
 
     var setHeartRate: ((value: Int)->Unit)? = null

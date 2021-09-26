@@ -11,8 +11,8 @@ object TracksRepository {
         coroutineScope.async(Dispatchers.IO) {
             return@async trackDao.insertTrack(track)
         }
-    fun updateTrackAsync(id: Int, distance: Float?, averageVelocity: Float?): Deferred<Unit> =
-        coroutineScope.async(Dispatchers.IO) { return@async trackDao.updateTrack(id, distance, averageVelocity) }
+    fun updateTrackAsync(id: Int, distance: Float?, averageVelocity: Float?, duration: Int?): Deferred<Unit> =
+        coroutineScope.async(Dispatchers.IO) { return@async trackDao.updateTrack(id, distance, averageVelocity, duration) }
     fun deleteTrackAsync(id: Int) =
         coroutineScope.launch(Dispatchers.IO) { trackDao.deleteTrack(id) }
     fun findTrackAsync(id: Int): Deferred<Track?> =

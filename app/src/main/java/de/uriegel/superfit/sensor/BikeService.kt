@@ -15,7 +15,11 @@ import java.util.*
 object BikeService : BluetoothLeService() {
     var distance = 0F
         private set
+    var velocity = 0F
+        private set
     var averageVelocity = 0F
+        private set
+    var duration = 0
         private set
 
     override fun initialize(context: Context): Boolean {
@@ -84,7 +88,7 @@ object BikeService : BluetoothLeService() {
         lastTimestampCrank = timestampCrank
         val crankCyclesPerMin = (crankCyclesPerSecs * 60F).toInt()
 
-        val velocity = wheelCircumference * cyclesPerSecs * 0.0036F
+        velocity = wheelCircumference * cyclesPerSecs * 0.0036F
         val newDistance = wheelCircumference * wheelCycles / 1_000_000F
         if (newDistance < distance) {
             logWarnung("Distanz ist zurückgesetzt: neue Distanz: $newDistance")
@@ -126,7 +130,6 @@ object BikeService : BluetoothLeService() {
     private var wheelCircumference = 0
     private var maxVelocity = 0F
     private var distanceOffset = 0F
-    private var duration = 0
     private var speedIsNull = true
 
     private const val uuid = "00001816-0000-1000-8000-00805f9b34fb"

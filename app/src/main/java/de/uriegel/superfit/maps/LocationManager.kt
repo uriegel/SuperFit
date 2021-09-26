@@ -10,6 +10,7 @@ import de.uriegel.superfit.room.Track
 import de.uriegel.superfit.room.TrackPoint
 import de.uriegel.superfit.room.TracksRepository
 import de.uriegel.superfit.sensor.BikeService
+import de.uriegel.superfit.sensor.HeartRateService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,7 +38,7 @@ object LocationManager {
         trackNr?.let {
             // TODO: Only, when enough track points (> 30) otherwise delete track, getTrackPointsCount
             CoroutineScope(Dispatchers.IO).launch {
-                TracksRepository.updateTrackAsync(it, BikeService.distance, BikeService.averageVelocity).await() //DataBase.updateTrack(trackNr, Bike.duration, Bike.distance, Bike.averageSpeed)
+                TracksRepository.updateTrackAsync(it, BikeService.distance, BikeService.averageVelocity, BikeService.duration).await() //DataBase.updateTrack(trackNr, Bike.duration, Bike.distance, Bike.averageSpeed)
             }
             trackNr = null
         }
@@ -60,12 +61,14 @@ object LocationManager {
                         )).await().toInt()
                 }
                 // TODO clearLog
-                // TODO Bike.speed, HeartRate.currentHeartRate)
-                // TODO Save track: when stopping: duration
                 // TODO optional accuracy circle on location marker
-                trackNr?.let {
+                trackNr?.let { nr ->
                     TracksRepository.insertTrackPointAsync(
-                        TrackPoint(it,location.latitude, location.longitude, location.altitude.toFloat(), location.time, location.accuracy)).await()
+                        TrackPoint(nr,location.latitude, location.longitude, location.altitude.toFloat(), location.time, location.accuracy)
+                            .also {
+                                it.heartRate = HeartRateService.heartRate
+                                it.speed = BikeService.velocity
+                            }).await()
                 }
                 listener?.invoke(location)
             }
