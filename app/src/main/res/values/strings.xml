@@ -11,12 +11,10 @@
     <string name="nav_menu_tracks">Tracks</string>
     <string name="display">Display</string>
     <string name="stop">Stop</string>
-    <string name="btn_map_view">Kartenansicht</string>
     <string name="start">Start</string>
     <string name="track_symbol">Track symbol</string>
     <string name="toggle_controls">toggle controls</string>
     <string name="delete_track">Delete track</string>
-    <string name="edit_track">Edit track</string>
     <string name="save_track">Save track</string>
     <string name="trittfrequenz">Trittfrequenz</string>
     <string name="_1_min">1/min</string>

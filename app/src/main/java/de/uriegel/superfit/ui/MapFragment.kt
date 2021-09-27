@@ -1,12 +1,14 @@
 package de.uriegel.superfit.ui
 
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
 import de.uriegel.superfit.maps.TrackLine
@@ -14,26 +16,25 @@ import de.uriegel.superfit.model.MainViewModel
 import de.uriegel.superfit.ui.utils.toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import org.mapsforge.map.android.view.MapView
-import org.mapsforge.map.android.util.AndroidUtil
-
-import org.mapsforge.map.rendertheme.InternalRenderTheme
+import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
+import org.mapsforge.map.android.util.AndroidUtil
+import org.mapsforge.map.android.view.MapView
+import org.mapsforge.map.datastore.MapDataStore
 import org.mapsforge.map.layer.renderer.TileRendererLayer
 import org.mapsforge.map.reader.MapFile
-import org.mapsforge.map.datastore.MapDataStore
-import org.mapsforge.core.model.LatLong
+import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.FileInputStream
 
-abstract class MapActivity : AppCompatActivity(), CoroutineScope {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+abstract class MapFragment: Fragment(), CoroutineScope {
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        super.onCreateView(inflater, container, savedInstanceState)
 
         val (root, mapContainer) = initializeBinding()
         this.mapContainer = mapContainer
-        setContentView(root)
 
-        mapView = MapView(this)
+        mapView = MapView(activity)
         with(mapView) {
             isClickable = true
             //model.frameBufferModel.overdrawFactor = 1.0
@@ -48,13 +49,13 @@ abstract class MapActivity : AppCompatActivity(), CoroutineScope {
         }
         mapContainer.addView(mapView)
 
-        val tileCache = AndroidUtil.createTileCache(this, "mapcache", mapView.model.displayModel.tileSize, 1f,
+        val tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1f,
             mapView.model.frameBufferModel.overdrawFactor)
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
         preferences?.getString(PreferenceFragment.PREF_MAP, null)?.let {
             val uri = Uri.parse(it)
-            val fis: FileInputStream = contentResolver.openInputStream(uri) as FileInputStream
+            val fis: FileInputStream = requireActivity().contentResolver.openInputStream(uri) as FileInputStream
             val mapDataStore: MapDataStore = MapFile(fis)
 //        val tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
 //            InternalRenderTheme.OSMARENDER, false, true, false)
@@ -64,10 +65,11 @@ abstract class MapActivity : AppCompatActivity(), CoroutineScope {
             )
             tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER)
             mapView.layerManager.layers.add(tileRendererLayer)
-        } ?: toast(R.string.toast_nomaps, Toast.LENGTH_LONG)
+        } ?: requireActivity().toast(R.string.toast_nomaps, Toast.LENGTH_LONG)
 
         trackLine = TrackLine()
         mapView.layerManager.layers.add(trackLine)
+        return root
     }
 
     override fun onDestroy() {
@@ -76,20 +78,23 @@ abstract class MapActivity : AppCompatActivity(), CoroutineScope {
         super.onDestroy()
     }
 
-    protected data class BindingData(val root: View, val mapContainer: FrameLayout)
-
-    protected abstract fun initializeBinding(): BindingData
-
     protected suspend fun loadGpxTrack(trackNr: Int) {
         viewModel.findTrackPointsAsync(trackNr).await()?.let { track ->
             track.forEach { (trackLine.latLongs.add(LatLong(it.latitude, it.longitude))) }
         }
     }
+    protected data class BindingData(val root: View, val mapContainer: FrameLayout)
+
+    protected abstract fun initializeBinding(): BindingData
 
     override val coroutineContext = Dispatchers.Main
 
-    private lateinit var mapContainer: FrameLayout
-    protected lateinit var mapView: MapView
+    companion object {
+        const val TRACK_NR = "TRACK_NR"
+    }
+
     protected lateinit var trackLine: TrackLine
+    protected lateinit var mapView: MapView
+    private lateinit var mapContainer: FrameLayout
     private val viewModel: MainViewModel by viewModels()
 }

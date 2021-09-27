@@ -9,7 +9,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
 import de.uriegel.superfit.android.Service
 import de.uriegel.superfit.databinding.FragmentControlsBinding
@@ -24,15 +23,12 @@ class ControlsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        val bikeSupport = preferences?.getBoolean(PreferenceFragment.BIKE_SUPPORT, false)
         binding.btnStart.setOnClickListener {
             val startIntent = Intent(activity, Service::class.java)
             activity?.startService(startIntent)
-            startActivity(Intent(activity, if (bikeSupport == true) DisplayActivity::class.java else TrackingActivity::class.java))
+            startActivity(Intent(activity, DisplayActivity::class.java))
         }
         binding.btnDisplay.setOnClickListener { startActivity(Intent(activity, DisplayActivity::class.java))}
-        binding.btnMap.setOnClickListener { startActivity(Intent(activity, TrackingActivity::class.java))}
         binding.btnStop.setOnClickListener {
             val builder = AlertDialog.Builder(requireActivity())
             builder.apply {
@@ -53,11 +49,8 @@ class ControlsFragment : Fragment() {
     }
 
     private fun onStateChanged(isRunning: Boolean) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        val bikeSupport = preferences?.getBoolean(PreferenceFragment.BIKE_SUPPORT, false)
         binding.btnStart.visibility = if (isRunning) GONE else VISIBLE
-        binding.btnDisplay.visibility = if (isRunning && bikeSupport == true) VISIBLE else GONE
-        binding.btnMap.visibility = if (isRunning) VISIBLE else GONE
+        binding.btnDisplay.visibility = if (isRunning) VISIBLE else GONE
         binding.btnStop.visibility = if (isRunning) VISIBLE else GONE
     }
 

@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
+import de.uriegel.superfit.android.logInfo
 import de.uriegel.superfit.ui.PreferenceFragment
 import java.util.*
 
@@ -16,6 +17,7 @@ object HeartRateService : BluetoothLeService() {
         service.characteristics?.find {
             characteristic -> characteristic.uuid == UUID.fromString(characteristics_id)
         }?.let {
+            logInfo(getLogId() + ": characteristics found")
             bluetoothGatt.setCharacteristicNotification(it, true)
             val descriptor = it.getDescriptor(UUID.fromString(CLIENT_CHARACTERISTICS_ID))
             descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
@@ -35,6 +37,7 @@ object HeartRateService : BluetoothLeService() {
 
     var setHeartRate: ((value: Int)->Unit)? = null
 
+    override fun getLogId() = "HR"
     override fun getUuid() = uuid
     override fun getPrefAddress() = PreferenceFragment.PREF_HEARTRATE_SENSOR
 

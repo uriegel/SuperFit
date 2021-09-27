@@ -26,10 +26,6 @@
             android:name=".ui.EventLogActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.TrackingActivity"
-            android:exported="true"
-            android:theme="@style/Theme.SuperFit.Map" />
-        <activity
             android:name=".ui.TrackActivity"
             android:exported="true"
             android:theme="@style/Theme.SuperFit.Map" />

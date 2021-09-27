@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import de.uriegel.superfit.databinding.FragmentTracksBinding
 import de.uriegel.superfit.model.MainViewModel
 import de.uriegel.superfit.room.Track
-import de.uriegel.superfit.ui.TrackActivity.Companion.TRACK_NR
+import de.uriegel.superfit.ui.MapFragment.Companion.TRACK_NR
 import de.uriegel.superfit.ui.adapters.TrackListAdapter
 
 class TracksFragment : Fragment() {

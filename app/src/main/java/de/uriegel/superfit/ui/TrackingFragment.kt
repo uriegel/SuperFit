@@ -2,18 +2,18 @@ package de.uriegel.superfit.ui
 
 import android.location.Location
 import android.os.Bundle
-import android.view.WindowManager
-import de.uriegel.superfit.databinding.ActivityTrackingBinding
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import de.uriegel.superfit.databinding.FragmentTrackingBinding
 import de.uriegel.superfit.maps.LocationManager
 import de.uriegel.superfit.maps.LocationMarker
 import kotlinx.coroutines.launch
 import org.mapsforge.core.model.LatLong
 
-class TrackingActivity: MapActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+class TrackingFragment: MapFragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
 
         LocationManager.listener = {
             val currentLatLong = LatLong(it.latitude, it.longitude)
@@ -37,15 +37,20 @@ class TrackingActivity: MapActivity() {
 
         binding.switcher.setOnClickListener {
             followLocation = !followLocation
+            // TODO: decoupling
+            if (activity is DisplayActivity)
+                (activity as DisplayActivity).pagingEnabled = followLocation
         }
+
+        return view
     }
 
     override fun initializeBinding(): BindingData {
-        binding = ActivityTrackingBinding.inflate(layoutInflater)
+        binding = FragmentTrackingBinding.inflate(layoutInflater)
         return BindingData(binding.root, binding.mapContainer)
     }
 
-    private lateinit var binding: ActivityTrackingBinding
+    private lateinit var binding: FragmentTrackingBinding
     private var followLocation = true
         set(value) {
             field = value

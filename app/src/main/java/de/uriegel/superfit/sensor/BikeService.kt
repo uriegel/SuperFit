@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
 import android.content.Context
 import androidx.preference.PreferenceManager
+import de.uriegel.superfit.android.logInfo
 import de.uriegel.superfit.android.logWarnung
 import de.uriegel.superfit.model.BikeData
 import de.uriegel.superfit.ui.PreferenceFragment
@@ -51,12 +52,14 @@ object BikeService : BluetoothLeService() {
         return result && this.wheelCircumference != 0
     }
 
+    override fun getLogId() = "BIKE"
     override fun getUuid() = uuid
 
     override fun discoverService(bluetoothGatt: BluetoothGatt, service: BluetoothGattService) {
         service.characteristics?.find {
                 characteristic -> characteristic.uuid == UUID.fromString(characteristics_id)
         }?.let {
+            logInfo(getLogId() + ": characteristics found")
             bluetoothGatt.setCharacteristicNotification(it, true)
             val descriptor = it.getDescriptor(UUID.fromString(CLIENT_CHARACTERISTICS_ID))
             descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
