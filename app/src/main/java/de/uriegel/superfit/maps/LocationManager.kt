@@ -60,7 +60,6 @@ object LocationManager {
                             TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
                         )).await().toInt()
                 }
-                // TODO clearLog in menu
                 // TODO Display log details
                 // TODO optional accuracy circle on location marker
                 // TODO time without time zone in database and gpx

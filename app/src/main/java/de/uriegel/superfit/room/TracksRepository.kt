@@ -28,6 +28,8 @@ object TracksRepository {
         }
     fun insertLogEntryAsync(entry: LogEntry): Deferred<Unit> =
         coroutineScope.async(Dispatchers.IO) { return@async logEntryDao.insertLogEntry(entry) }
+    fun clearEventlogAsync(): Deferred<Unit> =
+        coroutineScope.async(Dispatchers.IO) { return@async logEntryDao.clearEventlog() }
     private val trackDao: TrackDao
     private val trackPointDao: TrackPointDao
     private val logEntryDao: LogEntryDao

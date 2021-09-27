@@ -44,4 +44,7 @@
     <string name="heartrate_sensor">Herzfrequenz-Sensor</string>
     <string name="menu_eventlog">Ereignisanzeige</string>
     <string name="log_type_image">log type image</string>
+    <string name="menu_log_clear">Leeren</string>
+    <string name="alert_clear_eventlog">Möchtest Du die Ereignisanzeige leeren?</string>
+    <string name="alert_title_clear_eventlog">Ereignisanzeige leeren</string>
 </resources>

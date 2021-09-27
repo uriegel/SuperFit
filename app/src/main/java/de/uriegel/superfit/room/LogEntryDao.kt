@@ -12,4 +12,7 @@ interface LogEntryDao {
 
     @Query("SELECT * FROM LogEntrys")
     fun getEventlog(): LiveData<Array<LogEntry>>
+
+    @Query("DELETE FROM LogEntrys")
+    fun clearEventlog()
 }
