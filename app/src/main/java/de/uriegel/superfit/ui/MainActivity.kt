@@ -16,7 +16,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationView
 import de.uriegel.activityextensions.ActivityRequest
-import de.uriegel.superfit.EventLogActivity
 import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.ActivityMainBinding
 import de.uriegel.superfit.ui.utils.toast

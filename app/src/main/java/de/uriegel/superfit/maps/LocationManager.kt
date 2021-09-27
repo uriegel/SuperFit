@@ -60,10 +60,11 @@ object LocationManager {
                             TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
                         )).await().toInt()
                 }
-                // TODO clearLog
-                // TODO Display log
+                // TODO clearLog in menu
+                // TODO Display log details
                 // TODO MapFragment and PageViewer as before
                 // TODO optional accuracy circle on location marker
+                // TODO time without time zone in database and gpx
                 trackNr?.let { nr ->
                     TracksRepository.insertTrackPointAsync(
                         TrackPoint(nr,location.latitude, location.longitude, location.altitude.toFloat(), location.time, location.accuracy)

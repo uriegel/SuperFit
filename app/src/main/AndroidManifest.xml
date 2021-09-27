@@ -23,7 +23,7 @@
         android:theme="@style/Theme.SuperFit"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".EventLogActivity"
+            android:name=".ui.EventLogActivity"
             android:exported="true" />
         <activity
             android:name=".ui.TrackingActivity"
