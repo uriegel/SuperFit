@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
 import android.content.Context
-import androidx.preference.PreferenceManager
+import android.content.SharedPreferences
 import de.uriegel.superfit.android.logInfo
 import de.uriegel.superfit.android.logWarnung
 import de.uriegel.superfit.model.BikeData
@@ -23,13 +23,12 @@ object BikeService : BluetoothLeService() {
     var duration = 0
         private set
 
-    override fun initialize(context: Context): Boolean {
-        val result = super.initialize(context)
-        if (result) {
-            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-            preferences.getString(PreferenceFragment.PREF_WHEEL, null)?.let {
-                this.wheelCircumference = it.toInt()
-            }
+    override fun initialize(context: Context, preferences: SharedPreferences?): Boolean {
+        if (!super.initialize(context, preferences))
+            return false
+
+        preferences?.getString(PreferenceFragment.PREF_WHEEL, null)?.let {
+            this.wheelCircumference = it.toInt()
         }
 
         stopwatch = StopWatch().also { sw ->
@@ -49,7 +48,7 @@ object BikeService : BluetoothLeService() {
         averageVelocity = 0F
         speedIsNull = true
 
-        return result && this.wheelCircumference != 0
+        return this.wheelCircumference != 0
     }
 
     override fun getLogId() = "BIKE"
@@ -93,11 +92,11 @@ object BikeService : BluetoothLeService() {
 
         velocity = wheelCircumference * cyclesPerSecs * 0.0036F
         val newDistance = wheelCircumference * wheelCycles / 1_000_000F
-        if (newDistance < distance) {
-            logWarnung("Distanz ist zurückgesetzt: neue Distanz: $newDistance")
+        if (newDistance < distance - distanceOffset) {
+            logWarnung("Distance is resetted: new distance: $newDistance, old distance: $distance")
             distanceOffset = distance
         }
-        distance = wheelCircumference * wheelCycles / 1_000_000F + distanceOffset
+        distance = newDistance + distanceOffset
 
         maxVelocity =
             if (velocity > maxVelocity)

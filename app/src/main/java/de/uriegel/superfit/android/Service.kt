@@ -8,8 +8,11 @@ import android.content.Intent
 import android.os.IBinder
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
+import de.uriegel.superfit.maps.FusedLocationProvider
 import de.uriegel.superfit.maps.LocationManager
+import de.uriegel.superfit.maps.LocationProvider
 import de.uriegel.superfit.sensor.BikeService
 import de.uriegel.superfit.sensor.HeartRateService
 import de.uriegel.superfit.ui.MainActivity
@@ -29,11 +32,15 @@ class Service: Service() {
             .setContentIntent(pendingIntent)
             .build()
 
-        LocationManager.start(this)
-        BikeService.initialize(this)
-        BikeService.connect(this)
-        HeartRateService.initialize(this)
-        HeartRateService.connect(this)
+        val useFused = true
+        locationProvider = if (useFused) FusedLocationProvider() else LocationManager()
+        locationProvider.start(this)
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        if (BikeService.initialize(this, preferences))
+            BikeService.connect(this)
+        if (HeartRateService.initialize(this, preferences))
+            HeartRateService.connect(this)
 
         wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
             .run {
@@ -56,7 +63,7 @@ class Service: Service() {
             }
         }
 
-        LocationManager.stop()
+        locationProvider.stop()
         HeartRateService.stop()
         BikeService.stop()
 
@@ -72,6 +79,7 @@ class Service: Service() {
 
     private lateinit var notification: Notification
     private lateinit var wakeLock: PowerManager.WakeLock
+    private lateinit var locationProvider: LocationProvider
 
     companion object {
         var isRunning = false

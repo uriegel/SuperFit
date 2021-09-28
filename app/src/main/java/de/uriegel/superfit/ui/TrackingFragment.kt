@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import de.uriegel.superfit.databinding.FragmentTrackingBinding
-import de.uriegel.superfit.maps.LocationManager
 import de.uriegel.superfit.maps.LocationMarker
+import de.uriegel.superfit.maps.LocationProvider
 import kotlinx.coroutines.launch
 import org.mapsforge.core.model.LatLong
 
@@ -15,7 +15,7 @@ class TrackingFragment: MapFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
-        LocationManager.listener = {
+        LocationProvider.listener = {
             val currentLatLong = LatLong(it.latitude, it.longitude)
             if (location != null)
                 mapView.layerManager.layers.remove(location)
@@ -26,7 +26,7 @@ class TrackingFragment: MapFragment() {
             trackLine.latLongs.add(currentLatLong)
             lastLocation = it
         }
-        LocationManager.getCurrentTrack()?.let {
+        LocationProvider.getCurrentTrack()?.let {
             launch {
                 loadGpxTrack(it)
             }

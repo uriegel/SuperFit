@@ -2,15 +2,22 @@ package de.uriegel.superfit.sensor
 
 import android.bluetooth.*
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.android.logError
 import de.uriegel.superfit.android.logInfo
 import de.uriegel.superfit.android.logWarnung
+import de.uriegel.superfit.ui.PreferenceFragment
 import java.util.*
 
 abstract class BluetoothLeService {
 
-    open fun initialize(context: Context): Boolean {
+    open fun initialize(context: Context, preferences: SharedPreferences?): Boolean {
+
+        val bikeSupport = preferences?.getBoolean(PreferenceFragment.BIKE_SUPPORT, false) == true
+        if (!bikeSupport)
+            return false
+
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if (bluetoothAdapter == null) {
             logError("Unable to obtain a BluetoothAdapter.")
@@ -22,6 +29,7 @@ abstract class BluetoothLeService {
     fun connect(context: Context) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val deviceAddress = preferences.getString(getPrefAddress(),"") ?: ""
+
 
         bluetoothAdapter?.let {
             try {

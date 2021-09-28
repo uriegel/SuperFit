@@ -2,7 +2,7 @@ package de.uriegel.superfit.model
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import de.uriegel.superfit.maps.LocationManager
+import de.uriegel.superfit.maps.LocationProvider
 import de.uriegel.superfit.sensor.BikeService
 import de.uriegel.superfit.sensor.HeartRateService
 
@@ -18,9 +18,9 @@ class DisplayModel : ViewModel() {
     val gpsActive: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
-        LocationManager.setGpsActive = {
+        LocationProvider.setGpsActive = {
             gpsActive.value = true
-            LocationManager.setGpsActive = null
+            LocationProvider.setGpsActive = null
         }
         BikeService.setBikeData = { bikeData ->
             velocity.postValue(bikeData.velocity)
