@@ -48,7 +48,10 @@
         </activity>
         <activity android:name=".ui.PreferenceActivity" />
 
-        <service android:name=".android.Service" />
+        <service
+            android:name=".android.Service"
+            android:enabled="true"
+            android:foregroundServiceType="location" />
     </application>
 
 </manifest>

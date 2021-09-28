@@ -29,7 +29,7 @@ class FusedLocationProvider : LocationProvider() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
             // TODO only when gathering mode
-            //logInfo("Locations gathered")
+            logInfo("Locations gathered")
             locationResult.locations.forEach {
                 onLocationChanged(it)
             }
