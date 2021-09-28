@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Looper
 import com.google.android.gms.location.*
+import de.uriegel.superfit.android.logInfo
 
 class FusedLocationProvider : LocationProvider() {
 
@@ -14,7 +15,8 @@ class FusedLocationProvider : LocationProvider() {
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = LOCATION_REFRESH_TIME
         locationRequest.fastestInterval = 500
-        locationRequest.maxWaitTime = 60_000
+        // TODO gathering mode when inactive
+        //locationRequest.maxWaitTime = 60_000
 
         locationProvider.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
@@ -26,6 +28,8 @@ class FusedLocationProvider : LocationProvider() {
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
+            // TODO only when gatheriung mode
+            //logInfo("Locations gathered")
             locationResult.locations.forEach {
                 onLocationChanged(it)
             }
