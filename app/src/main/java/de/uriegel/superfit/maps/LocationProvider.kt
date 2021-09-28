@@ -43,7 +43,6 @@ abstract class LocationProvider: CoroutineScope {
             }
             // TODO Display log details
             // TODO optional accuracy circle on location marker
-            // TODO Foreground service is paused
             // TODO time without time zone in database and gpx
             trackNr?.let { nr ->
                 logInfo("Location point")
