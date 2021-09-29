@@ -41,11 +41,10 @@ abstract class LocationProvider: CoroutineScope {
                 )
                 ).await().toInt()
             }
-            // TODO Display log details
+            // TODO Display log details Master/Detail-view
             // TODO optional accuracy circle on location marker
             // TODO time without time zone in database and gpx
             trackNr?.let { nr ->
-                logInfo("Location point")
                 TracksRepository.insertTrackPointAsync(
                     TrackPoint(nr,location.latitude, location.longitude, location.altitude.toFloat(), location.time, location.accuracy)
                         .also {

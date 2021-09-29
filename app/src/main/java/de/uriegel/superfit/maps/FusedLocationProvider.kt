@@ -37,8 +37,6 @@ class FusedLocationProvider : LocationProvider() {
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
-            // TODO only when gathering mode
-            logInfo("Locations gathered")
             locationResult.locations.forEach {
                 onLocationChanged(it)
             }
