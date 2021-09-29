@@ -23,17 +23,18 @@ class DisplayActivity : AppCompatActivity() {
         val viewModel = ViewModelProvider(this).get(DisplayModel::class.java)
         binding.setVariable(BR.displayModel, viewModel)
 
-        val pagingEnabledObserver = Observer<Boolean> {
-            binding.viewPager.isUserInputEnabled = it
-        }
-        binding.displayModel?.pagingEnabled?.observe(this, pagingEnabledObserver)
-
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         preferences?.getBoolean(PreferenceFragment.BIKE_SUPPORT, false)?.let {
             bikeSupport = it
         }
+
+        val pagingEnabledObserver = Observer<Boolean> {
+            binding.viewPager.isUserInputEnabled = it
+        }
+        if (bikeSupport)
+            binding.displayModel?.pagingEnabled?.observe(this, pagingEnabledObserver)
 
         with(binding.viewPager) {
             adapter = PagerAdapter(supportFragmentManager)

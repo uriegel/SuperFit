@@ -16,9 +16,12 @@ class DisplayFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_display, container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         val viewModel = ViewModelProvider(this).get(DisplayModel::class.java)
         binding.setVariable(displayModel, viewModel)
+
+        TrackingFragment.pagingEnabled.value = true
+
         return binding.root
     }
 

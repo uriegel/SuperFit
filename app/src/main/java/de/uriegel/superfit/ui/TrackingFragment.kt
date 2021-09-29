@@ -41,7 +41,7 @@ class TrackingFragment: MapFragment() {
 
     override fun initializeBinding(inflater: LayoutInflater, container: ViewGroup?): BindingData {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_tracking, container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         val viewModel = ViewModelProvider(this).get(DisplayModel::class.java)
         binding.setVariable(BR.displayModel, viewModel)
 
@@ -62,7 +62,7 @@ class TrackingFragment: MapFragment() {
     }
 
     companion object {
-        val pagingEnabled: MutableLiveData<Boolean> = MutableLiveData(true)
+        val pagingEnabled: MutableLiveData<Boolean> = MutableLiveData()
     }
 
     private lateinit var binding: FragmentTrackingBinding
