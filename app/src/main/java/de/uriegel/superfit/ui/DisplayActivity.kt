@@ -3,16 +3,30 @@ package de.uriegel.superfit.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import de.uriegel.superfit.BR
+import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.ActivityDisplayBinding
+import de.uriegel.superfit.model.DisplayModel
 
 class DisplayActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_display)
+        binding.lifecycleOwner = this
+        val viewModel = ViewModelProvider(this).get(DisplayModel::class.java)
+        binding.setVariable(BR.displayModel, viewModel)
+
+        val pagingEnabledObserver = Observer<Boolean> {
+            binding.viewPager.isUserInputEnabled = it
+        }
+        binding.displayModel?.pagingEnabled?.observe(this, pagingEnabledObserver)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
@@ -28,10 +42,6 @@ class DisplayActivity : AppCompatActivity() {
         }
     }
 
-    var pagingEnabled
-        get() = binding.viewPager.isUserInputEnabled
-        set(value) { binding.viewPager.isUserInputEnabled = value }
-
     private inner class PagerAdapter(fm: FragmentManager)
         : FragmentStateAdapter(fm, lifecycle) {
 
@@ -45,8 +55,6 @@ class DisplayActivity : AppCompatActivity() {
         }
     }
 
-    private val binding by lazy {
-        ActivityDisplayBinding.inflate(layoutInflater)
-    }
+    private lateinit var binding: ActivityDisplayBinding
     private var bikeSupport = false
 }

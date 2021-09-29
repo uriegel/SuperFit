@@ -44,13 +44,20 @@ abstract class LocationProvider: CoroutineScope {
             // TODO time without time zone in database and gpx
             trackNr?.let { nr ->
                 TracksRepository.insertTrackPointAsync(
-                    TrackPoint(nr,location.latitude, location.longitude, location.altitude.toFloat(), location.time, location.accuracy)
+                    TrackPoint(
+                        nr,
+                        location.latitude,
+                        location.longitude,
+                        location.altitude.toFloat(),
+                        location.time,
+                        location.accuracy
+                    )
                         .also {
                             it.heartRate = HeartRateService.heartRate.value
                             it.speed = BikeService.velocity / 3.6F // in m/s
                         }).await()
             }
-            listener?.invoke(location)
+            locationData.value = location
         }
     }
 
@@ -60,11 +67,9 @@ abstract class LocationProvider: CoroutineScope {
 
     companion object {
         val gpsActive: MutableLiveData<Boolean> = MutableLiveData(false)
+        val locationData: MutableLiveData<Location> = MutableLiveData()
         var trackNr: Int? = null
             private set
-
-        // TODO: LiveData, data model
-        var listener: ((location: Location)->Unit)? = null
 
         const val LOCATION_REFRESH_TIME = 1000L
         const val LOCATION_REFRESH_DISTANCE = 0.0F

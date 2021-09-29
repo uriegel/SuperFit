@@ -5,9 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import de.uriegel.superfit.BR
+import de.uriegel.superfit.R
 import de.uriegel.superfit.databinding.FragmentTrackingBinding
 import de.uriegel.superfit.maps.LocationMarker
 import de.uriegel.superfit.maps.LocationProvider
+import de.uriegel.superfit.model.DisplayModel
 import kotlinx.coroutines.launch
 import org.mapsforge.core.model.LatLong
 
@@ -15,17 +22,6 @@ class TrackingFragment: MapFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
-        LocationProvider.listener = {
-            val currentLatLong = LatLong(it.latitude, it.longitude)
-            if (location != null)
-                mapView.layerManager.layers.remove(location)
-            location = LocationMarker(currentLatLong)
-            mapView.layerManager.layers.add(location)
-            if (followLocation)
-                mapView.setCenter(currentLatLong)
-            trackLine.latLongs.add(currentLatLong)
-            lastLocation = it
-        }
         LocationProvider.trackNr?.let {
             launch {
                 loadGpxTrack(it)
@@ -37,28 +33,39 @@ class TrackingFragment: MapFragment() {
 
         binding.switcher.setOnClickListener {
             followLocation = !followLocation
-            // TODO: decoupling
-            if (activity is DisplayActivity)
-                (activity as DisplayActivity).pagingEnabled = followLocation
+            pagingEnabled.value = followLocation
         }
 
         return view
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     override fun initializeBinding(inflater: LayoutInflater, container: ViewGroup?): BindingData {
-        binding = FragmentTrackingBinding.inflate(inflater, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_tracking, container, false)
+        binding.lifecycleOwner = this
+        val viewModel = ViewModelProvider(this).get(DisplayModel::class.java)
+        binding.setVariable(BR.displayModel, viewModel)
+
+        val locationObserver = Observer<Location> {
+            val currentLatLong = LatLong(it.latitude, it.longitude)
+            if (location != null)
+                mapView.layerManager.layers.remove(location)
+            location = LocationMarker(currentLatLong)
+            mapView.layerManager.layers.add(location)
+            if (followLocation)
+                mapView.setCenter(currentLatLong)
+            trackLine.latLongs.add(currentLatLong)
+            lastLocation = it
+        }
+
+        binding.displayModel?.locationData?.observe(viewLifecycleOwner, locationObserver)
         return BindingData(binding.root, binding.mapContainer)
     }
 
-    private var binding: FragmentTrackingBinding
-        get() = _binding!!
-        set(value) { _binding = value }
-    private var _binding: FragmentTrackingBinding? = null
+    companion object {
+        val pagingEnabled: MutableLiveData<Boolean> = MutableLiveData(true)
+    }
+
+    private lateinit var binding: FragmentTrackingBinding
 
     private var followLocation = true
         set(value) {
