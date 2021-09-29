@@ -98,8 +98,13 @@ class TrackFragment: MapFragment() {
         return view
     }
 
-    override fun initializeBinding(): BindingData {
-        binding = FragmentTrackBinding.inflate(layoutInflater)
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    override fun initializeBinding(inflater: LayoutInflater, container: ViewGroup?): BindingData {
+        binding = FragmentTrackBinding.inflate(inflater, container, false)
         return BindingData(binding.root, binding.mapContainer)
     }
 
@@ -120,7 +125,11 @@ class TrackFragment: MapFragment() {
         }
     }
 
-    private lateinit var binding: FragmentTrackBinding
+    private var binding: FragmentTrackBinding
+        get() = _binding!!
+        set(value) { _binding = value }
+    private var _binding: FragmentTrackBinding? = null
+
     private val viewModel: MainViewModel by viewModels()
     private lateinit var activityRequest: ActivityRequest
 }

@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Looper
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
-import de.uriegel.superfit.android.logInfo
 
 class FusedLocationProvider : LocationProvider() {
 

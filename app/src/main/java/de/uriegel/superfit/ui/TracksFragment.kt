@@ -18,8 +18,13 @@ import de.uriegel.superfit.ui.adapters.TrackListAdapter
 class TracksFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentTracksBinding.inflate(layoutInflater)
+        binding = FragmentTracksBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,7 +57,12 @@ class TracksFragment : Fragment() {
         binding.tracksView.adapter = adapter
     }
 
-    private lateinit var binding: FragmentTracksBinding
+    private var binding: FragmentTracksBinding
+        get() = _binding!!
+        set(value) { _binding = value }
+    private var _binding: FragmentTracksBinding? = null
+
+
     private val viewModel: MainViewModel by viewModels()
     private var adapter: TrackListAdapter? = null
 }

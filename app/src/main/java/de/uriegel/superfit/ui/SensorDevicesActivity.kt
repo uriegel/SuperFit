@@ -15,7 +15,6 @@ import de.uriegel.superfit.ui.adapters.SensorDevicesAdapter
 class SensorDevicesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySensorDevicesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val serviceUuid = if (savedInstanceState == null) {
@@ -76,5 +75,7 @@ class SensorDevicesActivity : AppCompatActivity() {
         finish()
     }
 
-    private lateinit var binding: ActivitySensorDevicesBinding
+    private val binding by lazy {
+        ActivitySensorDevicesBinding.inflate(layoutInflater)
+    }
 }

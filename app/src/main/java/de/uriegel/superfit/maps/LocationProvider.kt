@@ -2,7 +2,6 @@ package de.uriegel.superfit.maps
 
 import android.content.Context
 import android.location.Location
-import de.uriegel.superfit.android.logInfo
 import de.uriegel.superfit.room.Track
 import de.uriegel.superfit.room.TrackPoint
 import de.uriegel.superfit.room.TracksRepository

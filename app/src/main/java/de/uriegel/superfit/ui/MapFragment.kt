@@ -31,7 +31,7 @@ abstract class MapFragment: Fragment(), CoroutineScope {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        val (root, mapContainer) = initializeBinding()
+        val (root, mapContainer) = initializeBinding(inflater, container)
         this.mapContainer = mapContainer
 
         mapView = MapView(activity)
@@ -85,7 +85,7 @@ abstract class MapFragment: Fragment(), CoroutineScope {
     }
     protected data class BindingData(val root: View, val mapContainer: FrameLayout)
 
-    protected abstract fun initializeBinding(): BindingData
+    protected abstract fun initializeBinding(inflater: LayoutInflater, container: ViewGroup?): BindingData
 
     override val coroutineContext = Dispatchers.Main
 

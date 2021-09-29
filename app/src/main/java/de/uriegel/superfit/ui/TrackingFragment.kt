@@ -45,12 +45,21 @@ class TrackingFragment: MapFragment() {
         return view
     }
 
-    override fun initializeBinding(): BindingData {
-        binding = FragmentTrackingBinding.inflate(layoutInflater)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun initializeBinding(inflater: LayoutInflater, container: ViewGroup?): BindingData {
+        binding = FragmentTrackingBinding.inflate(inflater, container, false)
         return BindingData(binding.root, binding.mapContainer)
     }
 
-    private lateinit var binding: FragmentTrackingBinding
+    private var binding: FragmentTrackingBinding
+        get() = _binding!!
+        set(value) { _binding = value }
+    private var _binding: FragmentTrackingBinding? = null
+
     private var followLocation = true
         set(value) {
             field = value

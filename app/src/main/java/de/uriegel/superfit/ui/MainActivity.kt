@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.appBarMain.toolbar)
@@ -125,6 +124,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     private val activityRequest = ActivityRequest(this)
-    private lateinit var binding: ActivityMainBinding
+    private val binding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
     private lateinit var layoutContainer: ViewPager2
 }

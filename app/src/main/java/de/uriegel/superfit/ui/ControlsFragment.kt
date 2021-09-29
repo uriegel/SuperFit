@@ -16,8 +16,13 @@ import de.uriegel.superfit.databinding.FragmentControlsBinding
 class ControlsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentControlsBinding.inflate(layoutInflater)
+        binding = FragmentControlsBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,5 +59,8 @@ class ControlsFragment : Fragment() {
         binding.btnStop.visibility = if (isRunning) VISIBLE else GONE
     }
 
-    private lateinit var binding: FragmentControlsBinding
+    private var binding: FragmentControlsBinding
+        get() = _binding!!
+        set(value) { _binding = value }
+    private var _binding: FragmentControlsBinding? = null
 }
