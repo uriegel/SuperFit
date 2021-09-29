@@ -63,7 +63,7 @@ class EventLogActivity : AppCompatActivity() {
     }
 
     private fun observerSetup() {
-        viewModel.getEventLog()?.observe(this, { tracks ->
+        viewModel.logEntries.observe(this, { tracks ->
             tracks?.let {
                 adapter?.setLogList(it)
             }

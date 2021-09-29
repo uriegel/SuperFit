@@ -12,11 +12,11 @@ import kotlinx.coroutines.Deferred
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun findTrackAsync(id: Int): Deferred<Track?> = TracksRepository.findTrackAsync(id)
     fun deleteTrackAsync(id: Int) = TracksRepository.deleteTrackAsync(id)
-    fun getAllTracks(): LiveData<Array<Track>>? = allTracks
-    fun getEventLog(): LiveData<Array<LogEntry>>? = logEntries
     fun findTrackPointsAsync(trackNr: Int): Deferred<Array<TrackPoint>?> =
         TracksRepository.findTrackPointsAsync(trackNr)
 
-    private val allTracks: LiveData<Array<Track>>? = TracksRepository.allTracks
-    private val logEntries: LiveData<Array<LogEntry>>? = TracksRepository.logEntries
+    val allTracks: LiveData<Array<Track>>
+        get() = TracksRepository.allTracks
+    val logEntries: LiveData<Array<LogEntry>>
+        get() = TracksRepository.logEntries
 }

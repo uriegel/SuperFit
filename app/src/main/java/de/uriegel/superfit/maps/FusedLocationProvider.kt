@@ -1,14 +1,15 @@
 package de.uriegel.superfit.maps
 
-import android.annotation.SuppressLint
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Looper
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import de.uriegel.superfit.android.logInfo
 
 class FusedLocationProvider : LocationProvider() {
 
-    @SuppressLint("MissingPermission")
     override fun start(context: Context) {
         locationProvider = LocationServices.getFusedLocationProviderClient(context)
         locationRequest = LocationRequest.create()
@@ -17,6 +18,14 @@ class FusedLocationProvider : LocationProvider() {
         locationRequest.fastestInterval = 500
         // TODO gathering mode when inactive
         //locationRequest.maxWaitTime = 60_000
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                 != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)
+        return
 
         locationProvider.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }

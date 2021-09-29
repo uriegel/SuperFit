@@ -34,7 +34,7 @@ class TracksFragment : Fragment() {
     }
 
     private fun observerSetup() {
-        viewModel.getAllTracks()?.observe(viewLifecycleOwner, { tracks ->
+        viewModel.allTracks.observe(viewLifecycleOwner, { tracks ->
             tracks?.let {
                 adapter?.setTrackList(it)
             }

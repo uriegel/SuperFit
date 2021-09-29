@@ -5,8 +5,8 @@ import kotlinx.coroutines.*
 
 object TracksRepository {
 
-    val allTracks: LiveData<Array<Track>>?
-    val logEntries: LiveData<Array<LogEntry>>?
+    val allTracks: LiveData<Array<Track>>
+    val logEntries: LiveData<Array<LogEntry>>
 
     fun insertTrackAsync(track: Track): Deferred<Long> =
         coroutineScope.async(Dispatchers.IO) {
