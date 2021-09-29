@@ -2,6 +2,7 @@ package de.uriegel.superfit.maps
 
 import android.content.Context
 import android.location.Location
+import androidx.lifecycle.MutableLiveData
 import de.uriegel.superfit.room.Track
 import de.uriegel.superfit.room.TrackPoint
 import de.uriegel.superfit.room.TracksRepository
@@ -15,9 +16,10 @@ import java.util.*
 abstract class LocationProvider: CoroutineScope {
 
     abstract fun start(context: Context)
+
     open fun stop() {
         onStop()
-        gpsActive = false
+        gpsActive.postValue(false)
         trackNr?.let {
             // TODO: Only, when enough track points (> 30) otherwise delete track, getTrackPointsCount
             CoroutineScope(Dispatchers.IO).launch {
@@ -29,15 +31,12 @@ abstract class LocationProvider: CoroutineScope {
 
     protected fun onLocationChanged(location: Location) {
         launch {
-            if (!gpsActive) {
-                gpsActive = true
-                setGpsActive?.invoke()
-                trackNr = TracksRepository.insertTrackAsync(
-                    Track(
+            if (gpsActive.value == false) {
+                gpsActive.value = true
+                trackNr = TracksRepository.insertTrackAsync(Track(
                     location.time,
                     location.latitude, location.longitude,
-                    TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
-                )
+                    TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings)
                 ).await().toInt()
             }
             // TODO Display log details Master/Detail-view
@@ -47,7 +46,7 @@ abstract class LocationProvider: CoroutineScope {
                 TracksRepository.insertTrackPointAsync(
                     TrackPoint(nr,location.latitude, location.longitude, location.altitude.toFloat(), location.time, location.accuracy)
                         .also {
-                            it.heartRate = HeartRateService.heartRate
+                            it.heartRate = HeartRateService.heartRate.value
                             it.speed = BikeService.velocity / 3.6F // in m/s
                         }).await()
             }
@@ -60,16 +59,12 @@ abstract class LocationProvider: CoroutineScope {
     override val coroutineContext = Dispatchers.Main
 
     companion object {
-        fun getCurrentTrack() = trackNr
+        val gpsActive: MutableLiveData<Boolean> = MutableLiveData(false)
+        var trackNr: Int? = null
+            private set
+
+        // TODO: LiveData, data model
         var listener: ((location: Location)->Unit)? = null
-        var gpsActive = false
-        var setGpsActive: (()->Unit)? = null
-            set(value) {
-                field = value
-                if (gpsActive)
-                    setGpsActive?.invoke()
-            }
-        private var trackNr: Int? = null
 
         const val LOCATION_REFRESH_TIME = 1000L
         const val LOCATION_REFRESH_DISTANCE = 0.0F

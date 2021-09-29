@@ -6,14 +6,22 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.lifecycle.MutableLiveData
 import de.uriegel.superfit.android.logInfo
 import de.uriegel.superfit.android.logWarnung
-import de.uriegel.superfit.model.BikeData
 import de.uriegel.superfit.ui.PreferenceFragment
 
 import java.util.*
 
 object BikeService : BluetoothLeService() {
+
+    val cadence: MutableLiveData<Int> = MutableLiveData(-1)
+    val velocityData: MutableLiveData<Float> = MutableLiveData(Float.NEGATIVE_INFINITY)
+    val distanceData: MutableLiveData<Float> = MutableLiveData(Float.NEGATIVE_INFINITY)
+    val durationData: MutableLiveData<Int> = MutableLiveData(-1)
+    val averageVelocityData: MutableLiveData<Float> = MutableLiveData(Float.NEGATIVE_INFINITY)
+    val maxVelocityData: MutableLiveData<Float> = MutableLiveData(Float.NEGATIVE_INFINITY)
+
     var distance = 0F
         private set
     var velocity = 0F
@@ -38,6 +46,11 @@ object BikeService : BluetoothLeService() {
             }
         }
 
+        velocityData.value = 0F
+        distanceData.value = 0F
+        durationData.value = 0
+        averageVelocityData.value = 0F
+        maxVelocityData.value = 0F
         lastWheelCycles = 0
         lastTimestampWheel = 0
         lastCrankCycles = 0
@@ -111,17 +124,13 @@ object BikeService : BluetoothLeService() {
             stopwatch?.pause()
         }
 
-        setBikeData?.invoke(BikeData(
-            velocity,
-            distance,
-            maxVelocity,
-            crankCyclesPerMin,
-            duration,
-            averageVelocity
-        ))
+        cadence.postValue(crankCyclesPerMin)
+        velocityData.postValue(velocity)
+        distanceData.postValue(distance)
+        durationData.postValue(duration)
+        averageVelocityData.postValue(maxVelocity)
+        maxVelocityData.postValue(averageVelocity)
     }
-
-    var setBikeData: ((bikeData: BikeData)->Unit)? = null
 
     override fun getPrefAddress() = PreferenceFragment.PREF_BIKE_SENSOR
 

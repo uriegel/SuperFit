@@ -26,7 +26,7 @@ class TrackingFragment: MapFragment() {
             trackLine.latLongs.add(currentLatLong)
             lastLocation = it
         }
-        LocationProvider.getCurrentTrack()?.let {
+        LocationProvider.trackNr?.let {
             launch {
                 loadGpxTrack(it)
             }

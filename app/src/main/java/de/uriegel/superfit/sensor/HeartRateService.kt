@@ -4,14 +4,14 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
+import androidx.lifecycle.MutableLiveData
 import de.uriegel.superfit.android.logInfo
 import de.uriegel.superfit.ui.PreferenceFragment
 import java.util.*
 
 object HeartRateService : BluetoothLeService() {
 
-    var heartRate = 0
-        private set
+    val heartRate: MutableLiveData<Int> = MutableLiveData(-1)
 
     override fun discoverService(bluetoothGatt: BluetoothGatt, service: BluetoothGattService) {
         service.characteristics?.find {
@@ -31,11 +31,8 @@ object HeartRateService : BluetoothLeService() {
             0x01 -> BluetoothGattCharacteristic.FORMAT_UINT16
             else -> BluetoothGattCharacteristic.FORMAT_UINT8
         }
-        heartRate = characteristic.getIntValue(format, 1)
-        setHeartRate?.invoke(heartRate)
+        heartRate.postValue(characteristic.getIntValue(format, 1))
     }
-
-    var setHeartRate: ((value: Int)->Unit)? = null
 
     override fun getLogId() = "HR"
     override fun getUuid() = uuid
