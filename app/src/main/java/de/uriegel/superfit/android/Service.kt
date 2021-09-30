@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
 import de.uriegel.superfit.maps.FusedLocationProvider
@@ -49,7 +50,7 @@ class Service: Service() {
                 }
             }
 
-        isRunning = true
+        running.value = true
     }
 
     override fun onDestroy() {
@@ -67,7 +68,7 @@ class Service: Service() {
         HeartRateService.stop()
         BikeService.stop()
 
-        isRunning = false
+        running.value = false
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -82,17 +83,6 @@ class Service: Service() {
     private lateinit var locationProvider: LocationProvider
 
     companion object {
-        var isRunning = false
-            set(value){
-                field = value
-                listener?.invoke(isRunning)
-            }
-
-        fun setOnStateChangedListener(listener: ((isRunning: Boolean)->Unit)?) {
-            this.listener = listener
-            listener?.invoke(isRunning)
-        }
-
-        private var listener: ((isRunning: Boolean)->Unit)? = null
+        val running = MutableLiveData(false)
     }
 }

@@ -4,25 +4,25 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import de.uriegel.superfit.BR
 import de.uriegel.superfit.R
 import de.uriegel.superfit.android.Service
 import de.uriegel.superfit.databinding.FragmentControlsBinding
+import de.uriegel.superfit.model.ControlsModel
 
 class ControlsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentControlsBinding.inflate(inflater, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_controls, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        val viewModel = ViewModelProvider(this).get(ControlsModel::class.java)
+        binding.setVariable(BR.controlsModel, viewModel)
         return binding.root
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,19 +48,8 @@ class ControlsFragment : Fragment() {
                 .setTitle(getString(R.string.alert_title_stop_service))
                 .create()
             dialog.show()
-
         }
-        Service.setOnStateChangedListener { onStateChanged(it) }
     }
 
-    private fun onStateChanged(isRunning: Boolean) {
-        binding.btnStart.visibility = if (isRunning) GONE else VISIBLE
-        binding.btnDisplay.visibility = if (isRunning) VISIBLE else GONE
-        binding.btnStop.visibility = if (isRunning) VISIBLE else GONE
-    }
-
-    private var binding: FragmentControlsBinding
-        get() = _binding!!
-        set(value) { _binding = value }
-    private var _binding: FragmentControlsBinding? = null
+    private lateinit var binding: FragmentControlsBinding
 }
