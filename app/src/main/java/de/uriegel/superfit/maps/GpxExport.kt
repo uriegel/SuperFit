@@ -18,7 +18,7 @@ fun exportToGpx(outputStream: OutputStream, name: String, track: Track, trackPoi
                     element(null, "name", name)
                     element(null, "distance", "${track.distance}")
                     element(null, "duration", "${track.duration}")
-                    element(null, "date", formatRfc3339(track.time, track.timeOffset))
+                    element(null, "date", formatRfc3339(track.time))
                     element(null, "averageSpeed", "${track.averageSpeed}")
                     element(null, "trackPoints", "${trackPoints.size}")
                 }
@@ -28,7 +28,7 @@ fun exportToGpx(outputStream: OutputStream, name: String, track: Track, trackPoi
                             attribute(null,"lat", it.latitude.toString())
                             attribute(null,"lon", it.longitude.toString())
                             element(null, "ele", it.elevation.toString())
-                            element(null, "time", formatRfc3339(it.time, track.timeOffset))
+                            element(null, "time", formatRfc3339(it.time))
                             element(null, "pdop", it.precision.toString())
                             element(null, "heartrate", it.heartRate.toString())
                             element(null, "speed", it.speed.toString())

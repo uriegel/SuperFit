@@ -9,6 +9,6 @@ interface TrackPointDao {
     @Insert
     fun insertTrackPoint(track: TrackPoint)
 
-    @Query("SELECT * FROM TrackPoints WHERE TrackNr = :trackNr")
+    @Query("SELECT * FROM TrackPoints WHERE trackNr = :trackNr")
     fun findTrackPoints(trackNr: Int): Array<TrackPoint>
 }

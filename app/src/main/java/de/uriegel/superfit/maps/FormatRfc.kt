@@ -3,11 +3,11 @@ package de.uriegel.superfit.maps
 import java.util.*
 import kotlin.math.abs
 
-fun formatRfc3339(time: Long, timeOffset: Int): String {
-    val timeZone = TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
-    val date = (Date(time + timeOffset - timeZone))
+fun formatRfc3339(time: Long): String {
+    val date = Date(time)
     val cal = Calendar.getInstance()
     cal.time = date
+    val timeOffset = cal.get(Calendar.ZONE_OFFSET) + cal.get(Calendar.DST_OFFSET)
     return "${cal.get(Calendar.YEAR)}" +
             "-${(cal.get(Calendar.MONTH) + 1).toString().padStart(2, '0')}" +
             "-${cal.get(Calendar.DATE).toString().padStart(2, '0')}" +

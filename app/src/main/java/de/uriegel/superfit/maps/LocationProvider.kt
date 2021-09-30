@@ -11,7 +11,6 @@ import de.uriegel.superfit.sensor.HeartRateService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 
 abstract class LocationProvider: CoroutineScope {
 
@@ -35,13 +34,12 @@ abstract class LocationProvider: CoroutineScope {
                 gpsActive.value = true
                 trackNr = TracksRepository.insertTrackAsync(Track(
                     location.time,
-                    location.latitude, location.longitude,
-                    TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings)
+                    location.latitude, location.longitude)
                 ).await().toInt()
             }
+            // TODO Save and Delete in viewModel
             // TODO Display log details Master/Detail-view
             // TODO optional accuracy circle on location marker
-            // TODO time without time zone in database and gpx
             trackNr?.let { nr ->
                 TracksRepository.insertTrackPointAsync(
                     TrackPoint(

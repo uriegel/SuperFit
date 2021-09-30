@@ -57,9 +57,7 @@ class TrackFragment: MapFragment() {
         binding.btnSave.setOnClickListener {
             launch {
                 viewModel.findTrackAsync(trackNr).await()?.let { track ->
-                    val timeZone =
-                        TimeZone.getDefault().rawOffset + TimeZone.getDefault().dstSavings
-                    val date = (Date(track.time + track.timeOffset - timeZone))
+                    val date = Date(track.time)
                     val cal = Calendar.getInstance()
                     cal.time = date
 

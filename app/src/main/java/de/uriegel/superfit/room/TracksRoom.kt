@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import de.uriegel.superfit.android.Application
 
-@Database(entities = [(Track::class), (TrackPoint::class), (LogEntry::class)], version = 2)
+@Database(entities = [(Track::class), (TrackPoint::class), (LogEntry::class)], version = 3)
 @TypeConverters(RoomConverters::class)
 abstract class TracksRoom: RoomDatabase() {
     abstract fun trackDao(): TrackDao
@@ -19,7 +19,8 @@ abstract class TracksRoom: RoomDatabase() {
         private fun getDatabase(): TracksRoom {
            synchronized(TracksRoom::class.java) {
                 return Room.databaseBuilder(Application.instance.applicationContext, TracksRoom::class.java, "tracks")
-                    .addMigrations(Migration_1_2)
+                    //.addMigrations(Migration_1_2)
+                    .fallbackToDestructiveMigration()
                     .build()
            }
         }
