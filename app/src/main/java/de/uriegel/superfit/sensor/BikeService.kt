@@ -128,8 +128,8 @@ object BikeService : BluetoothLeService() {
         velocityData.postValue(velocity)
         distanceData.postValue(distance)
         durationData.postValue(duration)
-        averageVelocityData.postValue(maxVelocity)
-        maxVelocityData.postValue(averageVelocity)
+        averageVelocityData.postValue(averageVelocity)
+        maxVelocityData.postValue(maxVelocity)
     }
 
     override fun getPrefAddress() = PreferenceFragment.PREF_BIKE_SENSOR
