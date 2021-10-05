@@ -19,7 +19,9 @@ class LocationManager: LocationProvider() {
             != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
             != PackageManager.PERMISSION_GRANTED)
-           locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, locationListener)
+            return
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, locationListener)
     }
 
     override fun onStop() {

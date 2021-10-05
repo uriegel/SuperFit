@@ -46,11 +46,6 @@ object BikeService : BluetoothLeService() {
             }
         }
 
-        velocityData.value = 0F
-        distanceData.value = 0F
-        durationData.value = 0
-        averageVelocityData.value = 0F
-        maxVelocityData.value = 0F
         lastWheelCycles = 0
         lastTimestampWheel = 0
         lastCrankCycles = 0
@@ -105,11 +100,10 @@ object BikeService : BluetoothLeService() {
 
         velocity = wheelCircumference * cyclesPerSecs * 0.0036F
         val newDistance = wheelCircumference * wheelCycles / 1_000_000F
-        if (newDistance < distance - distanceOffset) {
-            logWarnung("Distance is resetted: new distance: $newDistance, old distance: $distance")
-            distanceOffset = distance
-        }
-        distance = newDistance + distanceOffset
+        if (newDistance > distance)
+            distance = newDistance
+        else
+            logWarnung("Distance is false value: new distance: $newDistance, old distance: $distance")
 
         maxVelocity =
             if (velocity > maxVelocity)
@@ -140,7 +134,6 @@ object BikeService : BluetoothLeService() {
     private var lastTimestampCrank = 0
     private var wheelCircumference = 0
     private var maxVelocity = 0F
-    private var distanceOffset = 0F
     private var speedIsNull = true
 
     private const val uuid = "00001816-0000-1000-8000-00805f9b34fb"

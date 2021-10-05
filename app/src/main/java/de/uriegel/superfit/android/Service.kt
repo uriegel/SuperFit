@@ -33,7 +33,7 @@ class Service: Service() {
             .setContentIntent(pendingIntent)
             .build()
 
-        val useFused = true
+        val useFused = false
         locationProvider = if (useFused) FusedLocationProvider() else LocationManager()
         locationProvider.start(this)
 
