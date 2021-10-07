@@ -31,9 +31,6 @@ abstract class MapFragment: Fragment(), CoroutineScope {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        val (root, mapContainer) = initializeBinding(inflater, container)
-        this.mapContainer = mapContainer
-
         mapView = MapView(activity)
         with(mapView) {
             isClickable = true
@@ -47,6 +44,8 @@ abstract class MapFragment: Fragment(), CoroutineScope {
             mapScaleBar.marginVertical = 100
             mapScaleBar.isVisible = true
         }
+        val (root, mapContainer) = initializeBinding(inflater, container)
+        this.mapContainer = mapContainer
         mapContainer.addView(mapView)
 
         val tileCache = AndroidUtil.createTileCache(activity, "mapcache", mapView.model.displayModel.tileSize, 1f,

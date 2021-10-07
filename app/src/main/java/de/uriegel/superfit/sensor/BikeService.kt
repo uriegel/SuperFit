@@ -100,7 +100,7 @@ object BikeService : BluetoothLeService() {
 
         velocity = wheelCircumference * cyclesPerSecs * 0.0036F
         val newDistance = wheelCircumference * wheelCycles / 1_000_000F
-        if (newDistance > distance)
+        if (newDistance >= distance)
             distance = newDistance
         else
             logWarnung("Distance is false value: new distance: $newDistance, old distance: $distance")

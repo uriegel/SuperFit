@@ -22,10 +22,22 @@ class TrackingFragment: MapFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
-        LocationProvider.trackNr?.let {
-            launch {
+        launch {
+            LocationProvider.trackNr?.let {
                 loadGpxTrack(it)
             }
+            val locationObserver = Observer<Location> {
+                val currentLatLong = LatLong(it.latitude, it.longitude)
+                if (location != null)
+                    mapView.layerManager.layers.remove(location)
+                location = LocationMarker(currentLatLong)
+                mapView.layerManager.layers.add(location)
+                if (followLocation)
+                    mapView.setCenter(currentLatLong)
+                trackLine.latLongs.add(currentLatLong)
+                lastLocation = it
+            }
+            binding.displayModel?.locationData?.observe(viewLifecycleOwner, locationObserver)
         }
 
         mapView.setBuiltInZoomControls(false)
@@ -44,20 +56,6 @@ class TrackingFragment: MapFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         val viewModel = ViewModelProvider(this).get(DisplayModel::class.java)
         binding.setVariable(BR.displayModel, viewModel)
-
-        val locationObserver = Observer<Location> {
-            val currentLatLong = LatLong(it.latitude, it.longitude)
-            if (location != null)
-                mapView.layerManager.layers.remove(location)
-            location = LocationMarker(currentLatLong)
-            mapView.layerManager.layers.add(location)
-            if (followLocation)
-                mapView.setCenter(currentLatLong)
-            trackLine.latLongs.add(currentLatLong)
-            lastLocation = it
-        }
-
-        binding.displayModel?.locationData?.observe(viewLifecycleOwner, locationObserver)
         return BindingData(binding.root, binding.mapContainer)
     }
 
