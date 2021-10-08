@@ -75,55 +75,59 @@ object BikeService : BluetoothLeService() {
     }
 
     override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
-        val wheelCycles = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT32, 1)
-        val timestampWheel = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 5)
-        val timeSpan = if (timestampWheel > lastTimestampWheel)
-            timestampWheel - lastTimestampWheel
-        else
-            timestampWheel + 0x10000 - lastTimestampWheel
-        val cyclesPerSecs = (wheelCycles - lastWheelCycles).toFloat() / timeSpan.toFloat() * 1024
-        lastWheelCycles = wheelCycles
-        lastTimestampWheel = timestampWheel
 
-        val crankCycles = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 7)
-        val timestampCrank = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 9)
+        fun isBitSet(value: Int, position: Int): Boolean = (value shr position) and 1 == 1
 
-        val timeSpanCrank = if (timestampCrank > lastTimestampCrank)
-            timestampCrank - lastTimestampCrank
-        else
-            timestampCrank + 0x10000 - lastTimestampCrank
-        val crankCyclesPerSecs = (crankCycles - lastCrankCycles).toFloat() / timeSpanCrank.toFloat() * 1024
+        val bitField = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 0)
+        if (isBitSet(bitField, 0)) {
+            val wheelCycles = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT32, 1)
+            val timestampWheel = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 5)
+            val timeSpan = if (timestampWheel > lastTimestampWheel)
+                timestampWheel - lastTimestampWheel
+            else
+                timestampWheel + 0x10000 - lastTimestampWheel
+            val cyclesPerSecs = (wheelCycles - lastWheelCycles).toFloat() / timeSpan.toFloat() * 1024
+            lastWheelCycles = wheelCycles
+            lastTimestampWheel = timestampWheel
+            velocity = wheelCircumference * cyclesPerSecs * 0.0036F
+            val newDistance = wheelCircumference * wheelCycles / 1_000_000F
+            if (newDistance >= distance)
+                distance = newDistance
+            else
+                logWarnung("Distance is false value: new distance: $newDistance, old distance: $distance")
+            maxVelocity =
+                if (velocity > maxVelocity)
+                    velocity
+                else maxVelocity
 
-        lastCrankCycles = crankCycles
-        lastTimestampCrank = timestampCrank
-        val crankCyclesPerMin = (crankCyclesPerSecs * 60F).toInt()
-
-        velocity = wheelCircumference * cyclesPerSecs * 0.0036F
-        val newDistance = wheelCircumference * wheelCycles / 1_000_000F
-        if (newDistance >= distance)
-            distance = newDistance
-        else
-            logWarnung("Distance is false value: new distance: $newDistance, old distance: $distance")
-
-        maxVelocity =
-            if (velocity > maxVelocity)
-                velocity
-            else maxVelocity
-
-        if (velocity > 4.0f && speedIsNull) {
-            speedIsNull = false
-            stopwatch?.start()
-        } else if (velocity <= 4.0f && !speedIsNull) {
-            speedIsNull = true
-            stopwatch?.pause()
+            if (velocity > 4.0f && speedIsNull) {
+                speedIsNull = false
+                stopwatch?.start()
+            } else if (velocity <= 4.0f && !speedIsNull) {
+                speedIsNull = true
+                stopwatch?.pause()
+            }
+            velocityData.postValue(velocity)
+            distanceData.postValue(distance)
+            durationData.postValue(duration)
+            averageVelocityData.postValue(averageVelocity)
+            maxVelocityData.postValue(maxVelocity)
         }
-
-        cadence.postValue(crankCyclesPerMin)
-        velocityData.postValue(velocity)
-        distanceData.postValue(distance)
-        durationData.postValue(duration)
-        averageVelocityData.postValue(averageVelocity)
-        maxVelocityData.postValue(maxVelocity)
+        if (isBitSet(bitField, 1)) {
+            val crankCycles =
+                characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 7)
+            val timestampCrank =
+                characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, 9)
+            val timeSpanCrank = if (timestampCrank > lastTimestampCrank)
+                timestampCrank - lastTimestampCrank
+            else
+                timestampCrank + 0x10000 - lastTimestampCrank
+            val crankCyclesPerSecs = (crankCycles - lastCrankCycles).toFloat() / timeSpanCrank.toFloat() * 1024
+            lastCrankCycles = crankCycles
+            lastTimestampCrank = timestampCrank
+            val crankCyclesPerMin = (crankCyclesPerSecs * 60F).toInt()
+            cadence.postValue(crankCyclesPerMin)
+        }
     }
 
     override fun getPrefAddress() = PreferenceFragment.PREF_BIKE_SENSOR
