@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SuperFit</string>
+    <string name="app_name">SuperFit2</string>
     <string name="action_settings">Einstellungen</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -47,4 +47,6 @@
     <string name="menu_log_clear">Leeren</string>
     <string name="alert_clear_eventlog">Möchtest Du die Ereignisanzeige leeren?</string>
     <string name="alert_title_clear_eventlog">Ereignisanzeige leeren</string>
+    <string name="PERMISSION_SHOW_RATIONALE">Berechtigung für den Dateizugriff wird benötigt</string>
+    <string name="PERMISSION_DENIED">Berechtigung für den Dateizugriff wurde verweigert. Du kannst die Berechtigung in den App-Einstellungen erteilen</string>
 </resources>
