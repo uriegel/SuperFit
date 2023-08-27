@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "de.uriegel.superfit"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "de.uriegel.superfit2"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -65,4 +65,5 @@ dependencies {
     implementation("org.mapsforge:mapsforge-themes:0.16.0")
     implementation("org.mapsforge:mapsforge-map-android:0.16.0")
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")
+    implementation("androidx.navigation:navigation-compose:2.7.1")
 }

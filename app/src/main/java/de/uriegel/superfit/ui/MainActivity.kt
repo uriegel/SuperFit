@@ -15,6 +15,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -30,6 +35,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MapsTestTheme {
+                val navController = rememberNavController()
 
                 var permissionState by remember {
                     mutableStateOf(false)
@@ -45,19 +51,32 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    NavHost(
+                        navController = navController,
+                        startDestination = NavRoutes.Maps.route
+                    ) {
+                        composable(NavRoutes.Maps.route) {
+                            MapsView(navController)
+                        }
+                        composable(NavRoutes.Dialog.route + "/{stringId}",
+                            arguments = listOf(navArgument("stringId") { type = NavType.IntType })
+                        ) {
+                            DialogScreen(navController, it.arguments?.getInt("stringId")!!)
+                        }
+                    }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         if (permissionState)
-                            MapsView()
+                            navController.navigate(NavRoutes.Maps.route){ popUpTo(0) }
                         else
-                            DialogScreen(R.string.PERMISSION_DENIED)
+                            navController.navigate(NavRoutes.Dialog.route + "/${R.string.PERMISSION_DENIED}"){ popUpTo(0) }
                     } else {
                         when {
                             storagePermissionState.status.isGranted ->
-                                MapsView()
+                                navController.navigate(NavRoutes.Maps.route)
                             storagePermissionState.status.shouldShowRationale ->
-                                DialogScreen(R.string.PERMISSION_SHOW_RATIONALE)
+                                navController.navigate(NavRoutes.Dialog.route + "/${R.string.PERMISSION_SHOW_RATIONALE}"){ popUpTo(0) }
                             storagePermissionState.isPermanentlyDenied() ->
-                                DialogScreen(R.string.PERMISSION_DENIED)
+                                navController.navigate(NavRoutes.Dialog.route + "/${R.string.PERMISSION_DENIED}"){ popUpTo(0) }
                         }
                     }
                 }
