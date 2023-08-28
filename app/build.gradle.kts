@@ -66,4 +66,5 @@ dependencies {
     implementation("org.mapsforge:mapsforge-map-android:0.16.0")
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")
     implementation("androidx.navigation:navigation-compose:2.7.1")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 }

@@ -58,6 +58,9 @@ class MainActivity : ComponentActivity() {
                         composable(NavRoutes.Maps.route) {
                             MapsView(navController)
                         }
+                        composable(NavRoutes.Controls.route) {
+                            Controls(navController)
+                        }
                         composable(NavRoutes.Dialog.route + "/{stringId}",
                             arguments = listOf(navArgument("stringId") { type = NavType.IntType })
                         ) {
@@ -66,7 +69,7 @@ class MainActivity : ComponentActivity() {
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         if (permissionState)
-                            navController.navigate(NavRoutes.Maps.route){ popUpTo(0) }
+                            navController.navigate(NavRoutes.Controls.route){ popUpTo(0) }
                         else
                             navController.navigate(NavRoutes.Dialog.route + "/${R.string.PERMISSION_DENIED}"){ popUpTo(0) }
                     } else {
