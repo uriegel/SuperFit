@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
                             MapsView(navController)
                         }
                         composable(NavRoutes.Controls.route) {
-                            Controls(navController)
+                            Main(navController)
                         }
                         composable(NavRoutes.Dialog.route + "/{stringId}",
                             arguments = listOf(navArgument("stringId") { type = NavType.IntType })
