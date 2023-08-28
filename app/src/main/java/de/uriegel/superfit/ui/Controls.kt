@@ -1,8 +1,11 @@
 package de.uriegel.superfit.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,11 +23,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun Controls(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope =  rememberCoroutineScope()
+    val pagerState = rememberPagerState(pageCount = {3})
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -61,6 +65,9 @@ fun Controls(navController: NavHostController) {
                         .fillMaxWidth()
                         .fillMaxHeight()
                 ) {
+                    HorizontalPager(state = pagerState) {
+                        Text(text = "Das ist die Seite")
+                    }
                 }
             }
         )
