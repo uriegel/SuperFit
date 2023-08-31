@@ -4,6 +4,10 @@ import android.os.Environment
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import org.mapsforge.core.model.LatLong
@@ -17,7 +21,14 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.File
 
 @Composable
-fun MapsView() {
+fun MapsView(followLocation: Boolean) {
+
+    var onfollowLocationChanged by remember {
+        mutableStateOf(FollowLocationCallback {})
+    }
+
+    onfollowLocationChanged.func(followLocation)
+
     Box(Modifier.fillMaxSize()) {
         AndroidView(
             modifier = Modifier.fillMaxSize(),
@@ -26,10 +37,10 @@ fun MapsView() {
                     isClickable = true
                     setZoomLevel(16)
                     setCenter(LatLong(50.90042250198412, 6.715496743031949))
-                    setBuiltInZoomControls(true)
+                    setBuiltInZoomControls(!followLocation)
                     mapZoomControls.setMarginVertical(120)
                     mapScaleBar.marginVertical = 130
-                    mapScaleBar.isVisible = true
+                    mapScaleBar.isVisible = !followLocation
                     val tileCache = AndroidUtil.createTileCache(
                         context, "mapcache", model.displayModel.tileSize, 1f,
                         model.frameBufferModel.overdrawFactor
@@ -44,7 +55,16 @@ fun MapsView() {
                     )
                     tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER)
                     layerManager.layers.add(tileRendererLayer)
+
+                    onfollowLocationChanged = FollowLocationCallback {
+                        this.setBuiltInZoomControls(!it)
+                        this.mapScaleBar.isVisible = !it
+                    }
                 }
             })
     }
 }
+
+data class FollowLocationCallback(
+    val func: ((followLocation: Boolean)->Unit)
+)

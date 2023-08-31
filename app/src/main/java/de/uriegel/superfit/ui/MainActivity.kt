@@ -28,7 +28,6 @@ import de.uriegel.superfit.R
 import de.uriegel.superfit.ui.theme.MapsTestTheme
 import de.uriegel.superfit.ui.views.Controls
 import de.uriegel.superfit.ui.views.DialogScreen
-import de.uriegel.superfit.ui.views.MapsView
 
 class MainActivity : ComponentActivity() {
 
@@ -49,18 +48,14 @@ class MainActivity : ComponentActivity() {
                 CheckPermissions(storagePermissionState,
                     {permissionState = it}, {hasAllFilesPermission()})
 
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     NavHost(
                         navController = navController,
-                        startDestination = NavRoutes.Maps.route
+                        startDestination = NavRoutes.Main.route
                     ) {
-                        composable(NavRoutes.Maps.route) {
-                            MapsView()
-                        }
                         composable(NavRoutes.Main.route) {
                             Main(navController)
                         }
@@ -81,7 +76,7 @@ class MainActivity : ComponentActivity() {
                     } else {
                         when {
                             storagePermissionState.status.isGranted ->
-                                navController.navigate(NavRoutes.Maps.route)
+                                navController.navigate(NavRoutes.Main.route)
                             storagePermissionState.status.shouldShowRationale ->
                                 navController.navigate(NavRoutes.Dialog.route + "/${R.string.PERMISSION_SHOW_RATIONALE}"){ popUpTo(0) }
                             storagePermissionState.isPermanentlyDenied() ->
