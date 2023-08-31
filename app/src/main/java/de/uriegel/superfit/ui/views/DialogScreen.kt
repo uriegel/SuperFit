@@ -1,4 +1,4 @@
-package de.uriegel.superfit.ui
+package de.uriegel.superfit.ui.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,10 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 
 @Composable
-fun DialogScreen(navController: NavHostController, stringId: Int, padding: PaddingValues = PaddingValues()) {
+fun DialogScreen(stringId: Int, padding: PaddingValues = PaddingValues()) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier

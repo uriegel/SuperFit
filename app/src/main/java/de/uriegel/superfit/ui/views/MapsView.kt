@@ -1,4 +1,4 @@
-package de.uriegel.superfit.ui
+package de.uriegel.superfit.ui.views
 
 import android.os.Environment
 import androidx.compose.foundation.layout.Box
@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.navigation.NavHostController
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.util.AndroidUtil
@@ -18,7 +17,7 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.File
 
 @Composable
-fun MapsView(navController: NavHostController) {
+fun MapsView() {
     Box(Modifier.fillMaxSize()) {
         AndroidView(
             modifier = Modifier.fillMaxSize(),

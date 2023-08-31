@@ -26,6 +26,9 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import de.uriegel.superfit.R
 import de.uriegel.superfit.ui.theme.MapsTestTheme
+import de.uriegel.superfit.ui.views.Controls
+import de.uriegel.superfit.ui.views.DialogScreen
+import de.uriegel.superfit.ui.views.MapsView
 
 class MainActivity : ComponentActivity() {
 
@@ -56,20 +59,23 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavRoutes.Maps.route
                     ) {
                         composable(NavRoutes.Maps.route) {
-                            MapsView(navController)
+                            MapsView()
+                        }
+                        composable(NavRoutes.Main.route) {
+                            Main(navController)
                         }
                         composable(NavRoutes.Controls.route) {
-                            Main(navController)
+                            Controls()
                         }
                         composable(NavRoutes.Dialog.route + "/{stringId}",
                             arguments = listOf(navArgument("stringId") { type = NavType.IntType })
                         ) {
-                            DialogScreen(navController, it.arguments?.getInt("stringId")!!)
+                            DialogScreen(it.arguments?.getInt("stringId")!!)
                         }
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         if (permissionState)
-                            navController.navigate(NavRoutes.Controls.route){ popUpTo(0) }
+                            navController.navigate(NavRoutes.Main.route){ popUpTo(0) }
                         else
                             navController.navigate(NavRoutes.Dialog.route + "/${R.string.PERMISSION_DENIED}"){ popUpTo(0) }
                     } else {
