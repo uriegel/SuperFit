@@ -1,0 +1,35 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<PreferenceCategory android:title="@string/settings">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="bike_support"
+            android:summary="Unterstützung für Bike Sensoren einschalten"
+            android:title="Bike-Sensor" />
+        <EditTextPreference
+            android:defaultValue="2096"
+            android:key="PREF_WHEEL"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="Gib bitte den Rad-Umfang in mm ein"
+            android:title="Radumfang"
+            app:dialogMessage="Gib bitte den Rad-Umfang in mm ein"
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:dialogMessage="Hier wird der Bike-Sensor gesucht und festgelegt"
+            app:key="PREF_BIKE_SENSOR"
+            app:title="@string/bike_sensor" />
+        <Preference
+            app:dialogMessage="Hier wird der Herzfrequenz-Sensor gesucht und festgelegt"
+            app:key="PREF_HEARTRATE_SENSOR"
+            app:title="@string/heartrate_sensor" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Navigation">
+        <Preference
+            app:key="PREF_MAP"
+            app:title="@string/maps"/>
+    </PreferenceCategory>
+</PreferenceScreen>

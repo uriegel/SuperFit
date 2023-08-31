@@ -60,6 +60,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("org.mapsforge:mapsforge-core:0.16.0")
     implementation("org.mapsforge:mapsforge-map:0.16.0")
     implementation("org.mapsforge:mapsforge-map-reader:0.16.0")
@@ -68,4 +69,5 @@ dependencies {
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")
     implementation("androidx.navigation:navigation-compose:2.7.1")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation("com.github.uriegel:ActivityExtensions:2.3.0")
 }

@@ -59,6 +59,9 @@ class MainActivity : ComponentActivity() {
                         composable(NavRoutes.Main.route) {
                             Main(navController)
                         }
+                        composable(NavRoutes.ShowSettings.route) {
+                            ShowSettings(navController)
+                        }
                         composable(NavRoutes.Controls.route) {
                             Controls()
                         }

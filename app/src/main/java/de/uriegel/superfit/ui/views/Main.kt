@@ -47,7 +47,7 @@ fun Main(navController: NavHostController) {
         }) {
         Scaffold(
             topBar = {
-                TopBar(onNavigationIconClick = {
+                TopBar(navController, onNavigationIconClick = {
                     scope.launch {
                         drawerState.apply {
                             if (isClosed)

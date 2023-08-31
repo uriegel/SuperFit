@@ -1,6 +1,7 @@
 package de.uriegel.superfit.ui.views
 
-import android.os.Environment
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -10,6 +11,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.preference.PreferenceManager
+import de.uriegel.superfit.R
+import de.uriegel.superfit.ui.SettingsActivity
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.util.AndroidUtil
@@ -18,7 +22,7 @@ import org.mapsforge.map.datastore.MapDataStore
 import org.mapsforge.map.layer.renderer.TileRendererLayer
 import org.mapsforge.map.reader.MapFile
 import org.mapsforge.map.rendertheme.InternalRenderTheme
-import java.io.File
+import java.io.FileInputStream
 
 @Composable
 fun MapsView(followLocation: Boolean) {
@@ -45,16 +49,20 @@ fun MapsView(followLocation: Boolean) {
                         context, "mapcache", model.displayModel.tileSize, 1f,
                         model.frameBufferModel.overdrawFactor
                     )
-                    val mapDataStore: MapDataStore = MapFile(
-                        File(Environment.getExternalStorageDirectory().absolutePath + "/DCIM/germany.map").inputStream())
-//                val tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
-//                             InternalRenderTheme.OSMARENDER, false, true, false)
-                    val tileRendererLayer = TileRendererLayer(
-                        tileCache, mapDataStore,
-                        model.mapViewPosition, AndroidGraphicFactory.INSTANCE
-                    )
-                    tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER)
-                    layerManager.layers.add(tileRendererLayer)
+                    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    preferences?.getString(SettingsActivity.SettingsFragment.PREF_MAP, null)?.let {
+                        val uri = Uri.parse(it)
+                        val fis: FileInputStream = context.contentResolver.openInputStream(uri) as FileInputStream
+                        val mapDataStore: MapDataStore = MapFile(fis)
+//        val tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
+//            InternalRenderTheme.OSMARENDER, false, true, false)
+                        val tileRendererLayer = TileRendererLayer(
+                            tileCache, mapDataStore,
+                            model.mapViewPosition, AndroidGraphicFactory.INSTANCE
+                        )
+                        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER)
+                        layerManager.layers.add(tileRendererLayer)
+                    } ?: Toast.makeText(context, R.string.toast_nomaps, Toast.LENGTH_LONG).show()
 
                     onfollowLocationChanged = FollowLocationCallback {
                         this.setBuiltInZoomControls(!it)

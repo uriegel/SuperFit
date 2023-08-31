@@ -27,7 +27,7 @@
     <string name="dgeschwindigkeit">Ø-Geschwindigkeit</string>
     <string name="max_geschwindigkeit">Max. Geschwindigkeit</string>
     <string name="gps_marker">Gps marker</string>
-    <string name="bike_settings">Bike-Einstellungen</string>
+    <string name="settings">Einstellungen</string>
     <string name="toast_nomaps">Du musst erst eine Karte in den Einstellungen auswählen!</string>
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
