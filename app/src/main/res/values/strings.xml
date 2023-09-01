@@ -49,4 +49,8 @@
     <string name="alert_title_clear_eventlog">Ereignisanzeige leeren</string>
     <string name="PERMISSION_SHOW_RATIONALE">Berechtigung für den Dateizugriff wird benötigt</string>
     <string name="PERMISSION_DENIED">Berechtigung für den Dateizugriff wurde verweigert. Du kannst die Berechtigung in den App-Einstellungen erteilen</string>
+    <string name="bike_support">Bike-Sensor</string>
+    <string name="bike_support_description">Unterstützung für Bike Sensoren einschalten</string>
+    <string name="bike_circumference">Radumfang</string>
+    <string name="bike_circumference_description">Gib bitte den Rad-Umfang in mm ein</string>
 </resources>

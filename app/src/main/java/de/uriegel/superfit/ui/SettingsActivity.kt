@@ -75,5 +75,6 @@ class SettingsActivity : AppCompatActivity() {
             const val PREF_HEARTRATE_SENSOR = "PREF_HEARTRATE_SENSOR"
             const val PREF_WHEEL = "PREF_WHEEL"
             const val BIKE_SUPPORT = "bike_support"
-        }    }
+        }
+    }
 }

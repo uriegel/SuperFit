@@ -1,6 +1,7 @@
 package de.uriegel.superfit.ui
 
 import android.Manifest
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -15,6 +16,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,6 +33,7 @@ import de.uriegel.superfit.R
 import de.uriegel.superfit.ui.theme.MapsTestTheme
 import de.uriegel.superfit.ui.views.Controls
 import de.uriegel.superfit.ui.views.DialogScreen
+import de.uriegel.superfit.ui.views.Settings
 
 class MainActivity : ComponentActivity() {
 
@@ -60,7 +66,8 @@ class MainActivity : ComponentActivity() {
                             Main(navController)
                         }
                         composable(NavRoutes.ShowSettings.route) {
-                            ShowSettings(navController)
+                            //ShowSettings(navController)
+                            Settings(LocalContext.current.dataStore)
                         }
                         composable(NavRoutes.Controls.route) {
                             Controls()
@@ -90,6 +97,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
     @RequiresApi(Build.VERSION_CODES.R)
     private fun hasAllFilesPermission() =
