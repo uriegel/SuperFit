@@ -1,25 +1,81 @@
 package de.uriegel.superfit.ui.views
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.preference.PreferenceManager
 import com.jamal.composeprefs3.ui.PrefsScreen
 import com.jamal.composeprefs3.ui.prefs.CheckBoxPref
 import com.jamal.composeprefs3.ui.prefs.TextPref
 import de.uriegel.superfit.R
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun Settings(dataStore: DataStore<Preferences>) {
 
     val settings = stringResource(R.string.settings)
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var selectedMap by remember { mutableStateOf("") }
+    val prefs by remember { dataStore.data }.collectAsState(initial = null)
+    val prefMaps = stringPreferencesKey("PREF_MAP")
+
+    LaunchedEffect(Unit) {
+        prefs?.get(prefMaps)?.also {
+            selectedMap = it
+        }
+    }
+
+    LaunchedEffect(dataStore.data) {
+        dataStore.data.collectLatest { pref ->
+            pref[prefMaps]?.also {
+                selectedMap = it
+            }
+        }
+    }
+
+    val mapsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            it.data?.data?.also { uri ->
+                context.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                scope.launch {
+                    dataStore.edit { preferences ->
+                        preferences[prefMaps] = uri.toString()
+                        selectedMap = uri.toString()
+                        PreferenceManager
+                            .getDefaultSharedPreferences(context)
+                            .edit()
+                            .putString("PREF_MAP", uri.toString())
+                            .apply()
+                    }
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = { TopAppBar(title = { Text(stringResource(R.string.app_title)) })},
@@ -61,8 +117,15 @@ fun Settings(dataStore: DataStore<Preferences>) {
                     prefsItem {
                         TextPref(
                             title = stringResource(R.string.maps),
-                            summary = "",
-                        )
+                            summary = if (selectedMap.isNotEmpty()) selectedMap.getPath() else stringResource(R.string.maps_description),
+                            enabled = true,
+                            onClick = {
+                                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                                    addCategory(Intent.CATEGORY_OPENABLE)
+                                    type = "*/*"
+                                }
+                                mapsLauncher.launch(intent)
+                            })
                     }
                 }
             }
@@ -70,3 +133,5 @@ fun Settings(dataStore: DataStore<Preferences>) {
     )
 }
 
+fun String.getPath() =
+    Uri.parse(this).path

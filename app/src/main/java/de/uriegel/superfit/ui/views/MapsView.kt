@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
-import de.uriegel.superfit.ui.SettingsActivity
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.util.AndroidUtil
@@ -50,7 +49,7 @@ fun MapsView(followLocation: Boolean) {
                         model.frameBufferModel.overdrawFactor
                     )
                     val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-                    preferences?.getString(SettingsActivity.SettingsFragment.PREF_MAP, null)?.let {
+                    preferences?.getString("PREF_MAP", null)?.let {
                         val uri = Uri.parse(it)
                         val fis: FileInputStream = context.contentResolver.openInputStream(uri) as FileInputStream
                         val mapDataStore: MapDataStore = MapFile(fis)
