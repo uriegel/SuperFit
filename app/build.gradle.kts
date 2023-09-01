@@ -69,7 +69,6 @@ dependencies {
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")
     implementation("androidx.navigation:navigation-compose:2.7.1")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("com.github.uriegel:ActivityExtensions:2.3.0")
     implementation("com.github.JamalMulla:ComposePrefs3:1.0.4")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 }
