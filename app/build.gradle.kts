@@ -71,4 +71,5 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("com.github.JamalMulla:ComposePrefs3:1.0.4")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 }
