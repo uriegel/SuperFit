@@ -2,6 +2,7 @@ package de.uriegel.superfit.ui.views
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -19,8 +20,6 @@ fun PermissionCheck(navController: NavController) {
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) {
         val affe = it
-        // TODO Check permissions
-        // TODO Dialog when permissions not available
         navController.navigate(NavRoutes.Main.route){ popUpTo(0) }
     }
     if (context.hasPermissions())
@@ -34,11 +33,11 @@ fun PermissionCheck(navController: NavController) {
         }
 }
 
-// TODO old android additional Permissions
-//fun Context.hasPermissions() =
-//    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED
-//            && ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED
-
 fun Context.hasPermissions() =
-    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED
+    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+            ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        else
+            true
+
 
