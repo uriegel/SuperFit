@@ -20,6 +20,7 @@ import androidx.navigation.navArgument
 import de.uriegel.superfit.ui.theme.MapsTestTheme
 import de.uriegel.superfit.ui.views.Controls
 import de.uriegel.superfit.ui.views.DialogScreen
+import de.uriegel.superfit.ui.views.PermissionCheck
 import de.uriegel.superfit.ui.views.Settings
 
 class MainActivity : ComponentActivity() {
@@ -37,13 +38,15 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(
                         navController = navController,
-                        startDestination = NavRoutes.Main.route
+                        startDestination = NavRoutes.CheckPermission.route
                     ) {
+                        composable(NavRoutes.CheckPermission.route) {
+                            PermissionCheck(navController)
+                        }
                         composable(NavRoutes.Main.route) {
                             Main(navController)
                         }
                         composable(NavRoutes.ShowSettings.route) {
-                            //ShowSettings(navController)
                             Settings(LocalContext.current.dataStore)
                         }
                         composable(NavRoutes.Controls.route) {
@@ -55,7 +58,6 @@ class MainActivity : ComponentActivity() {
                             DialogScreen(it.arguments?.getInt("stringId")!!)
                         }
                     }
-                    navController.navigate(NavRoutes.Main.route){ popUpTo(0) }
                 }
             }
         }
