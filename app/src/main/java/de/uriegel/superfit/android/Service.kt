@@ -10,7 +10,6 @@ import android.os.PowerManager
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.NotificationCompat
 import de.uriegel.superfit.R
-import de.uriegel.superfit.location.FusedLocationProvider
 import de.uriegel.superfit.location.LocationManager
 import de.uriegel.superfit.location.LocationProvider
 import de.uriegel.superfit.ui.MainActivity
@@ -28,8 +27,7 @@ class Service: Service() {
             .setContentIntent(pendingIntent)
             .build()
 
-        val useFused = false
-        locationProvider = if (useFused) FusedLocationProvider() else LocationManager()
+        locationProvider = LocationManager()
         locationProvider.start(this)
 
 //        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
