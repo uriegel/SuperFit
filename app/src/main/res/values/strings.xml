@@ -54,4 +54,5 @@
     <string name="bike_circumference">Radumfang</string>
     <string name="bike_circumference_description">Gib bitte den Rad-Umfang in mm ein</string>
     <string name="maps_description">Kartenauswahl</string>
+    <string name="permission_check">Berechtigungen werden überprüft"</string>
 </resources>

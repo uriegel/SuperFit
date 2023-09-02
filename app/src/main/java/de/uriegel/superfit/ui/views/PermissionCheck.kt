@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
@@ -25,6 +26,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.shouldShowRationale
+import de.uriegel.superfit.R
 import de.uriegel.superfit.ui.NavRoutes
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -36,6 +38,10 @@ fun PermissionCheck(navController: NavController) {
         mutableStateOf(false)
     }
 
+    var textId by remember {
+        mutableStateOf(R.string.permission_check)
+    }
+
     val storagePermissionState = rememberMultiplePermissionsState(
         listOf(Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION)
@@ -43,12 +49,11 @@ fun PermissionCheck(navController: NavController) {
         permissionState = true
     }
 
-    var text by remember { mutableStateOf("Berechtigungen werden überprüft")}
-
     val permission = if (storagePermissionState.permissions[1].status.isGranted)
         false
     else if (storagePermissionState.permissions[1].status.shouldShowRationale) {
-        text = "Dialog anzeigen"
+        // TODO tell what permissions are mandatory
+        textId = R.string.PERMISSION_SHOW_RATIONALE
         true
     }
     else
@@ -61,7 +66,7 @@ fun PermissionCheck(navController: NavController) {
             .fillMaxWidth()
     ) {
         Text(
-            text,
+            text = stringResource(id = textId),
             modifier = Modifier.padding(horizontal = 30.dp))
     }
 

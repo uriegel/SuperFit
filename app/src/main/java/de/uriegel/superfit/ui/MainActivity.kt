@@ -19,7 +19,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import de.uriegel.superfit.ui.theme.MapsTestTheme
 import de.uriegel.superfit.ui.views.Controls
-import de.uriegel.superfit.ui.views.DialogScreen
 import de.uriegel.superfit.ui.views.PermissionCheck
 import de.uriegel.superfit.ui.views.Settings
 
@@ -54,9 +53,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(NavRoutes.Dialog.route + "/{stringId}",
                             arguments = listOf(navArgument("stringId") { type = NavType.IntType })
-                        ) {
-                            DialogScreen(it.arguments?.getInt("stringId")!!)
-                        }
+                        ) {}
                     }
                 }
             }
