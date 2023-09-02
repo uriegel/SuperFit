@@ -1,5 +1,9 @@
 package de.uriegel.superfit.ui
 
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -44,6 +49,13 @@ fun Main(navController: NavHostController, viewModel: ServiceModel = viewModel()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope =  rememberCoroutineScope()
     val context = LocalContext.current
+
+    val requestPermissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestMultiplePermissions(),
+            onResult = {
+                val affe = it
+            })
 
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog)
@@ -102,9 +114,19 @@ fun Main(navController: NavHostController, viewModel: ServiceModel = viewModel()
                             },
                         enabled = !viewModel.servicePending.value && !viewModel.serviceRunning.value,
                         onClick = {
-                            viewModel.servicePending.value = true
-                            context.startService()
-                            //navController.navigate(NavRoutes.Controls.route)
+
+                            if (context.hasPermissions()) {
+                                // Permission already granted, update the location
+                                viewModel.servicePending.value = true
+                                context.startService()
+                                navController.navigate(NavRoutes.Controls.route)
+                            } else {
+                                // Request location permission
+                                requestPermissionLauncher.launch(arrayOf(
+                                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                                    android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                                )
+                            }
                         }) {
                         Text(text = stringResource(R.string.start))
                     }
@@ -134,3 +156,12 @@ fun Main(navController: NavHostController, viewModel: ServiceModel = viewModel()
 fun Preview() {
     Main(rememberNavController())
 }
+
+//fun Context.hasPermissions() =
+//    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED
+//            && ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED
+
+fun Context.hasPermissions() =
+    ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED
+
+
