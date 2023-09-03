@@ -46,16 +46,30 @@ class MainActivity : ComponentActivity() {
                                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
                                     arrayOf(
                                         Manifest.permission.READ_EXTERNAL_STORAGE,
-                                        Manifest.permission.ACCESS_FINE_LOCATION)
+                                        Manifest.permission.ACCESS_FINE_LOCATION
+                                    )
                                 else
                                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
                                     arrayOf(
                                         R.string.permission_external_storage_rationale,
-                                        R.string.permission_location_rationale)
+                                        R.string.permission_location_rationale
+                                    )
                                 else
                                     arrayOf(R.string.permission_location_rationale)
-                            ) { navController.navigate(NavRoutes.Main.route) { popUpTo(0) } }
+                            ) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                                    navController.navigate(NavRoutes.CheckBackgroundPermission.route) { popUpTo(0) }
+                                else
+                                    navController.navigate(NavRoutes.Main.route) { popUpTo(0) }
+                            }
+                        }
+                        composable(NavRoutes.CheckBackgroundPermission.route) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                                PermissionCheck(
+                                    arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                                    arrayOf(R.string.permission_location_rationale)
+                                ) { navController.navigate(NavRoutes.Main.route) { popUpTo(0) } }
                         }
                         composable(NavRoutes.Main.route) {
                             Main(navController)

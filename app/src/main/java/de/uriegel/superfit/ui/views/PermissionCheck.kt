@@ -33,10 +33,6 @@ fun PermissionCheck(permissionIds: Array<String>, permissionRationaleIds: Array<
 
     val permissionStates = rememberMultiplePermissionsState(permissionIds.asList()) {permissionState++}
 
-//    val backgroundLocationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_BACKGROUND_LOCATION) {
-//        backgroundLocationPermission = true
-//    }
-
     val permissionsState =
         if (permissionStates.permissions.all { it.status.isGranted })
             PermissionsState.Granted
