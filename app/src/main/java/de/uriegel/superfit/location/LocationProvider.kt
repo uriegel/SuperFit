@@ -2,6 +2,7 @@ package de.uriegel.superfit.location
 
 import android.content.Context
 import android.location.Location
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,8 +54,8 @@ abstract class LocationProvider: CoroutineScope {
 //                            it.speed = BikeService.velocity / 3.6F // in m/s
 //                        }).await()
 //            }
-            val currentLatLong = LatLong(location.latitude, location.longitude)
-            trackLine.addPoint(currentLatLong)
+            currentPosition.value = LatLong(location.latitude, location.longitude)
+            trackLine.addPoint(currentPosition.value)
         }
     }
 
@@ -68,6 +69,8 @@ abstract class LocationProvider: CoroutineScope {
         var trackNr: Int? = null
             private set
 
+        val locationEmpty = LatLong(0.0, 0.0)
+        val currentPosition = mutableStateOf(locationEmpty)
         const val LOCATION_REFRESH_TIME = 1000L
         const val LOCATION_REFRESH_DISTANCE = 0.0F
     }

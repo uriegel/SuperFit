@@ -1,6 +1,7 @@
 package de.uriegel.superfit.ui.views
 
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
+import de.uriegel.superfit.location.LocationMarker
+import de.uriegel.superfit.location.LocationProvider.Companion.locationEmpty
 import de.uriegel.superfit.location.TrackLine
+import de.uriegel.superfit.models.LocationModel
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.util.AndroidUtil
@@ -25,13 +29,25 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.FileInputStream
 
 @Composable
-fun MapsView(trackLine: TrackLine, followLocation: Boolean) {
+fun MapsView(trackLine: TrackLine, followLocation: Boolean, viewModel: LocationModel?) {
+
+    Log.i("MIST", "fl: $followLocation")
 
     var onFollowLocationChanged by remember {
         mutableStateOf(FollowLocationCallback {})
     }
 
+    var onLocationChanged by remember {
+        mutableStateOf(LocationChangedCallback {_,_,_ -> null} )
+    }
+
+    var locationMarker by remember {
+        mutableStateOf(null as LocationMarker?)
+    }
+
     onFollowLocationChanged.func(followLocation)
+    if (viewModel != null)
+        locationMarker = onLocationChanged.func(viewModel.currentPosition.value, followLocation, locationMarker)
 
     Box(Modifier.fillMaxSize()) {
         AndroidView(
@@ -52,7 +68,8 @@ fun MapsView(trackLine: TrackLine, followLocation: Boolean) {
                     val preferences = PreferenceManager.getDefaultSharedPreferences(context)
                     preferences?.getString("PREF_MAP", null)?.let {
                         val uri = Uri.parse(it)
-                        val fis: FileInputStream = context.contentResolver.openInputStream(uri) as FileInputStream
+                        val fis: FileInputStream =
+                            context.contentResolver.openInputStream(uri) as FileInputStream
                         val mapDataStore: MapDataStore = MapFile(fis)
 //        val tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
 //            InternalRenderTheme.OSMARENDER, false, true, false)
@@ -63,11 +80,25 @@ fun MapsView(trackLine: TrackLine, followLocation: Boolean) {
                         tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER)
                         layerManager.layers.add(tileRendererLayer)
                         layerManager.layers.add(trackLine)
+
+                        onLocationChanged = LocationChangedCallback { loc, followLocation, locationMarker ->
+                            if (followLocation && loc != locationEmpty)
+                                setCenter(loc)
+                            if (locationMarker != null)
+                                layerManager.layers.remove(locationMarker)
+                            val result = LocationMarker(loc)
+                            layerManager.layers.add(result)
+                            result
+                        }
+
                     } ?: Toast.makeText(context, R.string.toast_nomaps, Toast.LENGTH_LONG).show()
 
                     onFollowLocationChanged = FollowLocationCallback {
-                        this.setBuiltInZoomControls(!it)
-                        this.mapScaleBar.isVisible = !it
+                        Log.i("MIST", "fl ch: $followLocation, $it")
+                        if (this.mapScaleBar.isVisible == it) {
+                            this.setBuiltInZoomControls(!it)
+                            this.mapScaleBar.isVisible = !it
+                        }
                     }
                 }
             },
@@ -79,4 +110,8 @@ fun MapsView(trackLine: TrackLine, followLocation: Boolean) {
 
 data class FollowLocationCallback(
     val func: ((followLocation: Boolean)->Unit)
+)
+
+data class LocationChangedCallback(
+    val func: ((loc: LatLong, followLocation: Boolean, locationMarker: LocationMarker?)->LocationMarker?)
 )

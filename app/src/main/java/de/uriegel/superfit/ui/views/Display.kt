@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Display() {
-    val pagerState = rememberPagerState(pageCount = {1})
+    val pagerState = rememberPagerState(pageCount = {2})
     var followLocation by remember { mutableStateOf(true) }
 
     HorizontalPager(
@@ -35,8 +35,10 @@ fun Display() {
         userScrollEnabled = followLocation
     ){
         when (it) {
-            //0 -> { Page1()}
-            0 -> { Page2(followLocation) { followLocation = !followLocation }
+            0 -> { Page1()}
+            1 -> { Page2(followLocation) {
+                followLocation = !followLocation
+            }
             }
         }
     }

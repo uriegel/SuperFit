@@ -1,9 +1,11 @@
 package de.uriegel.superfit.ui.views
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import de.uriegel.superfit.location.LocationProvider
+import de.uriegel.superfit.models.LocationModel
 
 @Composable
-fun TrackingMapsView(followLocation: Boolean) {
-    MapsView(LocationProvider.trackLine, followLocation)
+fun TrackingMapsView(followLocation: Boolean, viewModel: LocationModel? = viewModel()) {
+    MapsView(LocationProvider.trackLine, followLocation, viewModel)
 }
