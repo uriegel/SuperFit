@@ -1,10 +1,11 @@
-package de.uriegel.superfit.ui
+package de.uriegel.superfit.ui.views
 
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalDrawerSheet
@@ -20,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +35,8 @@ import de.uriegel.superfit.R
 import de.uriegel.superfit.extensions.startService
 import de.uriegel.superfit.extensions.stopService
 import de.uriegel.superfit.models.ServiceModel
-import de.uriegel.superfit.ui.views.ServiceAlertDialog
+import de.uriegel.superfit.ui.NavRoutes
+import de.uriegel.superfit.ui.TopBar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -86,7 +89,7 @@ fun Main(navController: NavHostController, viewModel: ServiceModel = viewModel()
                         .fillMaxWidth()
                         .fillMaxHeight()
                 ) {
-                    val (startBtn, stopBtn) = createRefs()
+                    val (startBtn, displayBtn, stopBtn) = createRefs()
                     Button(
                         modifier = Modifier
                             .height(100.dp)
@@ -94,7 +97,7 @@ fun Main(navController: NavHostController, viewModel: ServiceModel = viewModel()
                                 start.linkTo(parent.start, margin = 30.dp)
                                 end.linkTo(parent.end, margin = 30.dp)
                                 top.linkTo(parent.top)
-                                bottom.linkTo(stopBtn.top)
+                                bottom.linkTo(displayBtn.top)
                                 width = Dimension.fillToConstraints
                             },
                         enabled = !viewModel.servicePending.value && !viewModel.serviceRunning.value,
@@ -109,14 +112,29 @@ fun Main(navController: NavHostController, viewModel: ServiceModel = viewModel()
                     Button(
                         modifier = Modifier
                             .height(100.dp)
-                            .constrainAs(stopBtn) {
+                            .constrainAs(displayBtn) {
                                 start.linkTo(parent.start, margin = 30.dp)
                                 end.linkTo(parent.end, margin = 30.dp)
                                 top.linkTo(startBtn.bottom)
+                                bottom.linkTo(stopBtn.top)
+                                width = Dimension.fillToConstraints
+                            },
+                        enabled = !viewModel.servicePending.value && viewModel.serviceRunning.value,
+                        onClick = { navController.navigate(NavRoutes.Controls.route) }) {
+                        Text(text = stringResource(R.string.display))
+                    }
+                    Button(
+                        modifier = Modifier
+                            .height(100.dp)
+                            .constrainAs(stopBtn) {
+                                start.linkTo(parent.start, margin = 30.dp)
+                                end.linkTo(parent.end, margin = 30.dp)
+                                top.linkTo(displayBtn.bottom)
                                 bottom.linkTo(parent.bottom)
                                 width = Dimension.fillToConstraints
                             },
                         enabled = !viewModel.servicePending.value && viewModel.serviceRunning.value,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                         onClick = { showDialog = true }) {
                         Text(text = stringResource(R.string.stop))
                     }

@@ -10,6 +10,7 @@ import androidx.core.app.ActivityCompat
 class LocationManager: LocationProvider() {
 
     override fun start(context: Context) {
+        reset()
         locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Controls() {
+fun Display() {
     val pagerState = rememberPagerState(pageCount = {1})
     var followLocation by remember { mutableStateOf(true) }
 
@@ -36,7 +36,8 @@ fun Controls() {
     ){
         when (it) {
             //0 -> { Page1()}
-            0 -> { Page2(followLocation, { followLocation = !followLocation})}
+            0 -> { Page2(followLocation) { followLocation = !followLocation }
+            }
         }
     }
 }
@@ -59,7 +60,7 @@ fun Page2(followLocation: Boolean, toggleSwipe: ()->Unit) {
             .fillMaxWidth()
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            MapsView(followLocation)
+            TrackingMapsView(followLocation)
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -74,6 +75,6 @@ fun Page2(followLocation: Boolean, toggleSwipe: ()->Unit) {
 
 @Preview()
 @Composable
-fun Preview() {
-    Controls()
+fun PreviewControls() {
+    Display()
 }

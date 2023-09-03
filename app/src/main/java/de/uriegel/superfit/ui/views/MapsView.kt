@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
+import de.uriegel.superfit.location.TrackLine
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.util.AndroidUtil
@@ -24,13 +25,13 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.FileInputStream
 
 @Composable
-fun MapsView(followLocation: Boolean) {
+fun MapsView(trackLine: TrackLine, followLocation: Boolean) {
 
-    var onfollowLocationChanged by remember {
+    var onFollowLocationChanged by remember {
         mutableStateOf(FollowLocationCallback {})
     }
 
-    onfollowLocationChanged.func(followLocation)
+    onFollowLocationChanged.func(followLocation)
 
     Box(Modifier.fillMaxSize()) {
         AndroidView(
@@ -61,13 +62,17 @@ fun MapsView(followLocation: Boolean) {
                         )
                         tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER)
                         layerManager.layers.add(tileRendererLayer)
+                        layerManager.layers.add(trackLine)
                     } ?: Toast.makeText(context, R.string.toast_nomaps, Toast.LENGTH_LONG).show()
 
-                    onfollowLocationChanged = FollowLocationCallback {
+                    onFollowLocationChanged = FollowLocationCallback {
                         this.setBuiltInZoomControls(!it)
                         this.mapScaleBar.isVisible = !it
                     }
                 }
+            },
+            onRelease = {
+                it.layerManager.layers.clear()
             })
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.mapsforge.core.model.LatLong
 
 abstract class LocationProvider: CoroutineScope {
 
@@ -23,6 +24,8 @@ abstract class LocationProvider: CoroutineScope {
         }
     }
 
+    protected fun reset() { trackLine = TrackLine() }
+
     protected fun onLocationChanged(location: Location) {
         launch {
             if (gpsActive.value == false) {
@@ -35,7 +38,7 @@ abstract class LocationProvider: CoroutineScope {
             // TODO Save and Delete in viewModel
             // TODO Display log details Master/Detail-view
             // TODO optional accuracy circle on location marker
-            trackNr?.let { nr ->
+//            trackNr?.let { nr ->
 //                TracksRepository.insertTrackPointAsync(
 //                    TrackPoint(
 //                        nr,
@@ -49,8 +52,9 @@ abstract class LocationProvider: CoroutineScope {
 //                            it.heartRate = HeartRateService.heartRate.value
 //                            it.speed = BikeService.velocity / 3.6F // in m/s
 //                        }).await()
-            }
-            locationData.value = location
+//            }
+            val currentLatLong = LatLong(location.latitude, location.longitude)
+            trackLine.addPoint(currentLatLong)
         }
     }
 
@@ -60,7 +64,7 @@ abstract class LocationProvider: CoroutineScope {
 
     companion object {
         val gpsActive: MutableLiveData<Boolean> = MutableLiveData(false)
-        val locationData: MutableLiveData<Location> = MutableLiveData()
+        var trackLine = TrackLine()
         var trackNr: Int? = null
             private set
 
