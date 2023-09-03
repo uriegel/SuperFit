@@ -35,9 +35,6 @@
     <string name="alert_title_delete_track">Track löschen</string>
     <string name="service_notification_text">Erfasst Fitness-Daten</string>
     <string name="app_title">Super Fit</string>
-    <string name="no_location_access">Kein Zugriff auf den Standort</string>
-    <string name="no_persistent_location_access">Kein ständiger Zugriff auf den Standort</string>
-    <string name="no_storage_access">"Kein Zugriff auf den Speicher "</string>
     <string name="bike_sensor">Bike-Sensor</string>
     <string name="alert_stop_service">Möchtest Du die Aufzeichnung beenden?</string>
     <string name="alert_title_stop_service">Beenden</string>
@@ -47,12 +44,13 @@
     <string name="menu_log_clear">Leeren</string>
     <string name="alert_clear_eventlog">Möchtest Du die Ereignisanzeige leeren?</string>
     <string name="alert_title_clear_eventlog">Ereignisanzeige leeren</string>
-    <string name="PERMISSION_SHOW_RATIONALE">Berechtigung für den Dateizugriff wird benötigt</string>
-    <string name="PERMISSION_DENIED">Berechtigung für den Dateizugriff wurde verweigert. Du kannst die Berechtigung in den App-Einstellungen erteilen</string>
     <string name="bike_support">Bike-Sensor</string>
     <string name="bike_support_description">Unterstützung für Bike Sensoren einschalten</string>
     <string name="bike_circumference">Radumfang</string>
     <string name="bike_circumference_description">Gib bitte den Rad-Umfang in mm ein</string>
     <string name="maps_description">Kartenauswahl</string>
-    <string name="permission_check">Berechtigungen werden überprüft"</string>
+    <string name="permission_location_rationale">Super Fit benötigt Zugriff auf den genauen Standort, um die Position auf der Karte anzuzeigen</string>
+    <string name="permission_external_storage_rationale">Super Fit benötigt Leseberechtigungen auf den Speicher, um die Landkarte anzuzeigen</string>
+    <string name="permission">Zugriff erlauben</string>
+    <string name="permission_denied">Du kannst die Berechtigungen in den App-Einstellungen (für die App "Super Fit") erteilen</string>
 </resources>

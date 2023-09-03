@@ -1,6 +1,8 @@
 package de.uriegel.superfit.ui
 
+import android.Manifest
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,11 +14,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import de.uriegel.superfit.R
 import de.uriegel.superfit.ui.theme.MapsTestTheme
 import de.uriegel.superfit.ui.views.Display
 import de.uriegel.superfit.ui.views.Main
@@ -41,7 +42,20 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavRoutes.CheckPermission.route
                     ) {
                         composable(NavRoutes.CheckPermission.route) {
-                            PermissionCheck(navController)
+                            PermissionCheck(
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+                                    arrayOf(
+                                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                                        Manifest.permission.ACCESS_FINE_LOCATION)
+                                else
+                                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+                                    arrayOf(
+                                        R.string.permission_external_storage_rationale,
+                                        R.string.permission_location_rationale)
+                                else
+                                    arrayOf(R.string.permission_location_rationale)
+                            ) { navController.navigate(NavRoutes.Main.route) { popUpTo(0) } }
                         }
                         composable(NavRoutes.Main.route) {
                             Main(navController)
@@ -52,9 +66,6 @@ class MainActivity : ComponentActivity() {
                         composable(NavRoutes.Controls.route) {
                             Display()
                         }
-                        composable(NavRoutes.Dialog.route + "/{stringId}",
-                            arguments = listOf(navArgument("stringId") { type = NavType.IntType })
-                        ) {}
                     }
                 }
             }
