@@ -1,7 +1,6 @@
 package de.uriegel.superfit.ui.views
 
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,8 +29,6 @@ import java.io.FileInputStream
 
 @Composable
 fun MapsView(trackLine: TrackLine, followLocation: Boolean, viewModel: LocationModel?) {
-
-    Log.i("MIST", "fl: $followLocation")
 
     var onFollowLocationChanged by remember {
         mutableStateOf(FollowLocationCallback {})
@@ -79,22 +76,9 @@ fun MapsView(trackLine: TrackLine, followLocation: Boolean, viewModel: LocationM
                         )
                         tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER)
                         layerManager.layers.add(tileRendererLayer)
-                        layerManager.layers.add(trackLine)
-
-                        onLocationChanged = LocationChangedCallback { loc, followLocation, locationMarker ->
-                            if (followLocation && loc != locationEmpty)
-                                setCenter(loc)
-                            if (locationMarker != null)
-                                layerManager.layers.remove(locationMarker)
-                            val result = LocationMarker(loc)
-                            layerManager.layers.add(result)
-                            result
-                        }
-
                     } ?: Toast.makeText(context, R.string.toast_nomaps, Toast.LENGTH_LONG).show()
 
                     onFollowLocationChanged = FollowLocationCallback {
-                        Log.i("MIST", "fl ch: $followLocation, $it")
                         if (this.mapScaleBar.isVisible == it) {
                             this.setBuiltInZoomControls(!it)
                             this.mapScaleBar.isVisible = !it
@@ -102,8 +86,30 @@ fun MapsView(trackLine: TrackLine, followLocation: Boolean, viewModel: LocationM
                     }
                 }
             },
+            update = {
+                if (!it.layerManager.layers.contains(trackLine))
+                    it.layerManager.layers.add(trackLine)
+                onLocationChanged = LocationChangedCallback { loc, followLocation, locationMarker ->
+                    if (followLocation && loc != locationEmpty)
+                        it.setCenter(loc)
+                    if (locationMarker != null)
+                        it.layerManager.layers.remove(locationMarker)
+                    val result = LocationMarker(loc)
+                    it.layerManager.layers.add(result)
+                    result
+                }
+            },
+            onReset = {
+                val lm = it.layerManager.layers.find { it is LocationMarker }
+                if (lm != null)
+                    it.layerManager.layers.remove(lm)
+                it.layerManager.layers.remove(trackLine)
+            },
             onRelease = {
-                it.layerManager.layers.clear()
+                val lm = it.layerManager.layers.find { it is LocationMarker }
+                if (lm != null)
+                    it.layerManager.layers.remove(lm)
+                it.layerManager.layers.remove(trackLine)
             })
     }
 }
