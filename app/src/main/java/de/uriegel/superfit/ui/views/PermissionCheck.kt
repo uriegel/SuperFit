@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,10 +27,12 @@ import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import de.uriegel.superfit.R
 import de.uriegel.superfit.ui.NavRoutes
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PermissionCheck(navController: NavController) {
@@ -37,21 +41,28 @@ fun PermissionCheck(navController: NavController) {
     var permissionState by remember {
         mutableStateOf(false)
     }
-
-    var textId by remember {
-        mutableStateOf(R.string.permission_check)
+    var backgroundLocationPermission by remember {
+        mutableStateOf(false)
     }
 
-    val storagePermissionState = rememberMultiplePermissionsState(
+    var textId by remember {
+        mutableIntStateOf(R.string.permission_check)
+    }
+
+    val permissionStates = rememberMultiplePermissionsState(
         listOf(Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION)
     ) {
         permissionState = true
     }
 
-    val permission = if (storagePermissionState.permissions[1].status.isGranted)
+    val backgroundLocationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_BACKGROUND_LOCATION) {
+        backgroundLocationPermission = true
+    }
+
+    val permission = if (permissionStates.permissions[1].status.isGranted)
         false
-    else if (storagePermissionState.permissions[1].status.shouldShowRationale) {
+    else if (permissionStates.permissions[1].status.shouldShowRationale) {
         // TODO tell what permissions are mandatory
         textId = R.string.PERMISSION_SHOW_RATIONALE
         true
@@ -84,17 +95,21 @@ fun PermissionCheck(navController: NavController) {
 //    Text(textToShow)
 
     if (!permission) {
-        if (context.hasPermissions())
-            navController.navigate(NavRoutes.Main.route) { popUpTo(0) }
-        else
-            SideEffect {
-                storagePermissionState.launchMultiplePermissionRequest()
-            }
+        SideEffect {
+            if (permissionState)
+                backgroundLocationPermissionState.launchPermissionRequest()
+            else
+                permissionStates.launchMultiplePermissionRequest()
+        }
+
     }
+    if (context.hasPermissions())
+        navController.navigate(NavRoutes.Main.route) { popUpTo(0) }
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 fun Context.hasPermissions() =
-    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED &&
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
         else
