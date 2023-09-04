@@ -1,11 +1,21 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "de.uriegel.superfit"
     compileSdk = 34
+
+    signingConfigs {
+        create("signing") {
+            storeFile = file("/home/uwe/Dokumente/Entwicklung/AndroidKeyStore/keystore.jks")
+            storePassword = extra["ANDROID_STORE_PASSWORD"].toString()
+            keyAlias = "androidKey"
+            keyPassword = extra["ANDROID_KEY_PASSWORD"].toString()
+        }
+    }
 
     defaultConfig {
         applicationId = "de.uriegel.superfit2"
@@ -26,14 +36,18 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("signing")
+        }
+        debug {
+            signingConfig = signingConfigs.getByName("signing")
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -72,4 +86,6 @@ dependencies {
     implementation("com.github.JamalMulla:ComposePrefs3:1.0.4")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation ("androidx.room:room-runtime:2.5.2")
+    kapt ("androidx.room:room-compiler:2.5.2")
 }

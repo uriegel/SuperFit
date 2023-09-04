@@ -4,6 +4,9 @@ import android.content.Context
 import android.location.Location
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
+import de.uriegel.superfit.room.Track
+import de.uriegel.superfit.room.TrackPoint
+import de.uriegel.superfit.room.TracksRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,29 +34,31 @@ abstract class LocationProvider: CoroutineScope {
         launch {
             if (gpsActive.value == false) {
                 gpsActive.value = true
-//                trackNr = TracksRepository.insertTrackAsync(Track(
-//                    location.time,
-//                    location.latitude, location.longitude)
-                //).await().toInt()
+                trackNr = TracksRepository.insertTrackAsync(
+                    Track(
+                        location.time,
+                        location.latitude, location.longitude)
+                ).await().toInt()
             }
             // TODO Save and Delete in viewModel
             // TODO Display log details Master/Detail-view
             // TODO optional accuracy circle on location marker
-//            trackNr?.let { nr ->
-//                TracksRepository.insertTrackPointAsync(
-//                    TrackPoint(
-//                        nr,
-//                        location.latitude,
-//                        location.longitude,
-//                        location.altitude.toFloat(),
-//                        location.time,
-//                        location.accuracy
-//                    )
+            trackNr?.let { nr ->
+                TracksRepository.insertTrackPointAsync(
+                    TrackPoint(
+                        nr,
+                        location.latitude,
+                        location.longitude,
+                        location.altitude.toFloat(),
+                        location.time,
+                        location.accuracy
+                    )
 //                        .also {
 //                            it.heartRate = HeartRateService.heartRate.value
 //                            it.speed = BikeService.velocity / 3.6F // in m/s
 //                        }).await()
-//            }
+                ).await()
+            }
             currentPosition.value = LatLong(location.latitude, location.longitude)
             trackLine.addPoint(currentPosition.value)
         }
