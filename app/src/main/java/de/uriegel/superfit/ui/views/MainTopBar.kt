@@ -1,4 +1,4 @@
-package de.uriegel.superfit.ui
+package de.uriegel.superfit.ui.views
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import de.uriegel.superfit.R
+import de.uriegel.superfit.ui.NavRoutes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
