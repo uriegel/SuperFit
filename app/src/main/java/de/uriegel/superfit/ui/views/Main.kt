@@ -86,7 +86,7 @@ fun NavigationGraph(navContentController: NavHostController, navController: NavH
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun Preview() {
     Main(rememberNavController())
