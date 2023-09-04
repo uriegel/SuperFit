@@ -81,7 +81,7 @@ fun NavigationGraph(navContentController: NavHostController, navController: NavH
             MainControls(navController = navController)
         }
         composable(NavRoutes.TracksList.route) {
-            TracksList()
+            TracksList(navController)
         }
     }
 }

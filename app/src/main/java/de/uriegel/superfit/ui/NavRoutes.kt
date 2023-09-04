@@ -14,4 +14,5 @@ sealed class NavRoutes(val route: String, val id: Int = -1, val icon: ImageVecto
     object TracksList: NavRoutes("tracksList", R.string.maps, Icons.Outlined.List)
     object ShowSettings: NavRoutes("showSettings")
     object Controls: NavRoutes("controls")
+    object TrackMapView: NavRoutes("trackMapView")
 }

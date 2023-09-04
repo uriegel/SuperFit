@@ -14,15 +14,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import de.uriegel.superfit.R
 import de.uriegel.superfit.ui.theme.MapsTestTheme
 import de.uriegel.superfit.ui.views.Display
 import de.uriegel.superfit.ui.views.Main
 import de.uriegel.superfit.ui.views.PermissionCheck
 import de.uriegel.superfit.ui.views.Settings
+import de.uriegel.superfit.ui.views.TrackMapView
 
 class MainActivity : ComponentActivity() {
 
@@ -79,6 +82,10 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(NavRoutes.Controls.route) {
                             Display()
+                        }
+                        composable(NavRoutes.TrackMapView.route  + "/{trackId}",
+                            arguments = listOf(navArgument("trackId") { type = NavType.IntType })) {
+                            TrackMapView(it.arguments?.getInt("trackId")!!)
                         }
                     }
                 }

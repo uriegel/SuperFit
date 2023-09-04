@@ -9,49 +9,31 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import de.uriegel.superfit.room.Track
+import de.uriegel.superfit.ui.NavRoutes
 import java.util.Calendar
 import java.util.Date
 
 @Composable
-fun TrackView(track: Track) {
+fun TrackView(track: Track, navController: NavHostController) {
 
     val context = LocalContext.current
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(15.dp)
-            .clickable{ }
+            .padding(5.dp)
+            .clickable{
+                navController.navigate(NavRoutes.TrackMapView.route + "/${track.id}")
+            }
     ) {
         Column(
             modifier = Modifier.padding(15.dp)
         ) {
-            Text(
-                buildAnnotatedString {
-                    append("welcome to ")
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.W900, color = Color(0xFF4552B8))
-                    ) {
-                        append("Jetpack Compose Playground")
-                    }
-                }
-            )
-            Text(
-                buildAnnotatedString {
-                    append("Now you are in the ")
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.W900)) {
-                        append("Card ")
-                    }
-                    append(track.getName(context))
-                }
-            )
+            Text(track.getName(context))
         }
     }
 }
