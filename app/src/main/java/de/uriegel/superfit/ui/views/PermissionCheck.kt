@@ -101,3 +101,4 @@ fun PermissionCheck(permissionIds: Array<String>, permissionRationaleIds: Array<
 enum class PermissionsState {
     Granted, ShowRationale, Denied
 }
+

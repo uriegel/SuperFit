@@ -8,9 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import de.uriegel.superfit.ui.NavRoutes
 
 @Composable
@@ -43,4 +45,10 @@ fun MainNavigationBar(navController: NavHostController, modifier: Modifier) {
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun PreviewMainNavigationBar() {
+    MainNavigationBar(rememberNavController(), Modifier)
 }

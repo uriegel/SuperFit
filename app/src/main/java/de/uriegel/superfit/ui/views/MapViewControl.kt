@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
@@ -28,7 +29,7 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme
 import java.io.FileInputStream
 
 @Composable
-fun MapsView(trackLine: TrackLine, followLocation: Boolean, viewModel: LocationModel?) {
+fun MapViewControl(trackLine: TrackLine, followLocation: Boolean, viewModel: LocationModel?) {
 
     var onFollowLocationChanged by remember {
         mutableStateOf(FollowLocationCallback {})
@@ -121,3 +122,9 @@ data class FollowLocationCallback(
 data class LocationChangedCallback(
     val func: ((loc: LatLong, followLocation: Boolean, locationMarker: LocationMarker?)->LocationMarker?)
 )
+
+@Preview
+@Composable
+fun PreviewMapView() {
+    MapViewControl(TrackLine(), false, null)
+}

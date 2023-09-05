@@ -1,4 +1,4 @@
-package de.uriegel.superfit.ui.views
+package de.uriegel.superfit.ui
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column

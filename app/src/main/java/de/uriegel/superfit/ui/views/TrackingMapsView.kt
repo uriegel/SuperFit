@@ -7,5 +7,5 @@ import de.uriegel.superfit.models.LocationModel
 
 @Composable
 fun TrackingMapsView(followLocation: Boolean, viewModel: LocationModel? = viewModel()) {
-    MapsView(LocationProvider.trackLine, followLocation, viewModel)
+    MapViewControl(LocationProvider.trackLine, followLocation, viewModel)
 }

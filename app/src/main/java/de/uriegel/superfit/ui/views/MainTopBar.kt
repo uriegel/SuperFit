@@ -16,13 +16,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import de.uriegel.superfit.R
 import de.uriegel.superfit.ui.NavRoutes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(navController: NavHostController, onNavigationIconClick: () -> Unit) {
+fun MainTopBar(navController: NavHostController, onNavigationIconClick: () -> Unit) {
 
     var displayMenu by remember { mutableStateOf(false) }
 
@@ -57,4 +59,10 @@ fun TopBar(navController: NavHostController, onNavigationIconClick: () -> Unit) 
             }
         }
     )
+}
+
+@Preview
+@Composable
+fun PreviewMainTopBar() {
+    MainTopBar(rememberNavController(), {})
 }

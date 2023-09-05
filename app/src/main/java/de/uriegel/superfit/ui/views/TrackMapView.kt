@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.tooling.preview.Preview
 import de.uriegel.superfit.location.TrackLine
 import de.uriegel.superfit.room.TracksRepository
 import kotlinx.coroutines.launch
@@ -28,5 +29,12 @@ fun TrackMapView(trackId: Int) {
         }
     }
 
-    MapsView(trackLine, false, null)
+    MapViewControl(trackLine, false, null)
 }
+
+@Preview
+@Composable
+fun TrackMapViewPreview() {
+    TrackMapView(0)
+}
+

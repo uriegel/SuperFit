@@ -21,15 +21,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.preference.PreferenceManager
+import com.jamal.composeprefs3.ui.LocalPrefsDataStore
 import com.jamal.composeprefs3.ui.PrefsScreen
 import com.jamal.composeprefs3.ui.prefs.CheckBoxPref
 import com.jamal.composeprefs3.ui.prefs.TextPref
 import de.uriegel.superfit.R
+import de.uriegel.superfit.ui.EditTextPref
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -135,3 +138,10 @@ fun Settings(dataStore: DataStore<Preferences>) {
 
 fun String.getPath() =
     Uri.parse(this).path
+
+@Preview
+@Composable
+fun SettingsPreview() {
+    Settings(LocalPrefsDataStore.current)
+}
+
