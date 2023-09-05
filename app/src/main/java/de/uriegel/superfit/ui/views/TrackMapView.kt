@@ -1,5 +1,9 @@
 package de.uriegel.superfit.ui.views
 
+import android.app.Activity
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -20,13 +24,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.uriegel.superfit.extensions.getFileName
 import de.uriegel.superfit.location.TrackLine
+import de.uriegel.superfit.room.TrackPoint
 import de.uriegel.superfit.room.TracksRepository
 import kotlinx.coroutines.launch
 import org.mapsforge.core.model.LatLong
 
 @Composable
 fun TrackMapView(trackId: Int) {
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+
+        }
+    }
+
 
     val coroutineScope = rememberCoroutineScope()
     val trackLine by remember { mutableStateOf(TrackLine()) }
@@ -56,7 +69,17 @@ fun TrackMapView(trackId: Int) {
                 actions = {
                     IconButton(
                         modifier = Modifier.padding(horizontal = 20.dp),
-                        onClick = { /* Check onClick */ }) {
+                        onClick = {
+                            coroutineScope.launch {
+                                getTrackExport(trackId)?.let{
+                                    val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                                    intent.addCategory(Intent.CATEGORY_OPENABLE)
+                                    intent.type = "application/gpx+xml"
+                                    intent.putExtra(Intent.EXTRA_TITLE, "${it.name}.gpx")
+                                    launcher.launch(intent)
+                                }
+                            }
+                        }) {
                         Icon(Icons.Filled.Share, contentDescription = "")
                     }
                     IconButton(
@@ -76,6 +99,19 @@ fun TrackMapView(trackId: Int) {
         }
     )
 }
+
+suspend fun getTrackExport(trackId: Int) =
+    TracksRepository
+        .findTrackAsync(trackId)
+        .await()
+        ?.let {
+            TrackExport(trackId, it.getFileName(), TracksRepository.findTrackPointsAsync(trackId).await())
+        }
+
+data class TrackExport(
+    val trackId: Int,
+    val name: String,
+    val points: Array<TrackPoint>?)
 
 @Preview
 @Composable
