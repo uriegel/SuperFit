@@ -70,7 +70,7 @@ fun Page2(followLocation: Boolean, toggleSwipe: ()->Unit) {
             .fillMaxWidth()
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            TrackingMapsView(followLocation)
+            TrackingMapView(followLocation)
             Button(
                 modifier = Modifier
                     .fillMaxWidth()

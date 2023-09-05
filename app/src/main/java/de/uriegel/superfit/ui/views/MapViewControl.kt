@@ -56,8 +56,8 @@ fun MapViewControl(trackLine: TrackLine, followLocation: Boolean, viewModel: Loc
                     setZoomLevel(16)
                     setCenter(LatLong(50.90042250198412, 6.715496743031949))
                     setBuiltInZoomControls(!followLocation)
-                    mapZoomControls.setMarginVertical(120)
-                    mapScaleBar.marginVertical = 130
+                    mapZoomControls.setMarginVertical(5)
+                    mapScaleBar.marginVertical = 15
                     mapScaleBar.isVisible = !followLocation
                     val tileCache = AndroidUtil.createTileCache(
                         context, "mapcache", model.displayModel.tileSize, 1f,
