@@ -20,7 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import de.uriegel.superfit.R
-import de.uriegel.superfit.ui.theme.MapsTestTheme
+import de.uriegel.superfit.ui.theme.SuperFitTheme
 import de.uriegel.superfit.ui.views.Display
 import de.uriegel.superfit.ui.views.Main
 import de.uriegel.superfit.ui.views.PermissionCheck
@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MapsTestTheme {
+            SuperFitTheme {
                 val navController = rememberNavController()
 
                 Surface(
