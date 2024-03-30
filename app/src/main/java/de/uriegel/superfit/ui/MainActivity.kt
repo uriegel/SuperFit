@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity() {
                             Settings(LocalContext.current.dataStore)
                         }
                         composable(NavRoutes.Controls.route) {
-                            Display()
+                            Display(window)
                         }
                         composable(NavRoutes.TrackMapView.route  + "/{trackId}",
                             arguments = listOf(navArgument("trackId") { type = NavType.IntType })) {

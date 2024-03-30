@@ -1,5 +1,7 @@
 package de.uriegel.superfit.ui.views
 
+import android.view.Window
+import android.view.WindowManager
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,6 +14,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,12 +24,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Display() {
+fun Display(window: Window?, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
+    LaunchedEffect(lifecycleOwner) {
+        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        //window.clearFlags()
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        onDispose {
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
 
     val showDisplay by remember { mutableStateOf(false) }
 
@@ -86,5 +102,5 @@ fun Page2(followLocation: Boolean, toggleSwipe: ()->Unit) {
 @Preview()
 @Composable
 fun PreviewControls() {
-    Display()
+    Display(null)
 }
