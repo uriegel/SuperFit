@@ -27,7 +27,7 @@ fun SensorDisplay(data: SensorData) {
         Text(modifier = Modifier
                 .constrainAs(cadenceTitle) {
                     start.linkTo(parent.start, margin = 8.dp)
-                    top.linkTo(parent.top, margin = 16.dp)
+                    top.linkTo(parent.top, margin = 8.dp)
                 },
             text = stringResource(id = R.string.cadence))
         Text(modifier = Modifier

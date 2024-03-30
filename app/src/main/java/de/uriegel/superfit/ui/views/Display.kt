@@ -3,7 +3,6 @@ package de.uriegel.superfit.ui.views
 import android.view.Window
 import android.view.WindowManager
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,28 +11,39 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.LifecycleOwner
+import com.jamal.composeprefs3.ui.LocalPrefsDataStore
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Display(window: Window?, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
+fun Display(window: Window?, dataStore: DataStore<Preferences>,
+            lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
+
+    val prefs by remember { dataStore.data }.collectAsState(initial = null)
+    var showDisplay by remember { mutableStateOf(false) }
+
     LaunchedEffect(lifecycleOwner) {
         window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        prefs?.get(booleanPreferencesKey("bike_support"))?.also {
+            showDisplay = it
+        }
     }
 
     DisposableEffect(lifecycleOwner) {
@@ -41,8 +51,6 @@ fun Display(window: Window?, lifecycleOwner: LifecycleOwner = LocalLifecycleOwne
             window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
-
-    val showDisplay by remember { mutableStateOf(false) }
 
     val pagerState = rememberPagerState(pageCount = {2})
     var followLocation by remember { mutableStateOf(true) }
@@ -72,9 +80,8 @@ fun Page1() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Yellow)
     ) {
-        Text(text = "Das ist die erste Seite")
+        SensorDisplay(data = SensorData(78, 24.888, 132))
     }
 }
 @Composable
@@ -101,5 +108,5 @@ fun Page2(followLocation: Boolean, toggleSwipe: ()->Unit) {
 @Preview()
 @Composable
 fun PreviewControls() {
-    Display(null)
+    Display(null, LocalPrefsDataStore.current)
 }
