@@ -6,6 +6,7 @@ import org.mapsforge.map.layer.overlay.Polyline
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 
 class TrackLine : Polyline(paint, AndroidGraphicFactory.INSTANCE) {
+    var zoomAndPan: ()->Unit = {}
     companion object {
         private val paint = AndroidGraphicFactory.INSTANCE.createPaint()
         init {

@@ -18,6 +18,7 @@ import de.uriegel.superfit.location.LocationMarker
 import de.uriegel.superfit.location.LocationProvider.Companion.locationEmpty
 import de.uriegel.superfit.location.TrackLine
 import de.uriegel.superfit.models.LocationModel
+import org.mapsforge.core.model.BoundingBox
 import org.mapsforge.core.model.LatLong
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory
 import org.mapsforge.map.android.util.AndroidUtil
@@ -52,6 +53,10 @@ fun MapViewControl(trackLine: TrackLine, followLocation: Boolean, viewModel: Loc
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
                 MapView(context).apply {
+                    trackLine.zoomAndPan = {
+                        zoomAndPan(this, trackLine)
+                    }
+
                     isClickable = true
                     setZoomLevel(16)
                     setCenter(LatLong(50.90042250198412, 6.715496743031949))
@@ -112,6 +117,23 @@ fun MapViewControl(trackLine: TrackLine, followLocation: Boolean, viewModel: Loc
                     it.layerManager.layers.remove(lm)
                 it.layerManager.layers.remove(trackLine)
             })
+    }
+}
+
+private fun zoomAndPan(mapView: MapView, trackLine: TrackLine) {
+    try {
+        val boundingBox = BoundingBox(trackLine.latLongs)
+        val width = mapView.width
+        val height = mapView.height
+        if (width <= 0 || height <= 0)
+            return
+        val centerPoint = LatLong(
+            (boundingBox.maxLatitude + boundingBox.minLatitude) / 2,
+            (boundingBox.maxLongitude + boundingBox.minLongitude) / 2
+        )
+        mapView.setCenter(centerPoint)
+    } catch (e: Exception) {
+        // logWarnung("Zoom and Pan", e)
     }
 }
 

@@ -50,6 +50,9 @@ fun TrackMapView(trackId: Int) {
                 ?.forEach {
                     trackLine.addPoint(LatLong(it.latitude, it.longitude))
                 }
+                ?.let {
+                    trackLine.zoomAndPan()
+                }
         }
     }
 
