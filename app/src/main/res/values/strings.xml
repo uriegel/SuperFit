@@ -17,11 +17,11 @@
     <string name="toggle_controls">toggle controls</string>
     <string name="delete_track">Delete track</string>
     <string name="save_track">Save track</string>
-    <string name="trittfrequenz">Trittfrequenz</string>
-    <string name="_1_min">1/min</string>
-    <string name="geschwindigkeit">Geschwindigkeit</string>
-    <string name="km_h">km/h</string>
-    <string name="herzfrequenz">Herzfrequenz</string>
+    <string name="cadence">Trittfrequenz</string>
+    <string name="_1_minUnit">1/min</string>
+    <string name="velocity">Geschwindigkeit</string>
+    <string name="velocityUnit">km/h</string>
+    <string name="heartBeat">Herzfrequenz</string>
     <string name="strecke">Strecke</string>
     <string name="km">km</string>
     <string name="zeit">Zeit</string>
