@@ -35,7 +35,8 @@ fun MainControls(navController: NavHostController, viewModel: ServiceModel = vie
 
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog)
-        ServiceAlertDialog(
+        ResourceAlertDialog(
+            R.string.alert_title_stop_service, R.string.alert_stop_service,
             { showDialog = false },
             {
                 viewModel.servicePending.value = true

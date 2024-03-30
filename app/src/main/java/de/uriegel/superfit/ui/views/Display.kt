@@ -34,7 +34,6 @@ import androidx.lifecycle.LifecycleOwner
 fun Display(window: Window?, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
     LaunchedEffect(lifecycleOwner) {
         window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        //window.clearFlags()
     }
 
     DisposableEffect(lifecycleOwner) {

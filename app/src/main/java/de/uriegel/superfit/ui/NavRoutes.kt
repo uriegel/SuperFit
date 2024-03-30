@@ -11,7 +11,7 @@ sealed class NavRoutes(val route: String, val id: Int = -1, val icon: ImageVecto
     object CheckBackgroundPermission: NavRoutes("checkBackgroundPermission")
     object Main: NavRoutes("main")
     object MainControls: NavRoutes("mainControls", R.string.display, Icons.Outlined.LocationOn)
-    object TracksList: NavRoutes("tracksList", R.string.maps, Icons.Outlined.List)
+    object TracksList: NavRoutes("tracksList", R.string.tracks, Icons.Outlined.List)
     object ShowSettings: NavRoutes("showSettings")
     object Controls: NavRoutes("controls")
     object TrackMapView: NavRoutes("trackMapView")

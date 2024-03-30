@@ -4,6 +4,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="maps">Kartenauswahl</string>
+    <string name="tracks">Tracks</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="nav_header_subtitle">Erfassung aller Fitnessdaten</string>
     <string name="main_menu">Ansicht</string>

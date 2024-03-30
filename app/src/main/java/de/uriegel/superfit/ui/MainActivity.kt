@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(NavRoutes.TrackMapView.route  + "/{trackId}",
                             arguments = listOf(navArgument("trackId") { type = NavType.IntType })) {
-                            TrackMapView(it.arguments?.getInt("trackId")!!)
+                            TrackMapView(navController, it.arguments?.getInt("trackId")!!)
                         }
                     }
                 }

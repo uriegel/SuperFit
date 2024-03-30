@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import de.uriegel.superfit.R
 
 @Composable
-fun ServiceAlertDialog(onDismiss: () -> Unit, onOk: ()->Unit) {
+fun ResourceAlertDialog(idTitle: Int, id: Int, onDismiss: () -> Unit, onOk: ()->Unit) {
     AlertDialog(
         onDismissRequest = { },
         confirmButton = {
@@ -20,17 +20,17 @@ fun ServiceAlertDialog(onDismiss: () -> Unit, onOk: ()->Unit) {
         },
         dismissButton = {
             TextButton(onClick = { onDismiss() }) {
-                Text(text = stringResource(id = R.string.cancel))
+                Text(text = stringResource(R.string.cancel))
             }
         },
-        title = { Text(text = stringResource(id = R.string.alert_title_stop_service)) },
-        text = { Text(text = stringResource(id = R.string.alert_stop_service)) }
+        title = { Text(text = stringResource(idTitle)) },
+        text = { Text(text = stringResource(id)) }
     )
 }
 
 @Preview
 @Composable
 fun ServiceAlertDialogPreview() {
-    ServiceAlertDialog({}, {})
+    ResourceAlertDialog(R.string.alert_title_stop_service, R.string.alert_stop_service, {}, {})
 }
 

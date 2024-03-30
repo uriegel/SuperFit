@@ -2,6 +2,7 @@ package de.uriegel.superfit.ui.views
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -14,7 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,18 +23,26 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import de.uriegel.superfit.R
 import de.uriegel.superfit.extensions.exportToGpx
 import de.uriegel.superfit.extensions.getFileName
 import de.uriegel.superfit.location.TrackLine
 import de.uriegel.superfit.room.TracksRepository
 import de.uriegel.superfit.ui.rememberLauncherWithState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.mapsforge.core.model.LatLong
 
 @Composable
-fun TrackMapView(trackId: Int) {
+fun TrackMapView(navController: NavHostController, trackId: Int,
+                 lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
 
     val launcher = rememberLauncherWithState(ActivityResultContracts.StartActivityForResult())
     val context = LocalContext.current
@@ -42,13 +51,30 @@ fun TrackMapView(trackId: Int) {
     val trackLine by remember { mutableStateOf(TrackLine()) }
     var bottomBar by remember { mutableStateOf(true)}
 
-    SideEffect {
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    if (showDeleteDialog)
+        ResourceAlertDialog(
+            R.string.alert_title_delete_track, R.string.alert_delete_track,
+            { showDeleteDialog = false },
+            { coroutineScope.launch {
+                    TracksRepository.deleteTrackAsync(trackId)
+                }
+                navController.navigateUp()
+            }
+        )
+
+    LaunchedEffect(lifecycleOwner) {
+        Log.i("AFFE", "male")
         coroutineScope.launch {
             TracksRepository
                 .findTrackPointsAsync(trackId)
                 .await()
-                ?.forEach {
-                    trackLine.addPoint(LatLong(it.latitude, it.longitude))
+                ?.let{
+                    withContext(Dispatchers.Default) {
+                        it.apply { it.forEach {
+                            trackLine.addPoint(LatLong(it.latitude, it.longitude))
+                        }}
+                    }
                 }
                 ?.let {
                     trackLine.zoomAndPan()
@@ -104,7 +130,7 @@ fun TrackMapView(trackId: Int) {
                     }
                     IconButton(
                         modifier = Modifier.padding(horizontal = 20.dp),
-                        onClick = { /* Edit onClick */ }) {
+                        onClick = { showDeleteDialog = true }) {
                         Icon(
                             Icons.Filled.Delete, contentDescription = ""
                         )
@@ -128,6 +154,6 @@ suspend fun getTrack(trackId: Int) =
 @Preview
 @Composable
 fun TrackMapViewPreview() {
-    TrackMapView(0)
+    TrackMapView(rememberNavController(),0)
 }
 
