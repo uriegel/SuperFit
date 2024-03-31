@@ -18,7 +18,7 @@ class Application: android.app.Application() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_SERVICE_ID,
-                "CHANNEL_SERVICE", NotificationManager.IMPORTANCE_DEFAULT)
+                CHANNEL_SERVICE_ID, NotificationManager.IMPORTANCE_DEFAULT)
             channel.description = "Channel for foreground service"
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager?.createNotificationChannel(channel)
@@ -28,7 +28,7 @@ class Application: android.app.Application() {
     companion object {
         lateinit var instance: Application
             private set
-        const val CHANNEL_SERVICE_ID = "CHANNEL_SERVICE"
+        const val CHANNEL_SERVICE_ID = "CHANNEL_SUPERFIT2"
     }
 }
 

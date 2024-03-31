@@ -94,4 +94,3 @@ fun Preview() {
 
 
 // TODO Card layout for track list with map svg icon
-// TODO Delete track
