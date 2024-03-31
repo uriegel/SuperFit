@@ -32,8 +32,10 @@ import com.jamal.composeprefs3.ui.prefs.CheckBoxPref
 import com.jamal.composeprefs3.ui.prefs.TextPref
 import de.uriegel.superfit.R
 import de.uriegel.superfit.ui.EditTextPref
+import de.uriegel.superfit.ui.MainActivity.Companion.prefBikeSupport
 import de.uriegel.superfit.ui.MainActivity.Companion.prefMaps
 import de.uriegel.superfit.ui.MainActivity.Companion.prefWheel
+import de.uriegel.superfit.ui.MainActivity.Companion.showControls
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -57,6 +59,9 @@ fun Settings(dataStore: DataStore<Preferences>) {
         dataStore.data.collectLatest { pref ->
             pref[prefMaps]?.also {
                 selectedMap = it
+            }
+            pref[prefBikeSupport]?.also {
+                showControls = it
             }
         }
     }

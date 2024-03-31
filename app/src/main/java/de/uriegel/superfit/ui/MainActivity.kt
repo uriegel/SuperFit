@@ -28,11 +28,19 @@ import de.uriegel.superfit.ui.views.Main
 import de.uriegel.superfit.ui.views.PermissionCheck
 import de.uriegel.superfit.ui.views.Settings
 import de.uriegel.superfit.ui.views.TrackMapView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        CoroutineScope(Dispatchers.Default).launch {
+            showControls = dataStore.data.first()[prefBikeSupport] ?: false
+        }
 
         setContent {
             SuperFitTheme {
@@ -83,7 +91,7 @@ class MainActivity : ComponentActivity() {
                             Settings(LocalContext.current.dataStore)
                         }
                         composable(NavRoutes.Controls.route) {
-                            Display(window, LocalContext.current.dataStore)
+                            Display(window, showControls)
                         }
                         composable(NavRoutes.TrackMapView.route  + "/{trackId}",
                             arguments = listOf(navArgument("trackId") { type = NavType.IntType })) {
@@ -97,6 +105,7 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+        var showControls = false
         val prefMaps = stringPreferencesKey("PREF_MAP")
         val prefWheel = stringPreferencesKey("PREF_WHEEL")
         val prefBikeSupport = booleanPreferencesKey("bike_support")

@@ -14,7 +14,6 @@ import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,25 +24,15 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.LifecycleOwner
-import com.jamal.composeprefs3.ui.LocalPrefsDataStore
-import de.uriegel.superfit.ui.MainActivity.Companion.prefBikeSupport
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Display(window: Window?, dataStore: DataStore<Preferences>,
+fun Display(window: Window?, showDisplay: Boolean,
             lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
-
-    val prefs by remember { dataStore.data }.collectAsState(initial = null)
-    var showDisplay by remember { mutableStateOf(false) }
 
     LaunchedEffect(lifecycleOwner) {
         window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        prefs?.get(prefBikeSupport)?.also {
-            showDisplay = it
-        }
     }
 
     DisposableEffect(lifecycleOwner) {
@@ -108,5 +97,5 @@ fun Page2(followLocation: Boolean, toggleSwipe: ()->Unit) {
 @Preview()
 @Composable
 fun PreviewControls() {
-    Display(null, LocalPrefsDataStore.current)
+    Display(null, true)
 }
