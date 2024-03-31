@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -93,6 +95,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+    companion object {
+        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+        val prefMaps = stringPreferencesKey("PREF_MAP")
+        val prefWheel = stringPreferencesKey("PREF_WHEEL")
+        val prefBikeSupport = booleanPreferencesKey("bike_support")
+    }
 }
 

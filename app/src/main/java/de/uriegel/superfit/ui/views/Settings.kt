@@ -25,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.preference.PreferenceManager
 import com.jamal.composeprefs3.ui.LocalPrefsDataStore
 import com.jamal.composeprefs3.ui.PrefsScreen
@@ -33,6 +32,8 @@ import com.jamal.composeprefs3.ui.prefs.CheckBoxPref
 import com.jamal.composeprefs3.ui.prefs.TextPref
 import de.uriegel.superfit.R
 import de.uriegel.superfit.ui.EditTextPref
+import de.uriegel.superfit.ui.MainActivity.Companion.prefMaps
+import de.uriegel.superfit.ui.MainActivity.Companion.prefWheel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -45,7 +46,6 @@ fun Settings(dataStore: DataStore<Preferences>) {
     val scope = rememberCoroutineScope()
     var selectedMap by remember { mutableStateOf("") }
     val prefs by remember { dataStore.data }.collectAsState(initial = null)
-    val prefMaps = stringPreferencesKey("PREF_MAP")
 
     LaunchedEffect(Unit) {
         prefs?.get(prefMaps)?.also {
@@ -99,7 +99,7 @@ fun Settings(dataStore: DataStore<Preferences>) {
                             summary = stringResource(R.string.bike_circumference_description),
                             dialogMessage = stringResource(R.string.bike_circumference_description),
                             dialogTitle = stringResource(R.string.bike_circumference),
-                            key = "PREF_WHEEL",
+                            key = prefWheel,
                             numbers = true
                         )
                     }

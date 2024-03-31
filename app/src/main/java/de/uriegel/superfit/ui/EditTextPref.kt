@@ -28,8 +28,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.DialogProperties
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.jamal.composeprefs3.ui.LocalPrefsDataStore
 import com.jamal.composeprefs3.ui.ifNotNullThen
 import com.jamal.composeprefs3.ui.prefs.TextPref
@@ -38,24 +38,14 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
-fun EditTextPref(
-    key: String,
-    title: String,
-    modifier: Modifier = Modifier,
-    summary: String? = null,
-    dialogTitle: String? = null,
-    dialogMessage: String? = null,
-    defaultValue: String = "",
-    onValueSaved: ((String) -> Unit) = {},
-    onValueChange: ((String) -> Unit) = {},
-    dialogBackgroundColor: Color = MaterialTheme.colorScheme.background,
-    textColor: Color = MaterialTheme.colorScheme.onBackground,
-    enabled: Boolean = true,
-    numbers: Boolean = false
-) {
+fun EditTextPref(key: Preferences.Key<String>, title: String, modifier: Modifier = Modifier, summary: String? = null,
+                 dialogTitle: String? = null, dialogMessage: String? = null, defaultValue: String = "",
+                 onValueSaved: ((String) -> Unit) = {}, onValueChange: ((String) -> Unit) = {},
+                 dialogBackgroundColor: Color = MaterialTheme.colorScheme.background,
+                 textColor: Color = MaterialTheme.colorScheme.onBackground, enabled: Boolean = true,
+                 numbers: Boolean = false) {
 
     var showDialog by rememberSaveable { mutableStateOf(false) }
-    val selectionKey = stringPreferencesKey(key)
     val scope = rememberCoroutineScope()
 
     val datastore = LocalPrefsDataStore.current
@@ -70,14 +60,14 @@ fun EditTextPref(
 
     // Set value initially if it exists in datastore
     LaunchedEffect(Unit) {
-        prefs?.get(selectionKey)?.also {
+        prefs?.get(key)?.also {
             value = it
         }
     }
 
     LaunchedEffect(datastore.data) {
         datastore.data.collectLatest { pref ->
-            pref[selectionKey]?.also {
+            pref[key]?.also {
                 value = it
             }
         }
@@ -87,7 +77,7 @@ fun EditTextPref(
         scope.launch {
             try {
                 datastore.edit { preferences ->
-                    preferences[selectionKey] = textVal
+                    preferences[key] = textVal
                 }
                 onValueSaved(textVal)
             } catch (e: Exception) {

@@ -27,9 +27,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.LifecycleOwner
 import com.jamal.composeprefs3.ui.LocalPrefsDataStore
+import de.uriegel.superfit.ui.MainActivity.Companion.prefBikeSupport
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -41,7 +41,7 @@ fun Display(window: Window?, dataStore: DataStore<Preferences>,
 
     LaunchedEffect(lifecycleOwner) {
         window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        prefs?.get(booleanPreferencesKey("bike_support"))?.also {
+        prefs?.get(prefBikeSupport)?.also {
             showDisplay = it
         }
     }
