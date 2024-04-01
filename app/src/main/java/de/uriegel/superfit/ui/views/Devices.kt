@@ -1,6 +1,7 @@
 package de.uriegel.superfit.ui.views
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
@@ -13,10 +14,13 @@ import android.os.ParcelUuid
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -33,29 +37,37 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LifecycleOwner
 import de.uriegel.superfit.R
-import de.uriegel.superfit.sensor.HeartRateSensor
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DevicesView(titleId: Int, uuid: String, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
+fun Devices(titleId: Int, uuid: String, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
 
     var bleScanner: BluetoothLeScanner? by remember { mutableStateOf(null) }
     val context = LocalContext.current
+    var devices: Array<Device> by remember { mutableStateOf(emptyArray())}
 
     val scanCallback = object : ScanCallback() {
+        @SuppressLint("MissingPermission")
         override fun onScanResult(callbackType: Int, result: ScanResult) {
-            //devicesAdapter.addDevice(result.device)
+            devices =
+                if (devices.any{ it.address == result.device.address })
+                    devices
+                else
+                    devices.plus(Device(result.device.name, result.device.address))
         }
 
         override fun onScanFailed(errorCode: Int) {
-            //logError("onScanFailed: code $errorCode")
+            Toast.makeText(context, "onScanFailed: code $errorCode",
+                Toast.LENGTH_LONG).show()
         }
     }
 
     LaunchedEffect(lifecycleOwner) {
+
         val scanFilter = ScanFilter
             .Builder()
             .setServiceUuid(ParcelUuid.fromString(uuid))
@@ -70,7 +82,7 @@ fun DevicesView(titleId: Int, uuid: String, lifecycleOwner: LifecycleOwner = Loc
                 .bluetoothLeScanner
             bleScanner?.startScan(listOf(scanFilter), scanSettings, scanCallback)
         } else
-            Toast.makeText(context, R.string.permission_external_storage_blutooth_scan,
+            Toast.makeText(context, R.string.permission_blutooth_scan,
                 Toast.LENGTH_LONG).show()
     }
 
@@ -79,7 +91,12 @@ fun DevicesView(titleId: Int, uuid: String, lifecycleOwner: LifecycleOwner = Loc
             bleScanner?.stopScan(scanCallback)
         }
     }
+    DevicesView(titleId, devices)
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DevicesView(titleId: Int, devices: Array<Device>) {
     val scrollState = rememberScrollState()
 
     Scaffold(
@@ -91,15 +108,52 @@ fun DevicesView(titleId: Int, uuid: String, lifecycleOwner: LifecycleOwner = Loc
                     .fillMaxSize()
             ) {
                 Column(Modifier.verticalScroll(scrollState)) {
-
+                    devices.map {
+                        Card(modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth()) {
+                            ConstraintLayout(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                            ) {
+                                val (name, address) = createRefs()
+                                Text(text = it.name,
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .constrainAs(name) {
+                                            start.linkTo(parent.start)
+                                            end.linkTo(parent.end)
+                                        }
+                                )
+                                Text(text = it.address,
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .constrainAs(address) {
+                                            top.linkTo(name.bottom)
+                                            start.linkTo(parent.start)
+                                            end.linkTo(parent.end)
+                                        }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
     )
 }
 
+data class Device(
+    val name: String,
+    val address: String
+)
+
 @Preview
 @Composable
 fun PreviewDevicesView() {
-    DevicesView(R.string.heartBeat, HeartRateSensor.getUuid())
+    DevicesView(R.string.heartBeat, arrayOf(
+        Device("VR 105", "00989898"),
+        Device("VR 109", "999xxx5")
+    ))
 }
