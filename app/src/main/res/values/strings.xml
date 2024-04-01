@@ -52,7 +52,9 @@
     <string name="maps_description">Kartenauswahl</string>
     <string name="permission_location_rationale">Super Fit benötigt Zugriff auf den genauen Standort, um die Position auf der Karte anzuzeigen</string>
     <string name="permission_external_storage_rationale">Super Fit benötigt Leseberechtigungen auf den Speicher, um die Landkarte anzuzeigen</string>
+    <string name="permission_notification_rationale">Super Fit muss Benachrichtigungen anzeigen können</string>
     <string name="permission_external_storage_blutooth_scan">Super Fit benötigt die Berechtigung, Bluetooth-Sensoren zu erfassen </string>
     <string name="permission">Zugriff erlauben</string>
     <string name="permission_denied">Du kannst die Berechtigungen in den App-Einstellungen (für die App "Super Fit") erteilen</string>
+
 </resources>

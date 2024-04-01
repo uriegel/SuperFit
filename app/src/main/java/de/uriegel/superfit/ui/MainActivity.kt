@@ -118,6 +118,9 @@ fun getPermissions() = sequence {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
         yield(Permission(Manifest.permission.READ_EXTERNAL_STORAGE,
             R.string.permission_external_storage_rationale))
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+        yield(Permission(Manifest.permission.POST_NOTIFICATIONS,
+            R.string.permission_notification_rationale))
 }
 
 data class Permission(

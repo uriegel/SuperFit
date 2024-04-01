@@ -7,7 +7,9 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
+import android.content.pm.PackageManager
 import android.os.ParcelUuid
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LifecycleOwner
 import de.uriegel.superfit.R
 import de.uriegel.superfit.sensor.HeartRateSensor
@@ -59,22 +62,13 @@ fun DevicesView(titleId: Int, uuid: String, lifecycleOwner: LifecycleOwner = Loc
         val scanSettings = ScanSettings.Builder()
             .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
             .build()
-        bleScanner = BluetoothAdapter.getDefaultAdapter().bluetoothLeScanner
-//        if (ActivityCompat.checkSelfPermission(
-//                context,
-//                Manifest.permission.BLUETOOTH_SCAN
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//        }
-        // TODO Check
-        bleScanner?.startScan(listOf(scanFilter), scanSettings, scanCallback)
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN)
+            == PackageManager.PERMISSION_GRANTED) {
+            bleScanner = BluetoothAdapter.getDefaultAdapter().bluetoothLeScanner
+            bleScanner?.startScan(listOf(scanFilter), scanSettings, scanCallback)
+        } else
+            Toast.makeText(context, R.string.permission_external_storage_blutooth_scan,
+                Toast.LENGTH_LONG).show()
     }
 
     DisposableEffect(lifecycleOwner) {
