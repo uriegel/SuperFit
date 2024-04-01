@@ -33,6 +33,7 @@ import com.jamal.composeprefs3.ui.PrefsScreen
 import com.jamal.composeprefs3.ui.prefs.CheckBoxPref
 import com.jamal.composeprefs3.ui.prefs.TextPref
 import de.uriegel.superfit.R
+import de.uriegel.superfit.sensor.BikeSensor
 import de.uriegel.superfit.sensor.HeartRateSensor
 import de.uriegel.superfit.ui.EditTextPref
 import de.uriegel.superfit.ui.MainActivity.Companion.prefBikeSupport
@@ -139,6 +140,10 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
                             enabled = bikeEnabled,
                             darkenOnDisable = true,
                             summary = "",
+                            onClick = {
+                                navController.navigate(NavRoutes.DevicesView.route
+                                        + "/${R.string.bike_sensor}/${BikeSensor.getUuid()}")
+                            }
                         )
                     }
                     prefsItem {
