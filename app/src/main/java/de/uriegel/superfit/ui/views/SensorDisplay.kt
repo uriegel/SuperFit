@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -16,11 +17,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import de.uriegel.superfit.R
+import de.uriegel.superfit.sensor.HeartRateSensor
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
 @Composable
 fun SensorDisplay(data: SensorData) {
+
+    val heartRate = HeartRateSensor.heartRate.observeAsState()
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -103,7 +108,9 @@ fun SensorDisplay(data: SensorData) {
                     },
                 fontSize = 128.sp,
                 fontWeight = FontWeight.Bold,
-                text = data.heartBeat.toString()
+                text = heartRate.value.let {
+                    if (it != -1) it.toString() else "-"
+                }
             )
             Text(
                 modifier = Modifier

@@ -12,7 +12,13 @@ import androidx.core.app.NotificationCompat
 import de.uriegel.superfit.R
 import de.uriegel.superfit.location.LocationManager
 import de.uriegel.superfit.location.LocationProvider
+import de.uriegel.superfit.sensor.HeartRateSensor
 import de.uriegel.superfit.ui.MainActivity
+import de.uriegel.superfit.ui.MainActivity.Companion.dataStore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class Service: Service() {
     override fun onCreate() {
@@ -30,6 +36,19 @@ class Service: Service() {
         locationProvider = LocationManager()
         locationProvider.start(this)
 
+        CoroutineScope(Dispatchers.Default).launch {
+            (dataStore.data.first()[MainActivity.prefHeartBeat] ?: false)
+                .let {
+                    if (it)
+                        dataStore.data.first()[MainActivity.prefHeartSensor]
+                    else
+                        null
+                }
+                ?.let {
+                    if (HeartRateSensor.initialize(this@Service))
+                        HeartRateSensor.connect(this@Service, it.split('|').last())
+                }
+        }
 //        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
 //        if (BikeService.initialize(this, preferences))
 //            BikeService.connect(this)
@@ -57,7 +76,7 @@ class Service: Service() {
         }
 
         locationProvider.stop()
-        //HeartRateService.stop()
+        HeartRateSensor.stop()
         //BikeService.stop()
 
         running.value = false

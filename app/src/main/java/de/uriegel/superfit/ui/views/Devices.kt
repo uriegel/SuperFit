@@ -12,6 +12,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.ParcelUuid
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -44,7 +45,8 @@ import androidx.lifecycle.LifecycleOwner
 import de.uriegel.superfit.R
 
 @Composable
-fun Devices(titleId: Int, uuid: String, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
+fun Devices(titleId: Int, uuid: String, onChoose: (device: Device)->Unit,
+            lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
 
     var bleScanner: BluetoothLeScanner? by remember { mutableStateOf(null) }
     val context = LocalContext.current
@@ -91,12 +93,12 @@ fun Devices(titleId: Int, uuid: String, lifecycleOwner: LifecycleOwner = LocalLi
             bleScanner?.stopScan(scanCallback)
         }
     }
-    DevicesView(titleId, devices)
+    DevicesView(titleId, devices, onChoose)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DevicesView(titleId: Int, devices: Array<Device>) {
+private fun DevicesView(titleId: Int, devices: Array<Device>, onChoose: (device: Device)->Unit) {
     val scrollState = rememberScrollState()
 
     Scaffold(
@@ -111,7 +113,10 @@ private fun DevicesView(titleId: Int, devices: Array<Device>) {
                     devices.map {
                         Card(modifier = Modifier
                             .padding(5.dp)
-                            .fillMaxWidth()) {
+                            .fillMaxWidth()
+                            .clickable {
+                                onChoose(it)
+                            }) {
                             ConstraintLayout(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -155,5 +160,5 @@ fun PreviewDevicesView() {
     DevicesView(R.string.heartBeat, arrayOf(
         Device("VR 105", "00989898"),
         Device("VR 109", "999xxx5")
-    ))
+    ), {})
 }

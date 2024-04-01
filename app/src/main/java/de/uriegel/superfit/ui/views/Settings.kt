@@ -38,6 +38,7 @@ import de.uriegel.superfit.sensor.HeartRateSensor
 import de.uriegel.superfit.ui.EditTextPref
 import de.uriegel.superfit.ui.MainActivity.Companion.prefBikeSupport
 import de.uriegel.superfit.ui.MainActivity.Companion.prefHeartBeat
+import de.uriegel.superfit.ui.MainActivity.Companion.prefHeartSensor
 import de.uriegel.superfit.ui.MainActivity.Companion.prefMaps
 import de.uriegel.superfit.ui.MainActivity.Companion.prefWheel
 import de.uriegel.superfit.ui.MainActivity.Companion.showControls
@@ -54,6 +55,7 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
     val scope = rememberCoroutineScope()
     var selectedMap by remember { mutableStateOf("") }
     var heartBeatEnabled by remember { mutableStateOf(false) }
+    var heartBeatSensor: Device? by remember { mutableStateOf(null) }
     var bikeEnabled by remember { mutableStateOf(false) }
     val prefs by remember { dataStore.data }.collectAsState(initial = null)
 
@@ -68,6 +70,15 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
         prefs?.get(prefHeartBeat)?.also {
             heartBeatEnabled = it
         }
+        prefs?.get(prefHeartSensor)?.also {
+            it
+                .split('|')
+                .let {
+                    Device(it.first(), it.last())
+                }.also {
+                    heartBeatSensor = it
+                }
+        }
     }
 
     LaunchedEffect(dataStore.data) {
@@ -81,6 +92,15 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
             }
             pref[prefHeartBeat]?.also {
                 heartBeatEnabled = it
+            }
+            pref[prefHeartSensor]?.also {
+                it
+                    .split('|')
+                    .let {
+                        Device(it.first(), it.last())
+                    }.also {
+                        heartBeatSensor = it
+                    }
             }
         }
     }
@@ -120,7 +140,7 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
                     prefsItem {
                         TextPref(
                             title = stringResource(R.string.heartrate_sensor),
-                            summary = "",
+                            summary = heartBeatSensor?.name,
                             enabled = heartBeatEnabled,
                             darkenOnDisable = true,
                             onClick = {

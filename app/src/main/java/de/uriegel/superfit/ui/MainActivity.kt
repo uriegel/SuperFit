@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavType
@@ -92,7 +93,13 @@ class MainActivity : ComponentActivity() {
                             )) {
                                 Devices(
                                     it.arguments?.getInt("titleId")!!,
-                                    it.arguments?.getString("uuid")!!)
+                                    it.arguments?.getString("uuid")!!, {
+                                        CoroutineScope(Dispatchers.Default).launch {
+                                            dataStore.edit { pref ->
+                                                pref[prefHeartSensor] = "${it.name}|${it.address}"
+                                            }
+                                        }
+                                    })
                             }
                     }
                 }
@@ -101,10 +108,11 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object {
-        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+        val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
         var showControls = false
         val prefMaps = stringPreferencesKey("PREF_MAP")
         val prefHeartBeat = booleanPreferencesKey("PREF_HEART_BEAT")
+        val prefHeartSensor = stringPreferencesKey("PREF_HEART_SENSOR")
         val prefWheel = stringPreferencesKey("PREF_WHEEL")
         val prefBikeSupport = booleanPreferencesKey("bike_support")
     }
