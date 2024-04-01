@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import de.uriegel.superfit.room.Track
 import de.uriegel.superfit.room.TrackPoint
 import de.uriegel.superfit.room.TracksRepository
+import de.uriegel.superfit.sensor.HeartRateSensor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -53,11 +54,11 @@ abstract class LocationProvider: CoroutineScope {
                         location.time,
                         location.accuracy
                     )
-//                        .also {
-//                            it.heartRate = HeartRateService.heartRate.value
+                        .also {
+                            it.heartRate = HeartRateSensor.heartRate.value
 //                            it.speed = BikeService.velocity / 3.6F // in m/s
-//                        }).await()
-                ).await()
+                        })
+                    .await()
             }
             currentPosition.value = LatLong(location.latitude, location.longitude)
             trackLine.addPoint(currentPosition.value)
