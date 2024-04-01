@@ -95,6 +95,7 @@ fun EditTextPref(key: Preferences.Key<String>, title: String, modifier: Modifier
         summary = if (value.length > 0) value else { summary},
         textColor = textColor,
         enabled = enabled,
+        darkenOnDisable = true,
         onClick = { if (enabled) showDialog = !showDialog },
     )
 

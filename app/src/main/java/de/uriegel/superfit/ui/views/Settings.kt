@@ -36,6 +36,7 @@ import de.uriegel.superfit.R
 import de.uriegel.superfit.sensor.HeartRateSensor
 import de.uriegel.superfit.ui.EditTextPref
 import de.uriegel.superfit.ui.MainActivity.Companion.prefBikeSupport
+import de.uriegel.superfit.ui.MainActivity.Companion.prefHeartBeat
 import de.uriegel.superfit.ui.MainActivity.Companion.prefMaps
 import de.uriegel.superfit.ui.MainActivity.Companion.prefWheel
 import de.uriegel.superfit.ui.MainActivity.Companion.showControls
@@ -51,11 +52,20 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var selectedMap by remember { mutableStateOf("") }
+    var heartBeatEnabled by remember { mutableStateOf(false) }
+    var bikeEnabled by remember { mutableStateOf(false) }
     val prefs by remember { dataStore.data }.collectAsState(initial = null)
 
     LaunchedEffect(Unit) {
         prefs?.get(prefMaps)?.also {
             selectedMap = it
+        }
+        prefs?.get(prefBikeSupport)?.also {
+            showControls = it
+            bikeEnabled = it
+        }
+        prefs?.get(prefHeartBeat)?.also {
+            heartBeatEnabled = it
         }
     }
 
@@ -66,6 +76,10 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
             }
             pref[prefBikeSupport]?.also {
                 showControls = it
+                bikeEnabled = it
+            }
+            pref[prefHeartBeat]?.also {
+                heartBeatEnabled = it
             }
         }
     }
@@ -99,9 +113,34 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
                 prefsGroup(title = settings) {
                     prefsItem {
                         CheckBoxPref(
+                            key = prefHeartBeat.name,
+                            title = stringResource(R.string.heartrate_sensor),
+                            summary = stringResource(R.string.heartrate_description)) }
+                    prefsItem {
+                        TextPref(
+                            title = stringResource(R.string.heartrate_sensor),
+                            summary = "",
+                            enabled = heartBeatEnabled,
+                            darkenOnDisable = true,
+                            onClick = {
+                                navController.navigate(NavRoutes.DevicesView.route
+                                        + "/${R.string.heartrate_sensor}/${HeartRateSensor.getUuid()}")
+                            }
+                        )
+                    }
+                    prefsItem {
+                        CheckBoxPref(
                             key = "bike_support",
                             title = stringResource(R.string.bike_support),
                             summary = stringResource(R.string.bike_support_description)) }
+                    prefsItem {
+                        TextPref(
+                            title = stringResource(R.string.bike_sensor),
+                            enabled = bikeEnabled,
+                            darkenOnDisable = true,
+                            summary = "",
+                        )
+                    }
                     prefsItem {
                         EditTextPref(
                             title = stringResource(R.string.bike_circumference),
@@ -109,24 +148,8 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
                             dialogMessage = stringResource(R.string.bike_circumference_description),
                             dialogTitle = stringResource(R.string.bike_circumference),
                             key = prefWheel,
+                            enabled = bikeEnabled,
                             numbers = true
-                        )
-                    }
-                    prefsItem {
-                        TextPref(
-                            title = stringResource(R.string.bike_sensor),
-                            summary = "",
-                        )
-                    }
-                    prefsItem {
-                        TextPref(
-                            title = stringResource(R.string.heartrate_sensor),
-                            summary = "",
-                            enabled = true,
-                            onClick = {
-                                navController.navigate(NavRoutes.DevicesView.route
-                                        + "/${R.string.heartrate_sensor}/${HeartRateSensor.getUuid()}")
-                            }
                         )
                     }
                 }

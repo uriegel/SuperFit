@@ -1,12 +1,13 @@
 package de.uriegel.superfit.ui.views
 
 import android.Manifest
-import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.ParcelUuid
 import android.widget.Toast
@@ -64,7 +65,9 @@ fun DevicesView(titleId: Int, uuid: String, lifecycleOwner: LifecycleOwner = Loc
             .build()
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN)
             == PackageManager.PERMISSION_GRANTED) {
-            bleScanner = BluetoothAdapter.getDefaultAdapter().bluetoothLeScanner
+            bleScanner = (context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager)
+                .getAdapter()
+                .bluetoothLeScanner
             bleScanner?.startScan(listOf(scanFilter), scanSettings, scanCallback)
         } else
             Toast.makeText(context, R.string.permission_external_storage_blutooth_scan,

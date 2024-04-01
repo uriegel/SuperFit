@@ -104,6 +104,7 @@ class MainActivity : ComponentActivity() {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
         var showControls = false
         val prefMaps = stringPreferencesKey("PREF_MAP")
+        val prefHeartBeat = booleanPreferencesKey("PREF_HEART_BEAT")
         val prefWheel = stringPreferencesKey("PREF_WHEEL")
         val prefBikeSupport = booleanPreferencesKey("bike_support")
     }

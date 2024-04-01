@@ -40,6 +40,7 @@
     <string name="alert_stop_service">Möchtest Du die Aufzeichnung beenden?</string>
     <string name="alert_title_stop_service">Beenden</string>
     <string name="heartrate_sensor">Herzfrequenz-Sensor</string>
+    <string name="heartrate_description">Unterstützung für Herzfrequenz einschalten</string>
     <string name="menu_eventlog">Ereignisanzeige</string>
     <string name="log_type_image">log type image</string>
     <string name="menu_log_clear">Leeren</string>
