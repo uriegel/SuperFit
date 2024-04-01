@@ -25,23 +25,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import androidx.preference.PreferenceManager
 import com.jamal.composeprefs3.ui.LocalPrefsDataStore
 import com.jamal.composeprefs3.ui.PrefsScreen
 import com.jamal.composeprefs3.ui.prefs.CheckBoxPref
 import com.jamal.composeprefs3.ui.prefs.TextPref
 import de.uriegel.superfit.R
+import de.uriegel.superfit.sensor.HeartRateSensor
 import de.uriegel.superfit.ui.EditTextPref
 import de.uriegel.superfit.ui.MainActivity.Companion.prefBikeSupport
 import de.uriegel.superfit.ui.MainActivity.Companion.prefMaps
 import de.uriegel.superfit.ui.MainActivity.Companion.prefWheel
 import de.uriegel.superfit.ui.MainActivity.Companion.showControls
+import de.uriegel.superfit.ui.NavRoutes
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun Settings(dataStore: DataStore<Preferences>) {
+fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController) {
 
     val settings = stringResource(R.string.settings)
     val context = LocalContext.current
@@ -118,6 +122,11 @@ fun Settings(dataStore: DataStore<Preferences>) {
                         TextPref(
                             title = stringResource(R.string.heartrate_sensor),
                             summary = "",
+                            enabled = true,
+                            onClick = {
+                                navController.navigate(NavRoutes.DevicesView.route
+                                        + "/${R.string.heartrate_sensor}/${HeartRateSensor.getUuid()}")
+                            }
                         )
                     }
                 }
@@ -147,6 +156,6 @@ fun String.getPath() =
 @Preview
 @Composable
 fun SettingsPreview() {
-    Settings(LocalPrefsDataStore.current)
+    Settings(LocalPrefsDataStore.current, rememberNavController())
 }
 

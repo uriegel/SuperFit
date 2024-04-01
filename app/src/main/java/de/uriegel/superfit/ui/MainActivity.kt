@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import de.uriegel.superfit.R
 import de.uriegel.superfit.ui.theme.SuperFitTheme
+import de.uriegel.superfit.ui.views.DevicesView
 import de.uriegel.superfit.ui.views.Display
 import de.uriegel.superfit.ui.views.Main
 import de.uriegel.superfit.ui.views.PermissionCheck
@@ -55,22 +56,9 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavRoutes.CheckPermission.route
                     ) {
                         composable(NavRoutes.CheckPermission.route) {
-                            PermissionCheck(
-                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
-                                    arrayOf(
-                                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                                        Manifest.permission.ACCESS_FINE_LOCATION
-                                    )
-                                else
-                                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
-                                    arrayOf(
-                                        R.string.permission_external_storage_rationale,
-                                        R.string.permission_location_rationale
-                                    )
-                                else
-                                    arrayOf(R.string.permission_location_rationale)
-                            ) {
+                            val permissions = getPermissions()
+                            PermissionCheck(permissions.map { it.permission }.toList().toTypedArray(),
+                                    permissions.map { it.rationale }.toList().toTypedArray()) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
                                     navController.navigate(NavRoutes.CheckBackgroundPermission.route) { popUpTo(0) }
                                 else
@@ -88,7 +76,7 @@ class MainActivity : ComponentActivity() {
                             Main(navController)
                         }
                         composable(NavRoutes.ShowSettings.route) {
-                            Settings(LocalContext.current.dataStore)
+                            Settings(LocalContext.current.dataStore, navController)
                         }
                         composable(NavRoutes.Controls.route) {
                             Display(window, showControls)
@@ -97,6 +85,15 @@ class MainActivity : ComponentActivity() {
                             arguments = listOf(navArgument("trackId") { type = NavType.IntType })) {
                             TrackMapView(navController, it.arguments?.getInt("trackId")!!)
                         }
+                        composable(NavRoutes.DevicesView.route + "/{titleId}/{uuid}",
+                            arguments = listOf(
+                                navArgument("titleId") { type = NavType.IntType},
+                                navArgument("uuid") { type = NavType.StringType}
+                            )) {
+                                DevicesView(
+                                    it.arguments?.getInt("titleId")!!,
+                                    it.arguments?.getString("uuid")!!)
+                            }
                     }
                 }
             }
@@ -112,3 +109,18 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+fun getPermissions() = sequence {
+    yield(Permission(Manifest.permission.ACCESS_FINE_LOCATION,
+        R.string.permission_location_rationale))
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        yield(Permission(Manifest.permission.BLUETOOTH_SCAN,
+            R.string.permission_external_storage_blutooth_scan))
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+        yield(Permission(Manifest.permission.READ_EXTERNAL_STORAGE,
+            R.string.permission_external_storage_rationale))
+}
+
+data class Permission(
+    val permission: String,
+    val rationale: Int
+)

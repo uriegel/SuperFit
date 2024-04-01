@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.preference.PreferenceManager
 import de.uriegel.superfit.R
+import de.uriegel.superfit.extensions.saveOpen
 import de.uriegel.superfit.location.LocationMarker
 import de.uriegel.superfit.location.LocationProvider.Companion.locationEmpty
 import de.uriegel.superfit.location.TrackLine
@@ -27,7 +28,6 @@ import org.mapsforge.map.datastore.MapDataStore
 import org.mapsforge.map.layer.renderer.TileRendererLayer
 import org.mapsforge.map.reader.MapFile
 import org.mapsforge.map.rendertheme.InternalRenderTheme
-import java.io.FileInputStream
 
 @Composable
 fun MapViewControl(trackLine: TrackLine, followLocation: Boolean, viewModel: LocationModel?) {
@@ -71,17 +71,17 @@ fun MapViewControl(trackLine: TrackLine, followLocation: Boolean, viewModel: Loc
                     val preferences = PreferenceManager.getDefaultSharedPreferences(context)
                     preferences?.getString("PREF_MAP", null)?.let {
                         val uri = Uri.parse(it)
-                        val fis: FileInputStream =
-                            context.contentResolver.openInputStream(uri) as FileInputStream
-                        val mapDataStore: MapDataStore = MapFile(fis)
+                        context.saveOpen(uri)?.let {
+                            val mapDataStore: MapDataStore = MapFile(it)
 //        val tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCache, mapView.model.mapViewPosition, mapDataStore,
 //            InternalRenderTheme.OSMARENDER, false, true, false)
-                        val tileRendererLayer = TileRendererLayer(
-                            tileCache, mapDataStore,
-                            model.mapViewPosition, AndroidGraphicFactory.INSTANCE
-                        )
-                        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER)
-                        layerManager.layers.add(tileRendererLayer)
+                            val tileRendererLayer = TileRendererLayer(
+                                tileCache, mapDataStore,
+                                model.mapViewPosition, AndroidGraphicFactory.INSTANCE
+                            )
+                            tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER)
+                            layerManager.layers.add(tileRendererLayer)
+                        }
                     } ?: Toast.makeText(context, R.string.toast_nomaps, Toast.LENGTH_LONG).show()
 
                     onFollowLocationChanged = FollowLocationCallback {
