@@ -73,6 +73,10 @@ fun Page1() {
     val heartRate = HeartRateSensor.heartRate.observeAsState()
     val cadence = BikeSensor.cadence.observeAsState()
     val velocity = BikeSensor.velocityData.observeAsState()
+    val distance = BikeSensor.distanceData.observeAsState()
+    val duration = BikeSensor.durationData.observeAsState()
+    val averageVelocity = BikeSensor.averageVelocityData.observeAsState()
+    val maxVelocity = BikeSensor.maxVelocityData.observeAsState()
 
     Column(
         modifier = Modifier
@@ -81,7 +85,11 @@ fun Page1() {
         SensorDisplay(data = SensorData(
             cadence.value,
             velocity.value,
-            heartRate.value))
+            heartRate.value,
+            distance.value,
+            duration.value,
+            averageVelocity.value,
+            maxVelocity.value))
     }
 }
 @Composable

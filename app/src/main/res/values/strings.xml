@@ -22,11 +22,11 @@
     <string name="velocity">Geschwindigkeit</string>
     <string name="velocityUnit">km/h</string>
     <string name="heartBeat">Herzfrequenz</string>
-    <string name="strecke">Strecke</string>
+    <string name="distance">Strecke</string>
     <string name="km">km</string>
-    <string name="zeit">Zeit</string>
-    <string name="dgeschwindigkeit">Ø-Geschwindigkeit</string>
-    <string name="max_geschwindigkeit">Max. Geschwindigkeit</string>
+    <string name="duration">Zeit</string>
+    <string name="averageVelocity">Ø-Geschwindigkeit</string>
+    <string name="maxVelocity">Max. Geschwindigkeit</string>
     <string name="gps_marker">Gps marker</string>
     <string name="settings">Einstellungen</string>
     <string name="toast_nomaps">Du musst erst eine Karte in den Einstellungen auswählen!</string>

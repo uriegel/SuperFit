@@ -19,3 +19,8 @@ fun Long.formatRfc3339(): String {
             (abs(timeOffset / 3600000)).toString().padStart(2, '0') +
             "00"
 }
+
+fun Int?.displayFormat(): String =
+    this?.let {
+        if (it != -1) it.toString() else "-"
+    } ?: ""
