@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import de.uriegel.superfit.R
+import de.uriegel.superfit.extensions.displayDuration
 import de.uriegel.superfit.extensions.displayFormat
 
 @Composable
@@ -167,7 +168,7 @@ fun SensorDisplay(data: SensorData) {
                     },
                 fontSize = 96.sp,
                 fontWeight = FontWeight.Bold,
-                text = data.duration.displayFormat()
+                text = data.duration.displayDuration()
             )
             Text(
                 modifier = Modifier
@@ -220,6 +221,7 @@ fun SensorDisplay(data: SensorData) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         top.linkTo(maxVelocityTitle.bottom)
+                        bottom.linkTo(parent.bottom, margin = 24.dp)
                     },
                 fontSize = 96.sp,
                 fontWeight = FontWeight.Bold,
@@ -251,6 +253,6 @@ data class SensorData(
 @Preview
 @Composable
 fun SensorPreview() {
-    SensorDisplay(SensorData(87, 25.4556f, 124, 34.7f, 7,
+    SensorDisplay(SensorData(87, 25.4556f, 124, 34.7f, 7000,
         23.7f, 47.8f))
 }
