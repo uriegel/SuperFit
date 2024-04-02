@@ -86,17 +86,21 @@ class MainActivity : ComponentActivity() {
                             arguments = listOf(navArgument("trackId") { type = NavType.IntType })) {
                             TrackMapView(navController, it.arguments?.getInt("trackId")!!)
                         }
-                        composable(NavRoutes.DevicesView.route + "/{titleId}/{uuid}",
+                        composable(NavRoutes.DevicesView.route + "/{prefKey}/{titleId}/{uuid}",
                             arguments = listOf(
+                                navArgument("prefKey") { type = NavType.StringType},
                                 navArgument("titleId") { type = NavType.IntType},
                                 navArgument("uuid") { type = NavType.StringType}
                             )) {
                                 Devices(
-                                    it.arguments?.getInt("titleId")!!,
-                                    it.arguments?.getString("uuid")!!, {
+                                    navController, it.arguments?.getInt("titleId")!!,
+                                    it.arguments?.getString("uuid")!!, { device ->
                                         CoroutineScope(Dispatchers.Default).launch {
                                             dataStore.edit { pref ->
-                                                pref[prefHeartSensor] = "${it.name}|${it.address}"
+                                                pref[stringPreferencesKey(it
+                                                    .arguments
+                                                    ?.getString("prefKey")!!)] =
+                                                    "${device.name}|${device.address}"
                                             }
                                         }
                                     })
@@ -113,6 +117,7 @@ class MainActivity : ComponentActivity() {
         val prefMaps = stringPreferencesKey("PREF_MAP")
         val prefHeartBeat = booleanPreferencesKey("PREF_HEART_BEAT")
         val prefHeartSensor = stringPreferencesKey("PREF_HEART_SENSOR")
+        val prefBikeSensor = stringPreferencesKey("PREF_BIKE_SENSOR")
         val prefWheel = stringPreferencesKey("PREF_WHEEL")
         val prefBikeSupport = booleanPreferencesKey("bike_support")
     }

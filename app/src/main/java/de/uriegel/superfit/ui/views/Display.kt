@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,6 +26,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
+import de.uriegel.superfit.sensor.BikeSensor
+import de.uriegel.superfit.sensor.HeartRateSensor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -66,11 +69,19 @@ fun Display(window: Window?, showDisplay: Boolean,
 
 @Composable
 fun Page1() {
+
+    val heartRate = HeartRateSensor.heartRate.observeAsState()
+    val cadence = BikeSensor.cadence.observeAsState()
+    val velocity = BikeSensor.velocityData.observeAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        SensorDisplay(data = SensorData(78, 24.888, 132))
+        SensorDisplay(data = SensorData(
+            cadence.value,
+            velocity.value,
+            heartRate.value))
     }
 }
 @Composable

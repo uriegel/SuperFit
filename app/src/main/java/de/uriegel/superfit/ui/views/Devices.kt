@@ -42,10 +42,13 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import de.uriegel.superfit.R
 
 @Composable
-fun Devices(titleId: Int, uuid: String, onChoose: (device: Device)->Unit,
+fun Devices(navController: NavHostController, titleId: Int, uuid: String,
+            onChoose: (device: Device)->Unit,
             lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
 
     var bleScanner: BluetoothLeScanner? by remember { mutableStateOf(null) }
@@ -93,12 +96,13 @@ fun Devices(titleId: Int, uuid: String, onChoose: (device: Device)->Unit,
             bleScanner?.stopScan(scanCallback)
         }
     }
-    DevicesView(titleId, devices, onChoose)
+    DevicesView(navController, titleId, devices, onChoose)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DevicesView(titleId: Int, devices: Array<Device>, onChoose: (device: Device)->Unit) {
+private fun DevicesView(navController: NavHostController, titleId: Int, devices: Array<Device>,
+                        onChoose: (device: Device)->Unit) {
     val scrollState = rememberScrollState()
 
     Scaffold(
@@ -116,6 +120,7 @@ private fun DevicesView(titleId: Int, devices: Array<Device>, onChoose: (device:
                             .fillMaxWidth()
                             .clickable {
                                 onChoose(it)
+                                navController.navigateUp()
                             }) {
                             ConstraintLayout(
                                 modifier = Modifier
@@ -157,7 +162,8 @@ data class Device(
 @Preview
 @Composable
 fun PreviewDevicesView() {
-    DevicesView(R.string.heartBeat, arrayOf(
+    DevicesView(
+        rememberNavController(), R.string.heartBeat, arrayOf(
         Device("VR 105", "00989898"),
         Device("VR 109", "999xxx5")
     ), {})

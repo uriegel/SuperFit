@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import de.uriegel.superfit.R
 import de.uriegel.superfit.location.LocationManager
 import de.uriegel.superfit.location.LocationProvider
+import de.uriegel.superfit.sensor.BikeSensor
 import de.uriegel.superfit.sensor.HeartRateSensor
 import de.uriegel.superfit.ui.MainActivity
 import de.uriegel.superfit.ui.MainActivity.Companion.dataStore
@@ -48,12 +49,18 @@ class Service: Service() {
                     if (HeartRateSensor.initialize(this@Service))
                         HeartRateSensor.connect(this@Service, it.split('|').last())
                 }
+            (dataStore.data.first()[MainActivity.prefBikeSupport] ?: false)
+                .let {
+                    if (it)
+                        dataStore.data.first()[MainActivity.prefBikeSensor]
+                    else
+                        null
+                }
+                ?.let {
+                    if (BikeSensor.initialize(this@Service))
+                        BikeSensor.connect(this@Service, it.split('|').last())
+                }
         }
-//        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-//        if (BikeService.initialize(this, preferences))
-//            BikeService.connect(this)
-//        if (HeartRateService.initialize(this, preferences))
-//            HeartRateService.connect(this)
 
         wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
             .run {

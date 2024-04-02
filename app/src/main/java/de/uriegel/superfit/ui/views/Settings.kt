@@ -36,6 +36,7 @@ import de.uriegel.superfit.R
 import de.uriegel.superfit.sensor.BikeSensor
 import de.uriegel.superfit.sensor.HeartRateSensor
 import de.uriegel.superfit.ui.EditTextPref
+import de.uriegel.superfit.ui.MainActivity.Companion.prefBikeSensor
 import de.uriegel.superfit.ui.MainActivity.Companion.prefBikeSupport
 import de.uriegel.superfit.ui.MainActivity.Companion.prefHeartBeat
 import de.uriegel.superfit.ui.MainActivity.Companion.prefHeartSensor
@@ -56,6 +57,7 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
     var selectedMap by remember { mutableStateOf("") }
     var heartBeatEnabled by remember { mutableStateOf(false) }
     var heartBeatSensor: Device? by remember { mutableStateOf(null) }
+    var bikeSensor: Device? by remember { mutableStateOf(null) }
     var bikeEnabled by remember { mutableStateOf(false) }
     val prefs by remember { dataStore.data }.collectAsState(initial = null)
 
@@ -79,6 +81,15 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
                     heartBeatSensor = it
                 }
         }
+        prefs?.get(prefBikeSensor)?.also {
+            it
+                .split('|')
+                .let {
+                    Device(it.first(), it.last())
+                }.also {
+                    bikeSensor = it
+                }
+        }
     }
 
     LaunchedEffect(dataStore.data) {
@@ -100,6 +111,15 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
                         Device(it.first(), it.last())
                     }.also {
                         heartBeatSensor = it
+                    }
+            }
+            pref[prefBikeSensor]?.also {
+                it
+                    .split('|')
+                    .let {
+                        Device(it.first(), it.last())
+                    }.also {
+                        bikeSensor = it
                     }
             }
         }
@@ -145,7 +165,7 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
                             darkenOnDisable = true,
                             onClick = {
                                 navController.navigate(NavRoutes.DevicesView.route
-                                        + "/${R.string.heartrate_sensor}/${HeartRateSensor.getUuid()}")
+                                        + "/${prefHeartSensor.name}/${R.string.heartrate_sensor}/${HeartRateSensor.getUuid()}")
                             }
                         )
                     }
@@ -159,10 +179,10 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
                             title = stringResource(R.string.bike_sensor),
                             enabled = bikeEnabled,
                             darkenOnDisable = true,
-                            summary = "",
+                            summary = bikeSensor?.name,
                             onClick = {
                                 navController.navigate(NavRoutes.DevicesView.route
-                                        + "/${R.string.bike_sensor}/${BikeSensor.getUuid()}")
+                                        + "/${prefBikeSensor.name}/${R.string.bike_sensor}/${BikeSensor.getUuid()}")
                             }
                         )
                     }

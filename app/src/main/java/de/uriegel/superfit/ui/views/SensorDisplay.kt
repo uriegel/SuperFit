@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -17,14 +16,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import de.uriegel.superfit.R
-import de.uriegel.superfit.sensor.HeartRateSensor
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
 @Composable
 fun SensorDisplay(data: SensorData) {
-
-    val heartRate = HeartRateSensor.heartRate.observeAsState()
 
     ConstraintLayout(
         modifier = Modifier
@@ -52,7 +48,10 @@ fun SensorDisplay(data: SensorData) {
                     },
                 fontSize = 128.sp,
                 fontWeight = FontWeight.Bold,
-                text = data.cadence.toString()
+
+                text = data.cadence.let {
+                    if (it != -1) it.toString() else "-"
+                }
             )
             Text(
                 modifier = Modifier
@@ -79,9 +78,16 @@ fun SensorDisplay(data: SensorData) {
                 },
                 fontSize = 128.sp,
                 fontWeight = FontWeight.Bold,
-                text = DecimalFormat("#.#")
-                    .apply { this.roundingMode = RoundingMode.HALF_EVEN }
-                    .format(data.velocity))
+
+                text = data.velocity.let {
+                    if (it != Float.NEGATIVE_INFINITY)
+                        DecimalFormat("#.#")
+                            .apply { this.roundingMode = RoundingMode.HALF_EVEN }
+                            .format(data.velocity)
+                    else
+                        "-"
+                }
+            )
             Text(
                 modifier = Modifier
                     .constrainAs(velocityUnit) {
@@ -108,7 +114,7 @@ fun SensorDisplay(data: SensorData) {
                     },
                 fontSize = 128.sp,
                 fontWeight = FontWeight.Bold,
-                text = heartRate.value.let {
+                text = data.heartBeat.let {
                     if (it != -1) it.toString() else "-"
                 }
             )
@@ -126,13 +132,13 @@ fun SensorDisplay(data: SensorData) {
 }
 
 data class SensorData(
-    val cadence: Int,
-    val velocity: Double,
-    val heartBeat: Int
+    val cadence: Int?,
+    val velocity: Float?,
+    val heartBeat: Int?
 )
 
 @Preview
 @Composable
 fun SensorPreview() {
-    SensorDisplay(SensorData(87, 25.4556, 124))
+    SensorDisplay(SensorData(87, 25.4556f, 124))
 }

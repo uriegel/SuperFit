@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import de.uriegel.superfit.room.Track
 import de.uriegel.superfit.room.TrackPoint
 import de.uriegel.superfit.room.TracksRepository
+import de.uriegel.superfit.sensor.BikeSensor
 import de.uriegel.superfit.sensor.HeartRateSensor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,7 @@ abstract class LocationProvider: CoroutineScope {
         trackNr?.let {
             // TODO: Only, when enough track points (> 30) otherwise delete track, getTrackPointsCount
             CoroutineScope(Dispatchers.IO).launch {
-//                TracksRepository.updateTrackAsync(it, BikeService.distance, BikeService.averageVelocity, BikeService.duration).await() //DataBase.updateTrack(trackNr, Bike.duration, Bike.distance, Bike.averageSpeed)
+                TracksRepository.updateTrackAsync(it, BikeSensor.distance, BikeSensor.averageVelocity, BikeSensor.duration).await()
             }
             trackNr = null
         }
@@ -56,7 +57,7 @@ abstract class LocationProvider: CoroutineScope {
                     )
                         .also {
                             it.heartRate = HeartRateSensor.heartRate.value
-//                            it.speed = BikeService.velocity / 3.6F // in m/s
+                            it.speed = BikeSensor.velocity / 3.6F // in m/s
                         })
                     .await()
             }
