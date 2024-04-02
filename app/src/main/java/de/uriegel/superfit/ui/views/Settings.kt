@@ -151,7 +151,7 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
                     }
                     prefsItem {
                         CheckBoxPref(
-                            key = "bike_support",
+                            key = prefBikeSupport.name,
                             title = stringResource(R.string.bike_support),
                             summary = stringResource(R.string.bike_support_description)) }
                     prefsItem {

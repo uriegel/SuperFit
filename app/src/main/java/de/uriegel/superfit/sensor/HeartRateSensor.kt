@@ -1,34 +1,18 @@
 package de.uriegel.superfit.sensor
 
-import android.annotation.SuppressLint
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.BluetoothGattDescriptor
-import android.bluetooth.BluetoothGattService
 import androidx.lifecycle.MutableLiveData
-import java.util.UUID
 
 object HeartRateSensor : BluetoothLeSensor() {
 
     val heartRate: MutableLiveData<Int> = MutableLiveData(-1)
 
     override fun getUuid() = uuid
+    override fun getCharacteristicsId() = characteristics_id
     // override fun getLogId() = "HR"
-    
-    @SuppressLint("MissingPermission")
-    override fun discoverService(bluetoothGatt: BluetoothGatt, service: BluetoothGattService) {
-        service.characteristics?.find {
-                it.uuid == UUID.fromString(characteristics_id)
-        }?.let {
-            //logInfo(getLogId() + ": characteristics found")
-            bluetoothGatt.setCharacteristicNotification(it, true)
-            val descriptor = it.getDescriptor(UUID.fromString(CLIENT_CHARACTERISTICS_ID))
-            descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-            bluetoothGatt.writeDescriptor(descriptor)
-        }
-    }
 
-    override fun onCharacteristicChanged(gatt: BluetoothGatt, 
+    override fun onCharacteristicChanged(gatt: BluetoothGatt,
                                          characteristic: BluetoothGattCharacteristic) {
         val format = when (characteristic.properties and 0x01) {
             0x01 -> BluetoothGattCharacteristic.FORMAT_UINT16

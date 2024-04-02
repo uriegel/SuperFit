@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
@@ -13,7 +14,7 @@ import android.widget.Toast
 import java.util.UUID
 
 abstract class BluetoothLeSensor {
-    open fun initialize(context:Context): Boolean {
+    open suspend fun initialize(context:Context): Boolean {
         bluetoothAdapter = (context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager)
             .getAdapter()
         return (bluetoothAdapter != null).also {
@@ -25,9 +26,6 @@ abstract class BluetoothLeSensor {
 
     @SuppressLint("MissingPermission")
     fun connect(context: Context, deviceAddress: String) {
-//        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-//        val deviceAddress = preferences.getString(getPrefAddress(),"") ?: ""
-
         bluetoothAdapter?.let {
             try {
                 val device = it.getRemoteDevice(deviceAddress)
@@ -50,6 +48,19 @@ abstract class BluetoothLeSensor {
         bluetoothGatt?.let {
             it.close()
             bluetoothGatt = null
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun discoverService(bluetoothGatt: BluetoothGatt, service: BluetoothGattService) {
+        service.characteristics?.find {
+            it.uuid == UUID.fromString(getCharacteristicsId())
+        }?.let {
+            //logInfo(getLogId() + ": characteristics found")
+            bluetoothGatt.setCharacteristicNotification(it, true)
+            val descriptor = it.getDescriptor(UUID.fromString(CLIENT_CHARACTERISTICS_ID))
+            descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+            bluetoothGatt.writeDescriptor(descriptor)
         }
     }
 
@@ -89,8 +100,9 @@ abstract class BluetoothLeSensor {
     }
 
     abstract fun getUuid(): String
+    abstract fun getCharacteristicsId(): String
+
     // protected abstract fun getLogId(): String
-    protected abstract fun discoverService(bluetoothGatt: BluetoothGatt, service: BluetoothGattService)
     protected abstract fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic)
 
     companion object {
