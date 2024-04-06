@@ -102,7 +102,7 @@ fun MainControls(navController: NavHostController, viewModel: ServiceModel = vie
                 },
             onClick = {
                 scope.launch {
-                    postPing("https://uriegel.de:4432/tracker/ping", PingInput("Das ist der Text für das PING"))
+                    postPing("https://uriegel.de/tracker/ping", PingInput("Das ist der Text für das PING"))
                         .fold({
                             Toast.makeText(context, it.output, Toast.LENGTH_LONG).show()
                         }, {
