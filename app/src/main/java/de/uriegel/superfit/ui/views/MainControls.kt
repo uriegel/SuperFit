@@ -1,5 +1,6 @@
 package de.uriegel.superfit.ui.views
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,12 +28,16 @@ import de.uriegel.superfit.R
 import de.uriegel.superfit.extensions.startService
 import de.uriegel.superfit.extensions.stopService
 import de.uriegel.superfit.models.ServiceModel
+import de.uriegel.superfit.requests.PingInput
+import de.uriegel.superfit.requests.postPing
 import de.uriegel.superfit.ui.NavRoutes
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainControls(navController: NavHostController, viewModel: ServiceModel = viewModel()) {
 
     val context = LocalContext.current
+    val scope =  rememberCoroutineScope()
 
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog)
@@ -49,7 +55,7 @@ fun MainControls(navController: NavHostController, viewModel: ServiceModel = vie
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
-        val (startBtn, displayBtn, stopBtn) = createRefs()
+        val (startBtn, displayBtn, stopBtn, pingBtn) = createRefs()
         Button(
             modifier = Modifier
                 .height(100.dp)
@@ -76,20 +82,44 @@ fun MainControls(navController: NavHostController, viewModel: ServiceModel = vie
                     start.linkTo(parent.start, margin = 30.dp)
                     end.linkTo(parent.end, margin = 30.dp)
                     top.linkTo(startBtn.bottom)
-                    bottom.linkTo(stopBtn.top)
+                    bottom.linkTo(pingBtn.top)
                     width = Dimension.fillToConstraints
                 },
             enabled = !viewModel.servicePending.value && viewModel.serviceRunning.value,
             onClick = { navController.navigate(NavRoutes.Controls.route) }) {
             Text(text = stringResource(R.string.display))
         }
+
+        Button(
+            modifier = Modifier
+                .height(100.dp)
+                .constrainAs(pingBtn) {
+                    start.linkTo(parent.start, margin = 30.dp)
+                    end.linkTo(parent.end, margin = 30.dp)
+                    top.linkTo(displayBtn.bottom)
+                    bottom.linkTo(stopBtn.top)
+                    width = Dimension.fillToConstraints
+                },
+            onClick = {
+                scope.launch {
+                    postPing("https://uriegel.de:4432/tracker/ping", PingInput("Das ist der Text für das PING"))
+                        .fold({
+                            Toast.makeText(context, it.output, Toast.LENGTH_LONG).show()
+                        }, {
+                            Toast.makeText(context, it.stackTraceToString(), Toast.LENGTH_LONG).show()
+                        })
+                }
+            }) {
+            Text(text = "Ping")
+        }
+
         Button(
             modifier = Modifier
                 .height(100.dp)
                 .constrainAs(stopBtn) {
                     start.linkTo(parent.start, margin = 30.dp)
                     end.linkTo(parent.end, margin = 30.dp)
-                    top.linkTo(displayBtn.bottom)
+                    top.linkTo(pingBtn.bottom)
                     bottom.linkTo(parent.bottom)
                     width = Dimension.fillToConstraints
                 },
