@@ -1,6 +1,5 @@
 package de.uriegel.superfit.ui.views
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,16 +27,13 @@ import de.uriegel.superfit.R
 import de.uriegel.superfit.extensions.startService
 import de.uriegel.superfit.extensions.stopService
 import de.uriegel.superfit.models.ServiceModel
-import de.uriegel.superfit.requests.PingInput
-import de.uriegel.superfit.requests.postPing
+import de.uriegel.superfit.partnermode.PartnerMode
 import de.uriegel.superfit.ui.NavRoutes
-import kotlinx.coroutines.launch
 
 @Composable
 fun MainControls(navController: NavHostController, viewModel: ServiceModel = viewModel()) {
 
     val context = LocalContext.current
-    val scope =  rememberCoroutineScope()
 
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog)
@@ -78,6 +74,7 @@ fun MainControls(navController: NavHostController, viewModel: ServiceModel = vie
         Button(
             modifier = Modifier
                 .height(100.dp)
+
                 .constrainAs(displayBtn) {
                     start.linkTo(parent.start, margin = 30.dp)
                     end.linkTo(parent.end, margin = 30.dp)
@@ -90,7 +87,8 @@ fun MainControls(navController: NavHostController, viewModel: ServiceModel = vie
             Text(text = stringResource(R.string.display))
         }
 
-        Button(
+        Button(colors = ButtonDefaults.buttonColors(
+            containerColor = if (viewModel.partnerMode.value) Color.Magenta else Color.Unspecified),
             modifier = Modifier
                 .height(100.dp)
                 .constrainAs(pingBtn) {
@@ -100,17 +98,8 @@ fun MainControls(navController: NavHostController, viewModel: ServiceModel = vie
                     bottom.linkTo(stopBtn.top)
                     width = Dimension.fillToConstraints
                 },
-            onClick = {
-                scope.launch {
-                    postPing("https://uriegel.de/tracker/ping", PingInput("Das ist der Text für das PING"))
-                        .fold({
-                            Toast.makeText(context, it.output, Toast.LENGTH_LONG).show()
-                        }, {
-                            Toast.makeText(context, it.stackTraceToString(), Toast.LENGTH_LONG).show()
-                        })
-                }
-            }) {
-            Text(text = "Ping")
+            onClick = { PartnerMode.toggle() }) {
+            Text(text = stringResource(R.string.partner_mode))
         }
 
         Button(

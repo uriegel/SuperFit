@@ -58,5 +58,6 @@
     <string name="permission_blutooth_connect">Super Fit benötigt die Berechtigung, Bluetooth-Sensoren zu nutzen</string>
     <string name="permission">Zugriff erlauben</string>
     <string name="permission_denied">Du kannst die Berechtigungen in den App-Einstellungen (für die App "Super Fit") erteilen</string>
+    <string name="partner_mode">Partnermodus</string>
 
 </resources>

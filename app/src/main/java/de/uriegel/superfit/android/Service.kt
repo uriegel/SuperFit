@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import de.uriegel.superfit.R
 import de.uriegel.superfit.location.LocationManager
 import de.uriegel.superfit.location.LocationProvider
+import de.uriegel.superfit.partnermode.PartnerMode
 import de.uriegel.superfit.sensor.BikeSensor
 import de.uriegel.superfit.sensor.HeartRateSensor
 import de.uriegel.superfit.ui.MainActivity
@@ -84,8 +85,10 @@ class Service: Service() {
 
         locationProvider.stop()
         HeartRateSensor.stop()
+        PartnerMode.stop()
         //BikeService.stop()
 
+        PartnerMode.enabled.value = false
         running.value = false
         pending.value = false
     }
