@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -98,7 +97,7 @@ fun MainControls(navController: NavHostController, viewModel: ServiceModel = vie
                     bottom.linkTo(stopBtn.top)
                     width = Dimension.fillToConstraints
                 },
-            onClick = { PartnerMode.toggle() }) {
+            onClick = { PartnerMode.toggle(context) }) {
             Text(text = stringResource(R.string.partner_mode))
         }
 
