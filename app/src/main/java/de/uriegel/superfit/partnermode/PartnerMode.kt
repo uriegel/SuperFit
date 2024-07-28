@@ -1,22 +1,30 @@
 package de.uriegel.superfit.partnermode
 
 import android.content.Context
-import android.provider.Settings.Secure
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import de.uriegel.superfit.requests.post
+import de.uriegel.superfit.ui.MainActivity
+import de.uriegel.superfit.ui.MainActivity.Companion.dataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 object PartnerMode {
     val enabled = mutableStateOf(false)
+    var name = "anonymous"
 
     fun start(context: Context) {
         enabled.value = true
 
         CoroutineScope(Dispatchers.IO).launch {
-            post<LoginInput, LoginOutput>("https://uriegel.de/superfit/login", LoginInput(Secure.getString(context.contentResolver, Secure.ANDROID_ID)))
+            context.dataStore.data.first()[MainActivity.prefPartnerModeName]?.let {
+                name = it
+            }
+
+
+            post<LoginInput, LoginOutput>("https://uriegel.de/superfit/login", LoginInput(name))
                 .fold({
                     CoroutineScope(Dispatchers.Main).launch {
                         Toast.makeText(context, it.registered.toString(), Toast.LENGTH_LONG).show()

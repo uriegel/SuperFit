@@ -120,6 +120,7 @@ class MainActivity : ComponentActivity() {
         val prefBikeSensor = stringPreferencesKey("PREF_BIKE_SENSOR")
         val prefWheel = stringPreferencesKey("PREF_WHEEL")
         val prefBikeSupport = booleanPreferencesKey("bike_support")
+        val prefPartnerModeName = stringPreferencesKey("PREF_PARTNERMODE_NAME")
     }
 }
 

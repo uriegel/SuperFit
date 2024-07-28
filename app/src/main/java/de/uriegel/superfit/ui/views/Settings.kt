@@ -41,6 +41,7 @@ import de.uriegel.superfit.ui.MainActivity.Companion.prefBikeSupport
 import de.uriegel.superfit.ui.MainActivity.Companion.prefHeartBeat
 import de.uriegel.superfit.ui.MainActivity.Companion.prefHeartSensor
 import de.uriegel.superfit.ui.MainActivity.Companion.prefMaps
+import de.uriegel.superfit.ui.MainActivity.Companion.prefPartnerModeName
 import de.uriegel.superfit.ui.MainActivity.Companion.prefWheel
 import de.uriegel.superfit.ui.MainActivity.Companion.showControls
 import de.uriegel.superfit.ui.NavRoutes
@@ -211,6 +212,17 @@ fun Settings(dataStore: DataStore<Preferences>, navController: NavHostController
                                 }
                                 mapsLauncher.launch(intent)
                             })
+                    }
+                }
+                prefsGroup(title = "Partnermodus") {
+                    prefsItem {
+                        EditTextPref(
+                            title = "Dein Name",
+                            summary = "Gib bitte deinen Namen ein",
+                            dialogMessage = "Gib bitte deinen Namen ein",
+                            dialogTitle = "Namen eingeben",
+                            key = prefPartnerModeName
+                        )
                     }
                 }
             }
