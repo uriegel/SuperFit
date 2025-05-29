@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,7 +60,6 @@ class MainActivity : ComponentActivity() {
                             PermissionsCheck(navController)
                         }
                         composable(NavRoutes.Main.route) {
-                            Log.i("TEST", "Main")
                             Main(navController)
                         }
                         composable(NavRoutes.ShowSettings.route) {
