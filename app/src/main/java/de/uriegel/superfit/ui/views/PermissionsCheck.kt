@@ -31,10 +31,9 @@ fun PermissionsCheck(navController: NavHostController) {
     val permissionState = rememberMultiplePermissionsState(getPermissions().toList(), {  })
 
     if (permissionState.permissions.all { it.status.isGranted }) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             backgroundPermissionCheck(navController)
-        } else
+        else
             navController.navigate(NavRoutes.Main.route) { popUpTo(0) }
     } else {
         Scaffold(
@@ -54,13 +53,23 @@ fun PermissionsCheck(navController: NavHostController) {
                                 top.linkTo(parent.top)
                                 bottom.linkTo(button.top)
                             }) {
-                        //permissionRationaleIds.map {
+                        permissionState.permissions.filter { !it.status.isGranted }.map {
                             Text(
                                 modifier = Modifier
                                     .padding(20.dp),
-                                text = "stringResource(id = it)"
+                                text = stringResource(
+                                    if (it.permission == Manifest.permission.ACCESS_FINE_LOCATION)
+                                        R.string.permission_location_rationale
+                                    else if (it.permission == Manifest.permission.BLUETOOTH_CONNECT)
+                                        R.string.permission_blutooth_connect
+                                    else if (it.permission == Manifest.permission.BLUETOOTH_SCAN)
+                                        R.string.permission_blutooth_scan
+                                    else if (it.permission == Manifest.permission.READ_EXTERNAL_STORAGE)
+                                        R.string.permission_external_storage_rationale
+                                    else
+                                        R.string.permission_notification_rationale)
                             )
-                        //}
+                        }
                     }
                     Box(
                         modifier = Modifier
