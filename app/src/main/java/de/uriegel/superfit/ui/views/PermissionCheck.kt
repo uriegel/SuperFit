@@ -28,7 +28,8 @@ import de.uriegel.superfit.R
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun PermissionCheck(permissionIds: Array<String>, permissionRationaleIds: Array<Int>, onGranted: ()->Unit) {
+// TODO remove
+fun PermissionCheckNotUsedAnyMore(permissionIds: Array<String>, permissionRationaleIds: Array<Int>, onGranted: ()->Unit) {
     var permissionState by remember { mutableIntStateOf(0) }
 
     val permissionStates = rememberMultiplePermissionsState(permissionIds.asList()) {permissionState++}
