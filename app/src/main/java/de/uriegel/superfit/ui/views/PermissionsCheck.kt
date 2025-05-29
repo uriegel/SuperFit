@@ -79,42 +79,17 @@ fun PermissionsCheck(navController: NavHostController) {
                                 start.linkTo(parent.start)
                                 end.linkTo(parent.end)
                             }) {
-                        //if (permissionsState == PermissionsState.ShowRationale)
-                        Button(onClick = { permissionState.launchMultiplePermissionRequest() }) {
-                            Text(text = stringResource(R.string.permission))
-                        }
-                        //else
-//                            Text(
-//                                modifier = Modifier
-//                                    .padding(20.dp),
-//                                text = stringResource(R.string.permission_denied)
-//                            )
+                            Button(onClick = { permissionState.launchMultiplePermissionRequest() }) {
+                                Text(text = stringResource(R.string.permission))
+                            }
                     }
                 }
             }
         )
-                //permissionState.permissions. all { it.status.shouldShowRationale }) {
-//        Column {
-////            val textToShow = if (cameraPermissionState.status.shouldShowRationale) {
-//            // If the user has denied the permission but the rationale can be shown,
-//            // then gently explain why the app requires this permission
-//            "The fine location is important for this app. Please grant the permission in the app settings."
-//            //          } else {
-//            // If it's the first time the user lands on this feature, or the user
-//            // doesn't want to be asked again for this permission, explain that the
-//            // permission is required
-////                "Fin location permission required for this feature to be available. " +
-////                        "Please grant the permission"
-////            }
-//            Text("textToShow")
-//            Button(onClick = { permissionState.launchMultiplePermissionRequest() }) {
-//                Text("Request permission")
-//            }
-//        }
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun backgroundPermissionCheck(navController: NavHostController) {
 
@@ -123,12 +98,44 @@ fun backgroundPermissionCheck(navController: NavHostController) {
     if (permissionState.status.isGranted)
         navController.navigate(NavRoutes.Main.route) { popUpTo(0) }
     else {
-        Column {
-            Text("Background Location permission not granted")
-            Button(onClick = { permissionState.launchPermissionRequest() }) {
-                Text("Request permission")
+        Scaffold(
+            topBar = { TopAppBar(title = { Text(stringResource(R.string.app_title)) }) },
+            content = {
+                ConstraintLayout(
+                    modifier =
+                        Modifier
+                            .padding(it)
+                            .fillMaxHeight()
+                            .fillMaxWidth()
+                ) {
+                    val (columns, button) = createRefs()
+                    Column(
+                        modifier = Modifier
+                            .constrainAs(columns) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(button.top)
+                            }) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(20.dp),
+                                text = stringResource(R.string.permission_location_always_rationale)
+                            )
+                        }
+                    Box(
+                        modifier = Modifier
+                            .constrainAs(button) {
+                                top.linkTo(columns.bottom)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                            }) {
+                        Button(onClick = { permissionState.launchPermissionRequest() }) {
+                            Text(text = stringResource(R.string.permission))
+                        }
+                    }
+                }
             }
-        }
+        )
     }
 }
 
