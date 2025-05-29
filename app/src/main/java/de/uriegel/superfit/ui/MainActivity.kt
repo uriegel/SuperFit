@@ -1,8 +1,6 @@
 package de.uriegel.superfit.ui
 
-import android.Manifest
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,7 +20,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import de.uriegel.superfit.R
 import de.uriegel.superfit.ui.theme.SuperFitTheme
 import de.uriegel.superfit.ui.views.Devices
 import de.uriegel.superfit.ui.views.Display
@@ -110,24 +107,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun getPermissions() = sequence {
-    yield(Permission(Manifest.permission.ACCESS_FINE_LOCATION,
-        R.string.permission_location_rationale))
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        yield(Permission(Manifest.permission.BLUETOOTH_SCAN,
-            R.string.permission_blutooth_scan))
-        yield(Permission(Manifest.permission.BLUETOOTH_CONNECT,
-            R.string.permission_blutooth_connect))
-    }
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
-        yield(Permission(Manifest.permission.READ_EXTERNAL_STORAGE,
-            R.string.permission_external_storage_rationale))
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-        yield(Permission(Manifest.permission.POST_NOTIFICATIONS,
-            R.string.permission_notification_rationale))
-}
-
-data class Permission(
-    val permission: String,
-    val rationale: Int
-)
